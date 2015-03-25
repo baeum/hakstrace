@@ -32,6 +32,7 @@ angular.module('app')
                   url: '',
                   templateUrl: '/app'
               })
+              // main dashboard
               .state('app.dashboard-v2', {
                   url: '',
                   templateUrl: 'app/views/app_dashboard_v2.html',
@@ -42,6 +43,27 @@ angular.module('app')
                     }]
                   }
               })
+              // admin
+              .state('app.admin', {
+                  //abstract: true,
+                  url: '/admin',
+                  templateUrl: '/admin'
+              })
+              /*
+              .state('app.mail.list', {
+                  url: '/inbox/{fold}',
+                  templateUrl: 'app/views/mail.list.html'
+              })
+              .state('app.mail.detail', {
+                  url: '/{mailId:[0-9]{1,4}}',
+                  templateUrl: 'app/views/mail.detail.html'
+              })
+              .state('app.mail.compose', {
+                  url: '/compose',
+                  templateUrl: 'app/views/mail.new.html'
+              })
+              */
+
               .state('app.ui', {
                   url: '/ui',
                   template: '<div ui-view class="fade-in-up"></div>'

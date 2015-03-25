@@ -44,7 +44,7 @@ module.exports = function() {
 	}));
 	*/
 
-	app.set('views', './server/app/views');
+	app.set('views', './server');
 	app.set('view engine', 'ejs');
 
 	app.use(flash());
@@ -52,11 +52,12 @@ module.exports = function() {
 	app.use(passport.session());
 
 	require('../server/app/routes/app.server.routes.js')(app);
+	require('../server/admin/routes/admin.server.routes.js')(app);
 
 	app.use(express.static('./public'));
 
 	//require('./socketio')(server, io, mongoStore);
 	require('./socketio')(server, io);
-	
+
 	return server;
 };
