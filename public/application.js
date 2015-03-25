@@ -9,6 +9,7 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'ngSanitize',
     'ngTouch',
     'ngStorage',
+    'ngRoute',
     'app'
 ]);
 
@@ -29,5 +30,3 @@ mainApplicationModule
   });
 
 // lazyload config
-
-

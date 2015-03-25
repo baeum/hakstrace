@@ -16,31 +16,24 @@ angular.module('app')
     [          '$stateProvider', '$urlRouterProvider', '$routeProvider', 'JQ_CONFIG',
       function ($stateProvider,   $urlRouterProvider,  $routeProvider, JQ_CONFIG) {
 
-          $routeProvider
-              .when('/', {
-                  templateUrl: 'app'
-              });
-              //.otherwise('/app/dashboard-v2');
+        //  $routeProvider
+        //      .when('/', {
+      //            templateUrl: '/app'
+        //  });
+
+
+
+          //$urlRouterProvider
+          //      .otherwise('/dashboard-v2');
 
           $stateProvider
               .state('app', {
-                  abstract: true,
-                  url: '/app',
+                  abstract: true, // abstract <-- 이거 상속 같은 개념임. 중요함
+                  url: '',
                   templateUrl: '/app'
               })
-              .state('app.dashboard-v1', {
-                  url: '/dashboard-v1',
-                  //templateUrl: 'app/views/app_dashboard_v1.html',
-                  templateUrl: 'app/views/app_dashboard_v1.html',
-                  resolve: {
-                    deps: ['$ocLazyLoad',
-                      function( $ocLazyLoad ){
-                        return $ocLazyLoad.load(['app/controllers/chart.js']);
-                    }]
-                  }
-              })
               .state('app.dashboard-v2', {
-                  url: '/dashboard-v2',
+                  url: '',
                   templateUrl: 'app/views/app_dashboard_v2.html',
                   resolve: {
                     deps: ['$ocLazyLoad',
