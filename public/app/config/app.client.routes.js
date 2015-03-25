@@ -13,19 +13,24 @@ angular.module('app')
     ]
   )
   .config(
-    [          '$stateProvider', '$urlRouterProvider', 'JQ_CONFIG',
-      function ($stateProvider,   $urlRouterProvider, JQ_CONFIG) {
+    [          '$stateProvider', '$urlRouterProvider', '$routeProvider', 'JQ_CONFIG',
+      function ($stateProvider,   $urlRouterProvider,  $routeProvider, JQ_CONFIG) {
 
-          $urlRouterProvider
-              .otherwise('/app/dashboard-v1');
+          $routeProvider
+              .when('/', {
+                  templateUrl: 'app'
+              });
+              //.otherwise('/app/dashboard-v2');
+
           $stateProvider
               .state('app', {
                   abstract: true,
                   url: '/app',
-                  templateUrl: 'app/views/app.html'
+                  templateUrl: '/app'
               })
               .state('app.dashboard-v1', {
                   url: '/dashboard-v1',
+                  //templateUrl: 'app/views/app_dashboard_v1.html',
                   templateUrl: 'app/views/app_dashboard_v1.html',
                   resolve: {
                     deps: ['$ocLazyLoad',

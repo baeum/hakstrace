@@ -3,18 +3,16 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', 
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window',
     function(              $scope,   $translate,   $localStorage,   $window ) {
       // add 'ie' classes to html
-
-
-      console.log("app.client.controller.js loaded!!!");;
-
 
 
       var isIE = !!navigator.userAgent.match(/MSIE/i);
       isIE && angular.element($window.document.body).addClass('ie');
       isSmartDevice( $window ) && angular.element($window.document.body).addClass('smart');
+
+      // 기본 테마와 메뉴 같은거 설정 
 
       // config
       $scope.app = {
@@ -33,13 +31,13 @@ angular.module('app')
         },
         settings: {
           themeID: 1,
-          navbarHeaderColor: 'bg-black',
-          navbarCollapseColor: 'bg-white-only',
-          asideColor: 'bg-black',
+          navbarHeaderColor: 'bg-info dker',
+          navbarCollapseColor: 'bg-info dker',
+          asideColor: 'bg-light dker b-r',
           headerFixed: true,
           asideFixed: false,
-          asideFolded: false,
-          asideDock: false,
+          asideFolded: true,
+          asideDock: true,
           container: false
         }
       }
