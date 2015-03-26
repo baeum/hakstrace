@@ -13,9 +13,6 @@ exports.renderHeader = function(req, res){
 	res.render('app/views/blocks/header');
 };
 
-exports.renderAside = function(req, res){
-	res.render('app/views/blocks/aside');
-};
 exports.renderSettings = function(req, res){
 	res.render('app/views/blocks/settings');
 };

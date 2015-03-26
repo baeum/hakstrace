@@ -9,6 +9,7 @@ angular.module('app')
       function ($rootScope,   $state,   $stateParams) {
           $rootScope.$state = $state;
           $rootScope.$stateParams = $stateParams;
+          
       }
     ]
   )
@@ -29,7 +30,6 @@ angular.module('app')
           $stateProvider
               .state('app', {
                   abstract: true, // abstract <-- 이거 상속 같은 개념임. 중요함
-                  url: '',
                   templateUrl: '/app'
               })
               // main dashboard

@@ -7,7 +7,5 @@ module.exports = function(app) {
 
 	app.get('/blocks/header', appServerController.renderHeader);
 
-	app.get('/blocks/aside', appServerController.renderAside);
-
 	app.get('/blocks/settings', appServerController.renderSettings);
 };

@@ -3,11 +3,44 @@
 /**
  * 0.1.1
  * Deferred load js/css file, used for ui-jq.js and Lazy Loading.
- * 
+ *
  * @ flatfull.com All Rights Reserved.
  * Author url: http://themeforest.net/user/flatfull
  */
 
+/*
+angular.module('app').factory('AppConfiguration', [
+	function(){
+		var configuration = {
+			name: 'Angular',
+			version: '2.0.1',
+			// for chart colors
+			color: {
+				primary: '#7266ba',
+				info:    '#23b7e5',
+				success: '#27c24c',
+				warning: '#fad733',
+				danger:  '#f05050',
+				light:   '#e8eff0',
+				dark:    '#3a3f51',
+				black:   '#1c2b36'
+			},
+			settings: {
+				themeID: 1,
+				navbarHeaderColor: 'bg-info dker',
+				navbarCollapseColor: 'bg-info dker',
+				asideColor: 'bg-light dker b-r',
+				headerFixed: true,
+				asideFixed: false,
+				asideFolded: true,
+				asideDock: true,
+				container: false
+			}
+		}
+		return configuration;
+	}
+]);
+*/
 angular.module('ui.load', [])
 	.service('uiLoad', ['$document', '$q', '$timeout', function ($document, $q, $timeout) {
 

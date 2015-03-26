@@ -10,7 +10,8 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'ngTouch',
     'ngStorage',
     'ngRoute',
-    'app'
+    'app',
+    'admin'
 ]);
 
 

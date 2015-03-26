@@ -1,4 +1,13 @@
-app.controller('AdminCtrl', ['$scope', function($scope) {
+angular.module('admin').controller('AdminCtrl', ['$rootScope', '$scope',
+  function( $rootScope, $scope ) {
+
+  // config
+  $rootScope.app = {
+    settings: {
+      asideFixed: true
+    }
+  };
+
   $scope.folds = [
     {name: 'Inbox', filter:''},
     {name: 'Starred', filter:'starred'},
@@ -36,35 +45,3 @@ app.controller('AdminCtrl', ['$scope', function($scope) {
   };
 
 }]);
-
-app.controller('MailListCtrl', ['$scope', 'mails', '$stateParams', function($scope, mails, $stateParams) {
-  $scope.fold = $stateParams.fold;
-  mails.all().then(function(mails){
-    $scope.mails = mails;
-  });
-}]);
-
-app.controller('MailDetailCtrl', ['$scope', 'mails', '$stateParams', function($scope, mails, $stateParams) {
-  mails.get($stateParams.mailId).then(function(mail){
-    $scope.mail = mail;
-  })
-}]);
-
-app.controller('MailNewCtrl', ['$scope', function($scope) {
-  $scope.mail = {
-    to: '',
-    subject: '',
-    content: ''
-  }
-  $scope.tolist = [
-    {name: 'James', email:'james@gmail.com'},
-    {name: 'Luoris Kiso', email:'luoris.kiso@hotmail.com'},
-    {name: 'Lucy Yokes', email:'lucy.yokes@gmail.com'}
-  ];
-}]);
-
-angular.module('app').directive('labelColor', function(){
-  return function(scope, $el, attrs){
-    $el.css({'color': attrs.color});
-  }
-});

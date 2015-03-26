@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window',
-    function(              $scope,   $translate,   $localStorage,   $window ) {
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$rootScope',
+    function(              $scope,   $translate,   $localStorage,   $window,  $rootScope ) {
       // add 'ie' classes to html
 
 
@@ -12,35 +12,37 @@ angular.module('app')
       isIE && angular.element($window.document.body).addClass('ie');
       isSmartDevice( $window ) && angular.element($window.document.body).addClass('smart');
 
-      // 기본 테마와 메뉴 같은거 설정 
+      // 기본 테마와 메뉴 같은거 설정
 
       // config
-      $scope.app = {
-        name: 'Angulr',
-        version: '2.0.1',
-        // for chart colors
-        color: {
-          primary: '#7266ba',
-          info:    '#23b7e5',
-          success: '#27c24c',
-          warning: '#fad733',
-          danger:  '#f05050',
-          light:   '#e8eff0',
-          dark:    '#3a3f51',
-          black:   '#1c2b36'
-        },
-        settings: {
-          themeID: 1,
-          navbarHeaderColor: 'bg-info dker',
-          navbarCollapseColor: 'bg-info dker',
-          asideColor: 'bg-light dker b-r',
-          headerFixed: true,
-          asideFixed: false,
-          asideFolded: true,
-          asideDock: true,
-          container: false
-        }
-      }
+      $scope.app =  {
+  			name: 'Angular',
+  			version: '2.0.1',
+  			// for chart colors
+  			color: {
+  				primary: '#7266ba',
+  				info:    '#23b7e5',
+  				success: '#27c24c',
+  				warning: '#fad733',
+  				danger:  '#f05050',
+  				light:   '#e8eff0',
+  				dark:    '#3a3f51',
+  				black:   '#1c2b36'
+  			},
+  			settings: {
+  				themeID: 1,
+  				navbarHeaderColor: 'bg-info dker',
+  				navbarCollapseColor: 'bg-info dker',
+  				asideColor: 'bg-light dker b-r',
+  				headerFixed: true,
+  				asideFixed: false,
+  				asideFolded: true,
+  				asideDock: true,
+  				container: false
+  			}
+  		};
+
+      //$scope.app = $rootScope.app;
 
       // save settings to local storage
       if ( angular.isDefined($localStorage.settings) ) {
@@ -48,14 +50,15 @@ angular.module('app')
       } else {
         $localStorage.settings = $scope.app.settings;
       }
-      $scope.$watch('app.settings', function(){
-        if( $scope.app.settings.asideDock  &&  $scope.app.settings.asideFixed ){
-          // aside dock and fixed must set the header fixed.
+      //$scope.$watch('app.settings', function(){
+      //  if( $scope.app.settings.asideDock  &&  $scope.app.settings.asideFixed ){
+      //    // aside dock and fixed must set the header fixed.
           $scope.app.settings.headerFixed = true;
-        }
+      //  }
         // save to local storage
-        $localStorage.settings = $scope.app.settings;
-      }, true);
+      //  $localStorage.settings = $scope.app.settings;
+
+      //}, true);
 
       // angular translate
       $scope.lang = { isopen: false };
