@@ -45,3 +45,30 @@ angular.module('admin').controller('AdminCtrl', ['$rootScope', '$scope',
   };
 
 }]);
+
+
+angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', '$log',
+  function( $rootScope, $scope, $modal, $log ) {
+
+    $scope.items = ['item1', 'item2', 'item3'];
+
+    $scope.openUserCreateModal = function (size) {
+        var modalInstance = $modal.open({
+          templateUrl: 'admin-user-create.template',
+          //controller: 'ModalInstanceCtrl',
+          size: 'lg',
+          resolve: {
+            items: function () {
+              return $scope.items;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (selectedItem) {
+          $scope.selected = selectedItem;
+        }, function () {
+          $log.info('Modal dismissed at: ' + new Date());
+        });
+      };
+
+}]);
