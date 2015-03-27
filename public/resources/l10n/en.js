@@ -1,5 +1,11 @@
 {
 
+"adminHeader" : {
+  "nav" :{
+    "USER" : "user"
+  }
+},
+
 "header" : {
   "navbar" : {
     "UPLOAD" : "Upload",

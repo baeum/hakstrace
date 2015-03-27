@@ -1,40 +1,45 @@
 
-<div data-ng-include=" '/admin/blocks/adminHeader' " class="app-aside hidden-xs {{app.settings.asideColor}}">
-</div>
-
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="AdminCtrl">
-  <div class="col w-md bg-light dk b-r bg-auto">
-    <div class="wrapper b-b bg">
-      <button class="btn btn-sm btn-default pull-right visible-sm visible-xs" ui-toggle-class="show" target="#email-menu"><i class="fa fa-bars"></i></button>
-      <a ui-sref="app.mail.compose" class="btn btn-sm btn-danger w-xs font-bold">Compose</a>
+  <div class="col w w-auto-xs bg-light inherit dk b-r">
+    <div class="wrapper-md b-b">
+      <a class="btn btn-link pull-right m-t-n-xs m-r-n-sm visible-sm visible-xs" ui-toggle-class="show" data-target="#nav-docs">
+        <i class="fa fa-bars"></i>
+      </a>
+      <span class="h4">Administrator</span>
     </div>
-    <div class="wrapper hidden-sm hidden-xs" id="email-menu">
-      <ul class="nav nav-pills nav-stacked nav-sm">
-        <li ng-repeat="fold in folds" ui-sref-active="active">
-          <a ui-sref="app.mail.list({fold:fold.filter})">
-            {{fold.name}}
-          </a>
-        </li>
+    <div class="hidden-sm hidden-xs" id="nav-docs">
+      <ul class="nav">
+        <li class="padder b-b l-h-2x bg text-info"><em>Build</em></li>
+        <li><a ui-sref="app.admin.user">User</a></li>
+        <li><a ui-scroll-to="node-req">Requirements</a></li>
+        <li><a ui-scroll-to="bower">Bower</a></li>
+        <li><a ui-scroll-to="grunt">Grunt</a></li>
+        <li><a ui-scroll-to="dev-server">Local Server</a></li>
+
+        <li class="padder b-b l-h-2x bg text-success"><em>CSS</em></li>
+        <li><a ui-scroll-to="bootstrap">Bootstrap</a></li>
+        <li><a ui-scroll-to="icons">Icons</a></li>
+        <li><a ui-scroll-to="animate">Animate</a></li>
+        <li><a ui-scroll-to="colors">Colors</a></li>
+        <li><a ui-scroll-to="layout">Layout</a></li>
+        <li><a ui-scroll-to="utilities">Utilities</a></li>
+
+        <li ui-scroll-to="core" class="padder b-b b-t l-h-2x bg text-danger"><em>Core</em></li>
+        <li><a ui-scroll-to="ui-router">ui-router</a></li>
+        <li><a ui-scroll-to="ui-load">ui-load</a></li>
+        <li><a ui-scroll-to="ui-jq">ui-jq</a></li>
+        <li><a ui-scroll-to="ui-module">ui-module</a></li>
+        <li><a ui-scroll-to="ui-validate">ui-validate</a></li>
+
+        <li ui-scroll-to="directives" class="padder b-b b-t l-h-2x bg text-primary"><em>Directives</em></li>
+        <li><a ui-scroll-to="ui-toggle-class">ui-toggle-class</a></li>
+        <li><a ui-scroll-to="ui-shift">ui-shift</a></li>
+        <li><a ui-scroll-to="ui-scroll-to">ui-scroll-to</a></li>
+        <li><a ui-scroll-to="ui-fullscreen">ui-fullscreen</a></li>
+
+        <li ui-scroll-to="plugins" class="padder b-b b-t l-h-2x bg text-info"><em>Plugins</em></li>
+        <li><a ui-scroll-to="plugins">Plugins docs</a></li>
       </ul>
-      <div class="wrapper">Labels</div>
-      <ul class="nav nav-pills nav-stacked nav-sm">
-        <li ng-repeat="label in labels" ui-sref-active="active">
-          <a ui-sref="app.mail.list({fold:label.filter})">
-            <i class="fa fa-fw fa-circle text-muted" color="{{label.color}}" label-color ></i>
-            {{label.name}}
-          </a>
-        </li>
-      </ul>
-      <div class="wrapper">
-        <form name="label">
-          <div class="input-group">
-            <input type="text" class="form-control input-sm" ng-model="newLabel.name" placeholder="New label" required>
-            <span class="input-group-btn">
-              <button class="btn btn-sm btn-default" type="button" ng-click="addLabel()" ng-disabled="label.$invalid">Add</button>
-            </span>
-          </div>
-        </form>
-      </div>
     </div>
   </div>
   <div class="col">

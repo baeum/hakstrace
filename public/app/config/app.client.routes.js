@@ -9,7 +9,7 @@ angular.module('app')
       function ($rootScope,   $state,   $stateParams) {
           $rootScope.$state = $state;
           $rootScope.$stateParams = $stateParams;
-          
+
       }
     ]
   )
@@ -45,7 +45,6 @@ angular.module('app')
               })
               // admin
               .state('app.admin', {
-                  //abstract: true,
                   url: '/admin',
                   templateUrl: '/admin'
               })

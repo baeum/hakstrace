@@ -1,0 +1,79 @@
+<section  ng-controller="AdminCtrl">
+<div class="bg-light lter b-b wrapper-md" >
+  <h1 class="m-n font-thin h3">User Management</h1>
+</div>
+<div class="wrapper-md">
+
+  <div class="panel panel-default">
+    <div class="panel-heading font-bold">
+      <script type="text/ng-template" id="myModalContent.html">
+        <div ng-include="'/admin/views/admin-user-create.client.view.html'"></div>
+      </script>
+      <a href class="pull-right btn btn-sm btn-success m-t-n-xs" ng-click="open('lg')">
+        <i class="glyphicon glyphicon-plus">
+        </i> New User
+      </a>
+
+      <div class="h4">Users</div>
+      <!--
+      <button type="button" ng-click="addRandomItem(row)" class="btn btn-sm btn-success">
+        <i class="glyphicon glyphicon-plus">
+        </i> Add random item
+      </button>
+    -->
+    </div>
+
+    <div class="panel-body">
+      <form class="form-inline" role="form">
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputEmail2">Email address</label>
+          <input type="email" class="form-control" id="exampleInputEmail2" placeholder="Enter email">
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="exampleInputPassword2">Password</label>
+          <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+        </div>
+        <div class="checkbox m-l m-r-xs">
+          <label class="i-checks">
+            <input type="checkbox"><i></i> Remember me
+          </label>
+        </div>
+        <button type="submit" class="btn btn-default">Sign in</button>
+        <span ng-controller="ModalDemoCtrl">
+          <script type="text/ng-template" id="myModalContent.html">
+            <div ng-include="'/app/views/modal.form.html'"></div>
+          </script>
+          <button type="button" ng-click="addRandomItem(row)" class="btn btn-success">
+            <i class="glyphicon glyphicon-plus">
+            </i> Add random item
+          </button>
+        </span>
+      </form>
+    </div>
+    <div class="table-responsive">
+      <table ui-jq="dataTable" ui-options="{
+          sAjaxSource: 'api/datatable.json',
+          aoColumns: [
+            { mData: 'engine' },
+            { mData: 'browser' },
+            { mData: 'platform' },
+            { mData: 'version' },
+            { mData: 'grade' }
+          ]
+        }" class="table table-striped b-t b-b">
+        <thead>
+          <tr>
+            <th  style="width:20%">Rendering engine</th>
+            <th  style="width:25%">Browser</th>
+            <th  style="width:25%">Platform(s)</th>
+            <th  style="width:15%">Engine version</th>
+            <th  style="width:15%">CSS grade</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</section>
