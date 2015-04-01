@@ -71,4 +71,8 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
         });
       };
 
+    $scope.closeUserCreateModal = function(){
+        $modal.dismiss('cancel');
+    };
+
 }]);

@@ -2,26 +2,49 @@
   <div class="row">
 
       <h3 class="m-t-none m-b font-thin">User Information</h3>
-      <p>Create a new user to hakstrace!</p>
-      <form role="form">
+      <p class="text-muted">Please fill the information</p>
+      <form class="form-horizontal form-validation" role="form">
+
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
         <div class="form-group">
-          <label>Name</label>
-          <input type="email" class="form-control" placeholder="Enter Name">
+          <label class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control">
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Email</label>
-          <input type="email" class="form-control" placeholder="Enter email">
+          <label class="col-sm-2 control-label">e-mail</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control">
+          </div>
         </div>
+
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" class="form-control" placeholder="Password">
+          <label class="col-sm-2 control-label">Password</label>
+          <div class="col-sm-4">
+            <input type="password" class="form-control">
+          </div>
         </div>
-        <div class="checkbox m-t-lg">
-          <button type="submit" class="btn btn-sm btn-success pull-right text-uc m-t-n-xs" ng-click="ok()"><strong>Log in</strong></button>
-          <label class="i-checks">
-            <input type="checkbox"><i></i> Remember me
-          </label>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Password confirm</label>
+          <div class="col-sm-4">
+            <input type="password" class="form-control">
+          </div>
         </div>
+
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-10 pull-right">
+            <button class="btn btn-default text-uc" ng-click="closeUserCreateModal()">Cancel</button>
+            <button type="submit" class="btn btn-success text-uc" ng-click="ok()">Create</button>
+          </div>
+        </div>
+
+
       </form>
 
   </div>
