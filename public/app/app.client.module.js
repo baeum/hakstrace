@@ -145,13 +145,6 @@ angular.module('app')
                   ]
               },
               {
-                  name: 'toaster',
-                  files: [
-                      '/lib/angularjs-toaster/toaster.js',
-                      '/lib/angularjs-toaster/toaster.css'
-                  ]
-              },
-              {
                   name: 'textAngular',
                   files: [
                       '/lib/textAngular/dist/textAngular-sanitize.min.js',

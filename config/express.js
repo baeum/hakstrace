@@ -12,7 +12,7 @@ var config = require('./config'),
 	passport = require('passport');
 
 //module.exports = function(db) {
-module.exports = function() {
+module.exports = function(db) {
 	var app = express();
 	var server = http.createServer(app);
 	var io = socketio.listen(server);
@@ -30,12 +30,11 @@ module.exports = function() {
 	app.use(bodyParser.json());
 	app.use(methodOverride());
 
-	/*
-	// mongo db 일단 주석처리
 	var mongoStore = new MongoStore({
 		db: db.connection.db
 	});
 
+/*
 	app.use(session({
 		saveUninitialized: true,
 		resave: true,
@@ -51,13 +50,47 @@ module.exports = function() {
 	app.use(passport.initialize());
 	app.use(passport.session());
 
+
 	require('../server/app/routes/app.server.routes.js')(app);
 	require('../server/admin/routes/admin.server.routes.js')(app);
+	require('../server/admin/routes/admin-user.server.routes.js')(app);
 
 	app.use(express.static('./public'));
+
+	// error handling 은 app.use 제일 마지막에 해야됨
+	app.use(logErrors);
+	app.use(clientErrorHandler);
+	app.use(errorHandler);
 
 	//require('./socketio')(server, io, mongoStore);
 	require('./socketio')(server, io);
 
 	return server;
+};
+
+function logErrors(err, req, res, next) {
+  console.error(err.stack);
+  next(err);
+};
+
+function clientErrorHandler(err, req, res, next) {
+	var errorMessage = 'Unknown server error';
+	if(err.message){
+		errorMessage = err.message;
+	}else if(err.errors){
+		for (var errName in err.errors) {
+			if (err.errors[errName].message) errorMessage = err.errors[errName].message;
+		}
+	}
+
+  if (req.xhr) {
+    res.status(500).send({ message: errorMessage });
+  } else {
+    next(err);
+  }
+};
+
+function errorHandler(err, req, res, next) {
+  res.status(500);
+  res.render('error', { error: err });
 };

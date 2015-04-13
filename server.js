@@ -6,11 +6,12 @@ var mongoose = require('./config/mongoose'),
 	passport = require('./config/passport');
 	*/
 
-var express = require('./config/express');
+var mongoose = require('./config/mongoose'),
+		express = require('./config/express');
 
-//var db = mongoose();	// 이게 먼저 되야됨. db 니깐
+var db = mongoose();	// 이게 먼저 되야됨. db 니깐
 //var app = express(db);
-var app = express();
+var app = express(db);
 //var passport = passport();
 
 app.listen(3000);

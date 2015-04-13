@@ -55,7 +55,7 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
     $scope.openUserCreateModal = function (size) {
         var modalInstance = $modal.open({
           templateUrl: 'admin-user-create.template',
-          //controller: 'ModalInstanceCtrl',
+          controller: 'AdminUserCreateModalInstanceCtrl',
           size: 'lg',
           resolve: {
             items: function () {
@@ -64,15 +64,41 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
           }
         });
 
+        /*
         modalInstance.result.then(function (selectedItem) {
           $scope.selected = selectedItem;
         }, function () {
           $log.info('Modal dismissed at: ' + new Date());
         });
+        */
       };
 
-    $scope.closeUserCreateModal = function(){
-        $modal.dismiss('cancel');
+}]);
+
+angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
+  ['$scope', '$modalInstance', 'Users', 'toaster',
+  function( $scope, $modalInstance, Users, toaster ) {
+
+    $scope.create = function() {
+      var user = new Users({
+          name: this.name,
+          email: this.email,
+          password: this.password
+      });
+      user.$save(function(response) {
+          toaster.pop({
+            type: 'success',
+            title: response.name,
+            body: 'A New User added'
+          });
+          $modalInstance.close();
+          //$location.path('articles/' + response._id);
+      });
+    };
+
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
     };
 
 }]);
