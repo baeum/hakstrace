@@ -38,22 +38,17 @@
     </div>
     <div class="table-responsive">
       <table ui-jq="dataTable" ui-options="{
-          sAjaxSource: 'api/datatable.json',
+          sAjaxSource: '/api/admin/users',
+          sAjaxDataProp: '',
           aoColumns: [
-            { mData: 'engine' },
-            { mData: 'browser' },
-            { mData: 'platform' },
-            { mData: 'version' },
-            { mData: 'grade' }
+            { mData: 'email' },
+            { mData: 'name' }
           ]
         }" class="table table-striped b-t b-b">
         <thead>
           <tr>
-            <th  style="width:20%">Rendering engine</th>
-            <th  style="width:25%">Browser</th>
-            <th  style="width:25%">Platform(s)</th>
-            <th  style="width:15%">Engine version</th>
-            <th  style="width:15%">CSS grade</th>
+            <th  style="width:20%">email</th>
+            <th  style="width:25%">name</th>
           </tr>
         </thead>
         <tbody>
