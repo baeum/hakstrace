@@ -47,30 +47,31 @@ angular.module('admin').controller('AdminCtrl', ['$rootScope', '$scope',
 }]);
 
 
-angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', '$log',
-  function( $rootScope, $scope, $modal, $log ) {
+angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', '$log', '$resource',
+  function( $rootScope, $scope, $modal, $log, $resource ) {
 
-    $scope.items = ['item1', 'item2', 'item3'];
+    //http://l-lin.github.io/angular-datatables
+    $scope.listUsers = function(){
+      $resource('/api/admin/users').query().$promise.then(function(users) {
+          $scope.users = users;
+      });
+    };
+
+    $scope.listUsers();
 
     $scope.openUserCreateModal = function (size) {
         var modalInstance = $modal.open({
           templateUrl: 'admin-user-create.template',
           controller: 'AdminUserCreateModalInstanceCtrl',
-          size: 'lg',
-          resolve: {
-            items: function () {
-              return $scope.items;
-            }
-          }
+          size: 'lg'
         });
 
-        /*
-        modalInstance.result.then(function (selectedItem) {
-          $scope.selected = selectedItem;
+        modalInstance.result.then(function (rtn) {
+          if(rtn.success) $scope.listUsers();
         }, function () {
-          $log.info('Modal dismissed at: ' + new Date());
+          //$log.info('Modal dismissed at: ' + new Date());
         });
-        */
+
       };
 
 }]);
@@ -91,7 +92,7 @@ angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
             title: response.name,
             body: 'A New User added'
           });
-          $modalInstance.close();
+          $modalInstance.close({success:true});
           //$location.path('articles/' + response._id);
       });
     };

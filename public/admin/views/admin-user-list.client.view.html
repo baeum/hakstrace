@@ -37,6 +37,7 @@
       </form>
     </div>
     <div class="table-responsive">
+      <!--
       <table ui-jq="dataTable" ui-options="{
           sAjaxSource: '/api/admin/users',
           sAjaxDataProp: '',
@@ -52,6 +53,21 @@
           </tr>
         </thead>
         <tbody>
+        </tbody>
+      </table>
+    -->
+      <table datatable="ng" class="table table-striped b-t b-b">
+        <thead>
+          <tr>
+            <th>email</th>
+            <th>name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="user in users">
+            <td>{{ user.email }}</td>
+            <td>{{ user.name }}</td>
+          </tr>
         </tbody>
       </table>
     </div>

@@ -12,6 +12,7 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'ngRoute',
     'toaster',
     'app',
+    'datatables',
     'admin'
 ]);
 

@@ -45,6 +45,7 @@
     "angular-bootstrap": "~0.12.0",
     "angular-bootstrap-nav-tree": "*",
     "angular-cookies": "~1.3.16",
+    "angular-datatables": "*",
     "angular-file-upload": "~1.1.1",
     "angular-resource": "~1.3.11",
     "angular-route": "~1.3.11",
