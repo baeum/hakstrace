@@ -11,6 +11,7 @@ module.exports = function() {
 	});
 */
 	require('../server/models/user.server.model');
+	require('../server/models/user-auth.server.model');
 
 	return db;
 
