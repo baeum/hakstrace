@@ -7,9 +7,9 @@ module.exports = function(app) {
 
 
   app.route('/api/admin/users')
-    .get(adminUserServerController.list)
+    .get(adminUserServerController.listUser)
     //.post(users.requiresLogin, articles.create);
-    .post(adminUserServerController.create);
+    .post(adminUserServerController.createUser);
     /*
   app.route('/api/articles/:articleId')
     .get(articles.read)
@@ -18,4 +18,8 @@ module.exports = function(app) {
 
   app.param('articleId', articles.articleByID); // 파라미터에 articleId 가 있으면 저 펑션 호출
   */
+
+  app.route('/api/admin/user-auths')
+    .get(adminUserServerController.listUserAuth);
+
 };

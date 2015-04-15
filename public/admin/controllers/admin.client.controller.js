@@ -77,14 +77,22 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
 }]);
 
 angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
-  ['$scope', '$modalInstance', 'Users', 'toaster',
-  function( $scope, $modalInstance, Users, toaster ) {
+  ['$scope', '$modalInstance', 'Users', 'toaster', '$resource',
+  function( $scope, $modalInstance, Users, toaster, $resource ) {
+
+    $resource('/api/admin/user-auths').query().$promise.then(function(userAuths) {
+        $scope.userAuths = userAuths;
+        $scope.userAuth = $scope.userAuths[0].code;
+    });
 
     $scope.create = function() {
       var user = new Users({
           name: this.name,
           email: this.email,
-          password: this.password
+          password: this.password,
+          auth: {
+            code: $scope.userAuth
+          }
       });
       user.$save(function(response) {
           toaster.pop({

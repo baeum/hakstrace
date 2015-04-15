@@ -2,6 +2,9 @@ var mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 var UserAuthSchema = new Schema({
+  _id: {
+    type: String
+  },
   code: {
     type: String,
     unique: true
@@ -9,9 +12,10 @@ var UserAuthSchema = new Schema({
   name: {
     type: String,
   },
-  value: {
-    type: String
+  order: {
+    type: Number
   }
-});
+}, { collection: 'userauths' });
 
+//UserAuthSchema.set('toJSON', { getters: true, virtuals: true });
 mongoose.model('UserAuth', UserAuthSchema);

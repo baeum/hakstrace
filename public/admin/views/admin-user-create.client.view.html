@@ -35,6 +35,14 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Authority</label>
+          <div class="col-sm-4">
+            <select class="form-control m-b" ng-model="userAuth" ng-options="userAuth.code as userAuth.name for userAuth in userAuths">
+            </select>
+          </div>
+        </div>
+
         <div class="line line-dashed b-b line-lg pull-in"></div>
 
         <div class="form-group">

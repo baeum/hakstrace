@@ -43,10 +43,10 @@ var UserSchema = new Schema({
     default: Date.now
   },
   auth: {
-		type: Schema.ObjectId,
+		type: String,
 		ref: 'UserAuth'
 	}
-});
+}, { collection: 'users' });
 
 
 // Set the 'fullname' virtual property
@@ -112,6 +112,6 @@ UserSchema.statics.findOneByUsername = function (username,callback) {
 };
 
 
-UserSchema.set('toJSON', { getters: true, virtuals: true });
+//UserSchema.set('toJSON', { getters: true, virtuals: true });
 
 mongoose.model('User', UserSchema);

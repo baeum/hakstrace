@@ -61,12 +61,14 @@
           <tr>
             <th>email</th>
             <th>name</th>
+            <th>auth</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="user in users">
             <td>{{ user.email }}</td>
             <td>{{ user.name }}</td>
+            <td>{{ user.auth.name }}</td>
           </tr>
         </tbody>
       </table>
