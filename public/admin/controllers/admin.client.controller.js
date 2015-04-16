@@ -47,12 +47,12 @@ angular.module('admin').controller('AdminCtrl', ['$rootScope', '$scope',
 }]);
 
 
-angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', '$log', '$resource',
-  function( $rootScope, $scope, $modal, $log, $resource ) {
+angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', 'Users',
+  function( $rootScope, $scope, $modal, Users ) {
 
     //http://l-lin.github.io/angular-datatables
     $scope.listUsers = function(){
-      $resource('/api/admin/users').query().$promise.then(function(users) {
+      Users.query().$promise.then(function(users) {
           $scope.users = users;
       });
     };
@@ -77,12 +77,12 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
 }]);
 
 angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
-  ['$scope', '$modalInstance', 'Users', 'toaster', '$resource',
-  function( $scope, $modalInstance, Users, toaster, $resource ) {
+  ['$scope', '$modalInstance', 'Users', 'toaster', 'UserAuths', '$log',
+  function( $scope, $modalInstance, Users, toaster, UserAuths, $log ) {
 
-    $resource('/api/admin/user-auths').query().$promise.then(function(userAuths) {
+    UserAuths.query().$promise.then(function(userAuths) {
         $scope.userAuths = userAuths;
-        $scope.userAuth = $scope.userAuths[0].code;
+        $scope.userAuth = userAuths[0];
     });
 
     $scope.create = function() {
@@ -90,10 +90,9 @@ angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
           name: this.name,
           email: this.email,
           password: this.password,
-          auth: {
-            code: $scope.userAuth
-          }
+          auth: this.userAuth.code
       });
+
       user.$save(function(response) {
           toaster.pop({
             type: 'success',

@@ -10,3 +10,8 @@ angular.module('admin').factory('Users', ['$resource',
         }
       });
 }]);
+
+angular.module('admin').factory('UserAuths', ['$resource',
+  function($resource) {
+    return $resource('/api/admin/user-auths/:code');
+}]);
