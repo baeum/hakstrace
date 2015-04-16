@@ -38,6 +38,18 @@ exports.listUser = function(req, res) {
 	});
 };
 
+exports.getUser = function(req, res) {
+
+  User.findOne({ email: req.params.email })
+      .select('-salt -password').populate('auth').exec(function(err, user){
+    if(err){
+      return next(err);
+    }
+    res.json(user);
+  });
+
+};
+
 exports.listUserAuth = function(req, res) {
 	UserAuth.find().sort('-order').select('-order')
 		.exec(function(err, userAuths) {

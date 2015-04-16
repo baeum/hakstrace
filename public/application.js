@@ -11,6 +11,7 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'ngStorage',
     'ngRoute',
     'toaster',
+    'xeditable',
     'app',
     'datatables',
     'admin'
@@ -19,6 +20,13 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
 
 angular.element(document).ready(function() {
   angular.bootstrap(document, [mainApplicationModuleName]);
+});
+
+// xeditable default setting (http://vitalets.github.io/angular-xeditable)
+mainApplicationModule.run(function(editableOptions, editableThemes) {
+  editableThemes.bs3.inputClass = 'input-sm';
+  editableThemes.bs3.buttonsClass = 'btn-sm';
+  editableOptions.theme = 'bs3';
 });
 
 // 요건 global error handle 할려고
@@ -52,6 +60,7 @@ mainApplicationModule.config(function ($provide, $httpProvider){
 mainApplicationModule.config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
 }]);
+
 
 // filter
 

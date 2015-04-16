@@ -22,3 +22,8 @@ lib/nggrid/ng-grid.bootstrap.css 이것도 걍 복사해서 넣었음. 생성해
 lib/angular-ui-grid/ui-grid.bootstrap.css 이것도 걍 복사해서 넣었음. 생성해서 만든 듯 한데
 lib/bootstrap-slider/bootstap-slider.css 이것도 걍 복사
 lib/venturocket-angular-slider/build/angular-slider.css 이것도 걍 복사
+
+// 초기데이터
+db.userauths.insert({_id:"A", code:"A", name:"Administrator", order: 1})
+db.userauths.insert({_id:"M", code:"M", name:"Manager", order: 2})
+db.userauths.insert({_id:"U", code:"U", name:"User", order: 3})

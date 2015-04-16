@@ -47,8 +47,8 @@ angular.module('admin').controller('AdminCtrl', ['$rootScope', '$scope',
 }]);
 
 
-angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', 'Users',
-  function( $rootScope, $scope, $modal, Users ) {
+angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$modal', 'Users', '$log',
+  function( $rootScope, $scope, $modal, Users, $log ) {
 
     //http://l-lin.github.io/angular-datatables
     $scope.listUsers = function(){
@@ -59,7 +59,7 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
 
     $scope.listUsers();
 
-    $scope.openUserCreateModal = function (size) {
+    $scope.openUserCreateModal = function () {
         var modalInstance = $modal.open({
           templateUrl: 'admin-user-create.template',
           controller: 'AdminUserCreateModalInstanceCtrl',
@@ -71,8 +71,23 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
         }, function () {
           //$log.info('Modal dismissed at: ' + new Date());
         });
+    };
 
-      };
+    $scope.openUserDetailModal = function (email) {
+        var modalInstance = $modal.open({
+          templateUrl: 'admin-user-detail.template',
+          controller: 'AdminUserDetailModalInstanceCtrl',
+          resolve: {
+            email: function(){
+              return email;
+            }
+          }
+        });
+
+        modalInstance.result.then(function (rtn) {
+          if(rtn.success) $scope.listUsers();
+        });
+    };
 
 }]);
 
@@ -83,6 +98,46 @@ angular.module('admin').controller('AdminUserCreateModalInstanceCtrl',
     UserAuths.query().$promise.then(function(userAuths) {
         $scope.userAuths = userAuths;
         $scope.userAuth = userAuths[0];
+    });
+
+    $scope.create = function() {
+      var user = new Users({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          auth: this.userAuth.code
+      });
+
+      user.$save(function(response) {
+          toaster.pop({
+            type: 'success',
+            title: response.name,
+            body: 'A New User added'
+          });
+          $modalInstance.close({success:true});
+          //$location.path('articles/' + response._id);
+      });
+    };
+
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss('cancel');
+    };
+
+}]);
+
+angular.module('admin').controller('AdminUserDetailModalInstanceCtrl',
+  ['$scope', '$modalInstance', 'Users', 'toaster', 'UserAuths', '$log', 'email',
+  function( $scope, $modalInstance, Users, toaster, UserAuths, $log, email ) {
+
+    Users.get({email:email}, function(user){
+      $scope.user = user;
+      $scope.userAuth = user.auth;
+    });
+
+    UserAuths.query().$promise.then(function(userAuths) {
+        $scope.userAuths = userAuths;
+
     });
 
     $scope.create = function() {

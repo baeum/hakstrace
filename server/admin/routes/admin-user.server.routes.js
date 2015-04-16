@@ -10,6 +10,8 @@ module.exports = function(app) {
     .get(adminUserServerController.listUser)
     //.post(users.requiresLogin, articles.create);
     .post(adminUserServerController.createUser);
+  app.route('/api/admin/users/:email')
+    .get(adminUserServerController.getUser);
     /*
   app.route('/api/articles/:articleId')
     .get(articles.read)

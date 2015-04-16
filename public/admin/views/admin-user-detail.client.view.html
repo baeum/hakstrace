@@ -1,0 +1,52 @@
+<div class="modal-body wrapper-lg">
+  <div class="row">
+
+      <h3 class="m-t-none m-b font-thin">User Information</h3>
+
+      <div class="form-horizontal">
+
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Email: </label>
+          <div class="col-sm-6">
+            <p class="form-control-static">
+                  {{ user.email }}
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name: </label>
+          <div class="col-sm-4">
+            <p class="form-control-static">
+            	<a editable-text="user.name">{{ user.name }}</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Authority: </label>
+          <div class="col-sm-4">
+            <p class="form-control-static">
+              <a editable-select="user.auth" e-ng-options="userAuth as userAuth.name for userAuth in userAuths">
+              	{{ user.auth.name }}
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-10 pull-right">
+            <button class="btn btn-default text-uc" ng-click="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-success text-uc" ng-click="create()">Create</button>
+          </div>
+        </div>
+
+
+      </div>
+
+  </div>
+</div>
