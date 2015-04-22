@@ -30,28 +30,41 @@ exports.createUser = function(req, res, next) {
 
 exports.updateUser = function(req, res, next) {
 
-  User.findOne({ email: req.params.email }, function(err, fuser){
+  User.findOne({ email: req.params.email }, function(err, user){
     if(err){
       return next(err);
-    }else if(!fuser){
+    }else if(!user){
       var notExistError = new Error("none exist email address");
       notExistError.message = "none exist email address";
       return next(notExistError);
     }
 
-    var user = new User(req.body);
-    //user.provider = 'local';  // 일단 외부 연계는 난중에 하자
-    //user.auth = req.body.auth.code;
+    // 변경 되는 속성은 name, auth 만 일단
+    user.name = req.body.name;
+    user.auth = req.body.auth;
     user.save(function(err) {
       if (err) {
         return next(err);
       }
       res.json(user);
     });
-
-
   });
 
+};
+
+exports.deleteUser = function(req, res, next) {
+
+  User.remove({ _id: req.params.email }, function(err, numberRemoved){
+    if(err){
+      return next(err);
+    }else if(numberRemoved < 1){
+      var notExistError = new Error("none exist email address");
+      notExistError.message = "none exist email address";
+      return next(notExistError);
+    }
+
+    res.json({numberRemoved: numberRemoved});
+  });
 };
 
 exports.listUser = function(req, res) {

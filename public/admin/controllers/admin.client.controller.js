@@ -140,15 +140,24 @@ angular.module('admin').controller('AdminUserDetailModalInstanceCtrl',
     });
 
     $scope.save = function() {
-      var user = new Users($scope.user);
-      user.update(function(response) {
-          toaster.pop({
-            type: 'success',
-            title: response.name,
-            body: 'A User Info has been changed.'
-          });
-          $modalInstance.close({success:true});
-          //$location.path('articles/' + response._id);
+      Users.update({email: $scope.user.email}, $scope.user).$promise.then(function(user) {
+        toaster.pop({
+          type: 'success',
+          title: user.name,
+          body: 'A User Info has been changed.'
+        });
+        $modalInstance.close({success:true});
+      });
+    };
+
+    $scope.delete = function() {
+      Users.delete({email: $scope.user.email}).$promise.then(function() {
+        toaster.pop({
+          type: 'success',
+          title: $scope.user.email,
+          body: 'A User has been deleted.'
+        });
+        $modalInstance.close({success:true});
       });
     };
 
