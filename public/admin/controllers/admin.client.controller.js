@@ -132,27 +132,20 @@ angular.module('admin').controller('AdminUserDetailModalInstanceCtrl',
 
     Users.get({email:email}, function(user){
       $scope.user = user;
-      $scope.userAuth = user.auth;
+      //$scope.userAuth = user.auth;
     });
 
     UserAuths.query().$promise.then(function(userAuths) {
         $scope.userAuths = userAuths;
-
     });
 
-    $scope.create = function() {
-      var user = new Users({
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          auth: this.userAuth.code
-      });
-
-      user.$save(function(response) {
+    $scope.save = function() {
+      var user = new Users($scope.user);
+      user.update(function(response) {
           toaster.pop({
             type: 'success',
             title: response.name,
-            body: 'A New User added'
+            body: 'A User Info has been changed.'
           });
           $modalInstance.close({success:true});
           //$location.path('articles/' + response._id);

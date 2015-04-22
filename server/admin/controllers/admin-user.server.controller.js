@@ -28,6 +28,32 @@ exports.createUser = function(req, res, next) {
 
 };
 
+exports.updateUser = function(req, res, next) {
+
+  User.findOne({ email: req.params.email }, function(err, fuser){
+    if(err){
+      return next(err);
+    }else if(!fuser){
+      var notExistError = new Error("none exist email address");
+      notExistError.message = "none exist email address";
+      return next(notExistError);
+    }
+
+    var user = new User(req.body);
+    //user.provider = 'local';  // 일단 외부 연계는 난중에 하자
+    //user.auth = req.body.auth.code;
+    user.save(function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.json(user);
+    });
+
+
+  });
+
+};
+
 exports.listUser = function(req, res) {
 	User.find().sort('-email').select('-salt -password').populate('auth')
 		.exec(function(err, users) {

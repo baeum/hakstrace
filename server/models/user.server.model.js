@@ -4,6 +4,9 @@ var mongoose = require('mongoose'),
 
 // mongoose validator 좋네. custom 도 가능함.
 var UserSchema = new Schema({
+  _id: {
+    type: String
+  },
   name: {
     type: String,
     required: 'Username is required',
@@ -64,6 +67,9 @@ UserSchema.pre('save', function(next) {
   if (this.password) {
     this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
     this.password = this.hashPassword(this.password);
+  }
+  if(!this._id){
+    this._id = this.email;
   }
   next();
 });

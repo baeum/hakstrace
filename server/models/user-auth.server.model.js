@@ -3,7 +3,7 @@ var mongoose = require('mongoose'),
 
 var UserAuthSchema = new Schema({
   _id: {
-    type: String
+    type: String  // code
   },
   code: {
     type: String,
