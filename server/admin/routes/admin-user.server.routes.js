@@ -7,7 +7,7 @@ module.exports = function(app) {
 
 
   app.route('/api/admin/users')
-    .get(adminUserServerController.listUser)
+    .get(adminUserServerController.listUserSearchFilter, adminUserServerController.listUser)
     //.post(users.requiresLogin, articles.create);
     .post(adminUserServerController.createUser);
   app.route('/api/admin/users/:email')

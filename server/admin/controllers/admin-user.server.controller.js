@@ -67,8 +67,27 @@ exports.deleteUser = function(req, res, next) {
   });
 };
 
+// user 검색 조건 filter. auth 가 name 으로 넘어옴
+exports.listUserSearchFilter = function(req, res, next) {
+  if( req.query.auth && req.query.auth.length > 0 ){
+    UserAuth.findOne({name: req.query.auth})
+  		.exec(function(err, userAuth) {
+  			if (err) {
+  				return next(err);
+  			}
+        if(userAuth){
+          req.query.auth = userAuth.code;
+        }
+  			return next();
+  	});
+  }else{
+    return next();
+  }
+};
+
 exports.listUser = function(req, res) {
-	User.find().sort('-email').select('-salt -password').populate('auth')
+	User.find(req.query).sort('-email').select('-salt -password').populate('auth')
+    //.populate({path:'auth', match:{'name':'User'}})
 		.exec(function(err, users) {
 			if (err) {
 				return next(err);
@@ -77,8 +96,8 @@ exports.listUser = function(req, res) {
 	});
 };
 
-exports.getUser = function(req, res) {
 
+exports.getUser = function(req, res) {
   User.findOne({ email: req.params.email })
       .select('-salt -password').populate('auth').exec(function(err, user){
     if(err){

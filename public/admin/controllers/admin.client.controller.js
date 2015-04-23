@@ -52,12 +52,18 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
 
     //http://l-lin.github.io/angular-datatables
     $scope.listUsers = function(){
-      Users.query().$promise.then(function(users) {
+      var searchCond = $scope.searchFilterText ?  JSON.parse("{\"" + $scope.searchFilterText.replace(":","\":\"") + "\"}"):{};
+      Users.query(searchCond).$promise.then(function(users) {
           $scope.users = users;
       });
     };
 
     $scope.listUsers();
+
+    $scope.listUsersByFilter = function(auth){
+      $scope.searchFilterText = (auth && auth.length > 0 ) ? ('auth:' + auth): '';
+      $scope.listUsers();
+    };
 
     $scope.openUserCreateModal = function () {
         var modalInstance = $modal.open({
