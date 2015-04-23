@@ -7,11 +7,13 @@ module.exports = function(app) {
 
 
   app.route('/api/admin/users')
-    .get(adminUserServerController.listUser)
+    .get(adminUserServerController.listUserSearchFilter, adminUserServerController.listUser)
     //.post(users.requiresLogin, articles.create);
     .post(adminUserServerController.createUser);
   app.route('/api/admin/users/:email')
-    .get(adminUserServerController.getUser);
+    .get(adminUserServerController.getUser)
+    .put(adminUserServerController.updateUser)
+    .delete(adminUserServerController.deleteUser);
     /*
   app.route('/api/articles/:articleId')
     .get(articles.read)

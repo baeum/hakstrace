@@ -1,6 +1,7 @@
 npm install -g bower
 npm install -g grunt-cli
 npm install -g less
+npm install -g node-gyp
 
 npm install
 bower install <-- 걍 bower 는 일단 쓰지 말자.

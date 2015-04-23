@@ -52,12 +52,18 @@ angular.module('admin').controller('AdminUserCtrl', ['$rootScope', '$scope', '$m
 
     //http://l-lin.github.io/angular-datatables
     $scope.listUsers = function(){
-      Users.query().$promise.then(function(users) {
+      var searchCond = $scope.searchFilterText ?  JSON.parse("{\"" + $scope.searchFilterText.replace(":","\":\"") + "\"}"):{};
+      Users.query(searchCond).$promise.then(function(users) {
           $scope.users = users;
       });
     };
 
     $scope.listUsers();
+
+    $scope.listUsersByFilter = function(auth){
+      $scope.searchFilterText = (auth && auth.length > 0 ) ? ('auth:' + auth): '';
+      $scope.listUsers();
+    };
 
     $scope.openUserCreateModal = function () {
         var modalInstance = $modal.open({
@@ -132,30 +138,32 @@ angular.module('admin').controller('AdminUserDetailModalInstanceCtrl',
 
     Users.get({email:email}, function(user){
       $scope.user = user;
-      $scope.userAuth = user.auth;
+      //$scope.userAuth = user.auth;
     });
 
     UserAuths.query().$promise.then(function(userAuths) {
         $scope.userAuths = userAuths;
-
     });
 
-    $scope.create = function() {
-      var user = new Users({
-          name: this.name,
-          email: this.email,
-          password: this.password,
-          auth: this.userAuth.code
+    $scope.save = function() {
+      Users.update({email: $scope.user.email}, $scope.user).$promise.then(function(user) {
+        toaster.pop({
+          type: 'success',
+          title: user.name,
+          body: 'A User Info has been changed.'
+        });
+        $modalInstance.close({success:true});
       });
+    };
 
-      user.$save(function(response) {
-          toaster.pop({
-            type: 'success',
-            title: response.name,
-            body: 'A New User added'
-          });
-          $modalInstance.close({success:true});
-          //$location.path('articles/' + response._id);
+    $scope.delete = function() {
+      Users.delete({email: $scope.user.email}).$promise.then(function() {
+        toaster.pop({
+          type: 'success',
+          title: $scope.user.email,
+          body: 'A User has been deleted.'
+        });
+        $modalInstance.close({success:true});
       });
     };
 
