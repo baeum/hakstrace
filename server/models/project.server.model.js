@@ -1,11 +1,12 @@
 var mongoose = require('mongoose'),
+    hat = require('hat'),
   Schema = mongoose.Schema;
 
 var ProjectSchema = new Schema({
   _id: {
     type: String  // key
   },
-  key: {
+  projectKey: {
     type: String,
     unique: true,
     required: 'Project Key is required',
@@ -15,7 +16,10 @@ var ProjectSchema = new Schema({
       }, 'Project Key should be longer'
     ]
   },
-  apikey: {
+  host :{
+    type: String  // 이거 script 에서 호출한 hakstrace domain
+  },
+  apiKey: {
     type: String
   },
   name: {
@@ -33,5 +37,12 @@ var ProjectSchema = new Schema({
     type: String
   }
 }, { collection: 'projects' });
+
+
+ProjectSchema.statics.generateApiKey = function() {
+  var rack = hat.rack();
+  return rack();
+};
+
 
 mongoose.model('Project', ProjectSchema);
