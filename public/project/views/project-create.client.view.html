@@ -1,0 +1,64 @@
+<section  ng-controller="ProjectCreateCtrl">
+<div class="wrapper-md">
+
+  <div class="panel panel-default">
+
+    <div class="panel-body">
+
+      <h3 class="m-t-none m-b font-thin">Project Information</h3>
+      <p class="text-muted">Please fill the information</p>
+
+      <form class="form-horizontal form-validation" role="form">
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name</label>
+          <div class="col-sm-4">
+            <input type="text" data-ng-model="name" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Project Key</label>
+          <div class="col-sm-6">
+            <input type="text" data-ng-model="projectKey" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">host address</label>
+          <div class="col-sm-4">
+            <input type="text" data-ng-model="host" class="form-control">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">description (optional)</label>
+          <div class="col-sm-4">
+            <input type="text" data-ng-model="description" class="form-control">
+          </div>
+        </div>
+
+
+        <div class="line line-dashed b-b line-lg pull-in"></div>
+
+        <div class="form-group">
+          <div class="col-lg-offset-2 col-lg-10 pull-right">
+            <button class="btn btn-default text-uc" ng-click="cancel()">Cancel</button>
+            <button type="submit" class="btn btn-success text-uc" ng-click="create()">Create</button>
+          </div>
+        </div>
+
+
+      </form>
+
+    </div>
+
+
+
+  </div>
+
+
+
+
+</div>
+</section>
