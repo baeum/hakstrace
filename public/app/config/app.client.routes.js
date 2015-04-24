@@ -48,20 +48,16 @@ angular.module('app')
                   url: '/admin',
                   templateUrl: '/admin'
               })
-              /*
-              .state('app.mail.list', {
-                  url: '/inbox/{fold}',
-                  templateUrl: 'app/views/mail.list.html'
+              .state('app.project-new', {
+                  url: '/projects/new',
+                  templateUrl: 'project/views/project-create.client.view.html'
               })
-              .state('app.mail.detail', {
-                  url: '/{mailId:[0-9]{1,4}}',
-                  templateUrl: 'app/views/mail.detail.html'
-              })
-              .state('app.mail.compose', {
-                  url: '/compose',
-                  templateUrl: 'app/views/mail.new.html'
-              })
-              */
+
+
+
+
+              // template start
+
 
               .state('app.ui', {
                   url: '/ui',

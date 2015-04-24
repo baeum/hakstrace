@@ -14,7 +14,8 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'xeditable',
     'app',
     'datatables',
-    'admin'
+    'admin',
+    'project'
 ]);
 
 
