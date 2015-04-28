@@ -30,3 +30,20 @@ angular.module('project').controller('ProjectCreateCtrl',
     };
 
 }]);
+
+angular.module('project').controller('ProjectSearchCtrl',
+  ['$rootScope', '$scope', '$location', 'Projects',
+  function( $rootScope, $scope, $location, Projects ) {
+
+    $scope.listProjects = function(){
+      var searchCond = $scope.searchFilterText ?  JSON.parse("{\"" + $scope.searchFilterText.replace(":","\":\"") + "\"}"):{};
+      Projects.query(searchCond).$promise.then(function(projects) {
+          $scope.projects = projects;
+      });
+    };
+
+    $scope.listProjects();
+
+
+
+}]);

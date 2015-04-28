@@ -161,12 +161,12 @@
         <!-- / link and dropdown -->
 
         <!-- search form -->
-        <form class="navbar-form navbar-form-sm navbar-left shift" ui-shift="prependTo" target=".navbar-collapse" role="search" ng-controller="TypeaheadDemoCtrl">
+        <form class="navbar-form navbar-form-sm navbar-left shift" ui-shift="prependTo" target=".navbar-collapse" role="search" ng-controller="ProjectSearchCtrl">
           <div class="form-group">
             <div class="input-group">
               <input type="text" ng-model="selected" typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control input-sm bg-light no-border rounded padder" placeholder="Search projects...">
               <span class="input-group-btn">
-                <button type="submit" class="btn btn-sm bg-light rounded"><i class="fa fa-search"></i></button>
+                <button type="submit" ui-sref="app.projects" class="btn btn-sm bg-light rounded"><i class="fa fa-search"></i></button>
               </span>
             </div>
           </div>
@@ -176,8 +176,13 @@
         <!-- nabar right -->
         <ul class="nav navbar-nav navbar-right">
           <li>
+            <button ui-sref="app.projects" type="button" class="btn btn-sm btn-dark navbar-btn">
+              <i class="fa fa-search text"></i>
+              <span class="text">All Projects</span>
+            </button>
             <button ui-sref="app.project-new" type="button" class="btn btn-sm btn-primary navbar-btn">New Project</button>
           </li>
+
           <li class="hidden-xs">
             <a ui-fullscreen></a>
           </li>

@@ -30,11 +30,15 @@ var ProjectSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  addresses: [{
-    type : String, ref: 'ProjectAddress'
-  }],
+  address: {
+    type : String
+  },
   description: {
     type: String
+  },
+  status:{
+    type: String,
+    ref: 'ProjectStatus'
   }
 }, { collection: 'projects' });
 
