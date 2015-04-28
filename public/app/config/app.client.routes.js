@@ -52,6 +52,10 @@ angular.module('app')
                   url: '/projects/new',
                   templateUrl: 'project/views/project-create.client.view.html'
               })
+              .state('app.projects', {
+                  url: '/projects',
+                  templateUrl: 'project/views/project-list.client.view.html'
+              })
 
 
 

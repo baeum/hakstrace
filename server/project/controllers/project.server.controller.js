@@ -26,3 +26,35 @@ exports.createProject = function(req, res, next) {
   });
 
 };
+
+// project 검색 조건 filter.
+exports.listProjectSearchFilter = function(req, res, next) {
+  return next();
+  /*
+  if( req.query.auth && req.query.auth.length > 0 ){
+    UserAuth.findOne({name: req.query.auth})
+  		.exec(function(err, userAuth) {
+  			if (err) {
+  				return next(err);
+  			}
+        if(userAuth){
+          req.query.auth = userAuth.code;
+        }
+  			return next();
+  	});
+  }else{
+    return next();
+  }
+  */
+};
+
+
+exports.listProject = function(req, res) {
+  Project.find(req.query).sort('-projectKey')
+		.exec(function(err, projects) {
+			if (err) {
+				return next(err);
+			}
+			res.json(projects);
+	});
+};
