@@ -14,7 +14,6 @@ module.exports = function() {
 	require('../server/models/user-auth.server.model');
 
 	require('../server/models/project.server.model');
-	require('../server/models/project-status.server.model');
 
 	return db;
 

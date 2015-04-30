@@ -15,6 +15,7 @@ exports.createProject = function(req, res, next) {
     var project = new Project(req.body);
 		project._id = project.projectKey;
 		project.apiKey = Project.generateApiKey();
+    project.active = false;
     project.save(function(err) {
       if (err) {
         return next(err);

@@ -17,6 +17,7 @@ angular.module('project').controller('ProjectCreateCtrl',
         },{
           projectKey: this.projectKey,
           name: this.name,
+          address:this.address,
           host: this.host,
           description: this.description
         }, function(response) {

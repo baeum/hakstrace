@@ -7,6 +7,10 @@ angular.module('admin').config(['$stateProvider', '$routeProvider',
   function($stateProvider, $routeProvider) {
 
   $stateProvider
+      .state('app.admin', {
+          url: '/admin',
+          templateUrl: '/admin'
+      })
       .state('app.admin.user', {
           url: '/user',
           templateUrl: '/admin/views/admin-user-list.client.view.html'

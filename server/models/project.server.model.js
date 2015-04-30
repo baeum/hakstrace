@@ -36,9 +36,8 @@ var ProjectSchema = new Schema({
   description: {
     type: String
   },
-  status:{
-    type: String,
-    ref: 'ProjectStatus'
+  active:{
+    type: Boolean
   }
 }, { collection: 'projects' });
 

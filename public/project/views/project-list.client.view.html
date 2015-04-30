@@ -37,14 +37,18 @@
           <tr>
             <th>Project Key</th>
             <th>Name</th>
+            <th>Address</th>
             <th>Description</th>
+            <th>Active</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="project in projects">
-            <td><a ui-serif="app.test">{{ project.projectKey }}</a></td>
+            <td><a ui-sref="app.project-detail({projectKey:project.projectKey})">{{ project.projectKey }}</a></td>
             <td>{{ project.name }}</td>
+            <td>{{ project.address }}</td>
             <td>{{ project.description }}</td>
+            <td>{{ project.active }}</td>
           </tr>
         </tbody>
       </table>
