@@ -44,18 +44,8 @@ angular.module('app')
                   }
               })
               // admin
-              .state('app.admin', {
-                  url: '/admin',
-                  templateUrl: '/admin'
-              })
-              .state('app.project-new', {
-                  url: '/projects/new',
-                  templateUrl: 'project/views/project-create.client.view.html'
-              })
-              .state('app.projects', {
-                  url: '/projects',
-                  templateUrl: 'project/views/project-list.client.view.html'
-              })
+              
+
 
 
 
