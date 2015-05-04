@@ -16,5 +16,13 @@ angular.module('project').config(['$stateProvider', '$routeProvider',
         .state('app.project-detail', {
             url: '/projects/{projectKey}',
             templateUrl: 'project/views/project-detail.client.view.html'
+        })
+        .state('app.project-detail.stream', {
+            url: '/stream',
+            templateUrl: 'project/views/project-detail-stream.client.view.html'
+        })
+        .state('app.project-detail.settings', {
+            url: '/settings',
+            templateUrl: 'project/views/project-detail-settings.client.view.html'
         });
 }]);
