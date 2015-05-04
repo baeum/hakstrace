@@ -4,6 +4,12 @@ angular.module('project').controller('ProjectCtrl', ['$rootScope', '$scope',
 
 }]);
 
+angular.module('project').controller('ProjectDetailCtrl', ['$rootScope', '$scope',
+  function( $rootScope, $scope ) {
+
+
+}]);
+
 angular.module('project').controller('ProjectCreateCtrl',
   ['$rootScope', '$scope', '$location', 'Projects', 'toaster',
   function( $rootScope, $scope, $location, Projects, toaster ) {
@@ -44,6 +50,21 @@ angular.module('project').controller('ProjectSearchCtrl',
     };
 
     $scope.listProjects();
+
+
+
+}]);
+
+
+angular.module('project').controller('ProjectDetailSettingsCtrl',
+  ['$rootScope', '$scope', '$location', 'Projects', 'toaster',
+  function( $rootScope, $scope, $location, Projects, toaster ) {
+
+
+
+
+
+
 
 
 
