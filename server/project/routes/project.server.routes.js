@@ -6,6 +6,9 @@ module.exports = function(app) {
     .get(projectServerController.listProjectSearchFilter, projectServerController.listProject);
 
   app.route('/api/projects/:projectKey')
-    .post(projectServerController.createProject);
+    .get(projectServerController.getProject)
+    .post(projectServerController.createProject)
+    .put(projectServerController.updateProject)
+    .delete(projectServerController.deleteProject);
 
 };
