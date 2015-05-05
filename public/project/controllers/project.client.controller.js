@@ -6,8 +6,8 @@ angular.module('project').controller('ProjectCtrl', ['$rootScope', '$scope',
 
 
 angular.module('project').controller('ProjectCreateCtrl',
-  ['$rootScope', '$scope', '$location', 'Projects', 'toaster',
-  function( $rootScope, $scope, $location, Projects, toaster ) {
+  ['$rootScope', '$scope', '$location', 'Projects', 'toaster', '$state',
+  function( $rootScope, $scope, $location, Projects, toaster, $state ) {
 
     $scope.host = $location.host();
 
@@ -27,7 +27,8 @@ angular.module('project').controller('ProjectCreateCtrl',
             title: response.name,
             body: 'A New Project created'
         });
-          //$location.path('articles/' + response._id);
+        $state.go('app.project-detail.settings',{projectKey:response.projectKey});
+        //$location.path('/projects/' + response.projectKey + '/settings');
       });
     };
 
@@ -46,6 +47,14 @@ angular.module('project').controller('ProjectSearchCtrl',
 
     $scope.listProjects();
 
+}]);
 
+angular.module('project').controller('ProjectDetailCtrl', ['$rootScope', '$scope', '$stateParams', '$state', 'Projects',
+  function( $rootScope, $scope, $stateParams, $state, Projects ) {
 
+    Projects.get({projectKey:$stateParams.projectKey}, function(project){
+      $scope.project = project;
+    });
+
+    //$state.go('app.project-detail.stream');
 }]);
