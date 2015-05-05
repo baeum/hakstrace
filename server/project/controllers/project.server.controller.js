@@ -59,3 +59,56 @@ exports.listProject = function(req, res) {
 			res.json(projects);
 	});
 };
+
+
+exports.getProject = function(req, res) {
+  Project.findOne({ projectKey: req.params.projectKey })
+      .exec(function(err, project){
+    if(err){
+      return next(err);
+    }
+    res.json(project);
+  });
+
+};
+
+exports.updateProject = function(req, res, next) {
+
+  Project.findOne({ projectKey: req.params.projectKey }, function(err, project){
+    if(err){
+      return next(err);
+    }else if(!project){
+      var notExistError = new Error("none exist project");
+      notExistError.message = "none exist project";
+      return next(notExistError);
+    }
+
+    // 변경 되는 속성은 name, active, address, description 만 일단
+    project.name = req.body.name;
+    project.active = req.body.active;
+    project.address = req.body.address;
+    project.description = req.body.description;
+    project.save(function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.json(project);
+    });
+  });
+
+};
+
+exports.deleteProject = function(req, res, next) {
+
+  Project.remove({ _id: req.params.projectKey }, function(err, numberRemoved){
+    if(err){
+      return next(err);
+    }else if(numberRemoved < 1){
+      var notExistError = new Error("none exist project");
+      notExistError.message = "none exist project";
+      return next(notExistError);
+    }
+
+    res.json({numberRemoved: numberRemoved});
+  });
+};
