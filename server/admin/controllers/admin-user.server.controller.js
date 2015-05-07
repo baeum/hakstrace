@@ -85,7 +85,7 @@ exports.listUserSearchFilter = function(req, res, next) {
   }
 };
 
-exports.listUser = function(req, res) {
+exports.listUser = function(req, res, next) {
 	User.find(req.query).sort('-email').select('-salt -password').populate('auth')
     //.populate({path:'auth', match:{'name':'User'}})
 		.exec(function(err, users) {
@@ -97,7 +97,7 @@ exports.listUser = function(req, res) {
 };
 
 
-exports.getUser = function(req, res) {
+exports.getUser = function(req, res, next) {
   User.findOne({ email: req.params.email })
       .select('-salt -password').populate('auth').exec(function(err, user){
     if(err){

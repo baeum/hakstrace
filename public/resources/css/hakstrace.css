@@ -111,3 +111,8 @@
   border-color: #ddd #ddd #ddd transparent !important;
   *border-left-color: #ffffff;
 }
+
+/* hakstrace  custom css */
+.no-scroll .table-responsive{
+  overflow-x:hidden;
+}
