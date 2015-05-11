@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-  Project = mongoose.model('Project');
+  Project = mongoose.model('Project')
+  Script = mongoose.model('Script');
 
 exports.createProject = function(req, res, next) {
 
@@ -111,4 +112,58 @@ exports.deleteProject = function(req, res, next) {
 
     res.json({numberRemoved: numberRemoved});
   });
+};
+
+exports.getScript = function(req, res, next){
+  var projectKey = req.params.projectKey;
+  Script.findLatest(function(err, script){
+    if(err){
+      res.end();
+    }
+    var latestScript = script;
+    Project.findOne({ projectKey: projectKey })
+        .exec(function(err, project){
+      if(err){
+        res.end();
+      }
+      console.log(latestScript);
+      var generatedScript = latestScript.script.replace('{{projectKey}}', projectKey);
+      generatedScript = generatedScript.replace('{{apiKey}}', project.apiKey);
+      generatedScript = generatedScript.replace('{{host}}', project.host);
+      res.send(generatedScript);
+    });
+  });
+};
+
+exports.createError = function(req, res, next) {
+
+  console.log("error input");
+  console.log(unescape(req.query.m));
+  console.log(unescape(req.query.s));
+  res.end();
+  /*
+  Project.findOne({ projectKey: req.params.projectKey }, function(err, fproject){
+    if(err){
+      return next(err);
+    }else if(fproject){
+      var duplicateError = new Error("duplicate error");
+      duplicateError.message = "duplicate project key";
+      return next(duplicateError);
+    }
+
+    var project = new Project(req.body);
+		project._id = project.projectKey;
+		project.apiKey = Project.generateApiKey();
+    project.active = false;
+    project.save(function(err) {
+      if (err) {
+        return next(err);
+      }
+      res.json(project);
+    });
+
+
+  });
+  */
+
 };

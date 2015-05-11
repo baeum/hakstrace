@@ -11,4 +11,12 @@ module.exports = function(app) {
     .put(projectServerController.updateProject)
     .delete(projectServerController.deleteProject);
 
+  app.route('/api/projects/:projectKey/hakstrace.js')
+    .get(projectServerController.getScript);
+
+  app.route('/api/projects/:projectKey/error')
+    .get(projectServerController.createError);
+
+
+
 };
