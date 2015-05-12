@@ -23,10 +23,7 @@ exports.createProject = function(req, res, next) {
       }
       res.json(project);
     });
-
-
   });
-
 };
 
 // project 검색 조건 filter.
@@ -88,6 +85,8 @@ exports.updateProject = function(req, res, next) {
     project.name = req.body.name;
     project.active = req.body.active;
     project.address = req.body.address;
+    project.apiKey = req.body.apiKey;
+    project.host = req.body.host;
     project.description = req.body.description;
     project.save(function(err) {
       if (err) {
@@ -126,7 +125,6 @@ exports.getScript = function(req, res, next){
       if(err){
         res.end();
       }
-      console.log(latestScript);
       var generatedScript = latestScript.script.replace('{{projectKey}}', projectKey);
       generatedScript = generatedScript.replace('{{apiKey}}', project.apiKey);
       generatedScript = generatedScript.replace('{{host}}', project.host);
@@ -135,35 +133,7 @@ exports.getScript = function(req, res, next){
   });
 };
 
-exports.createError = function(req, res, next) {
+exports.regenerateApiKey = function(req, res, next) {
 
-  console.log("error input");
-  console.log(unescape(req.query.m));
-  console.log(unescape(req.query.s));
-  res.end();
-  /*
-  Project.findOne({ projectKey: req.params.projectKey }, function(err, fproject){
-    if(err){
-      return next(err);
-    }else if(fproject){
-      var duplicateError = new Error("duplicate error");
-      duplicateError.message = "duplicate project key";
-      return next(duplicateError);
-    }
-
-    var project = new Project(req.body);
-		project._id = project.projectKey;
-		project.apiKey = Project.generateApiKey();
-    project.active = false;
-    project.save(function(err) {
-      if (err) {
-        return next(err);
-      }
-      res.json(project);
-    });
-
-
-  });
-  */
-
+  res.json({apiKey:Project.generateApiKey()});
 };

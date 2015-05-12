@@ -6,28 +6,22 @@ angular.module('project').controller('ProjectDetailSettingsCtrl',
   function( $rootScope, $scope, $location, Projects, toaster ) {
 
 
+
 }]);
 
 angular.module('project').controller('ProjectDetailSettingsBasicCtrl',
   ['$rootScope', '$scope', '$location', '$stateParams', 'Projects', 'toaster', '$state',
   function( $rootScope, $scope, $location, $stateParams, Projects, toaster, $state ) {
 
-    Projects.get({projectKey:$stateParams.projectKey}, function(project){
-      $scope.project = project;
-    });
+    $scope.project = $rootScope.project;
 
     $scope.save = function() {
-
       Projects.update({projectKey: $scope.project.projectKey}, $scope.project).$promise.then(function(project) {
         toaster.pop({
           type: 'success',
           title: project.name,
           body: 'A Project Info has been changed.'
         });
-        //$scope.$parent.project = $scope.project;
-        $state.reload(); // 상단 프로젝트 이름같은 거 refresh 할려고 걍 페이지 reload. 이거 좀 그렇네..
-        //$state.go('app.project-detail.settings');
-        //$state.go($state.current, {}, {reload: true});
       });
     };
 
@@ -46,12 +40,36 @@ angular.module('project').controller('ProjectDetailSettingsBasicCtrl',
 
 
 angular.module('project').controller('ProjectDetailSettingsScriptCtrl',
-  ['$rootScope', '$scope', '$location', '$stateParams', 'Projects', 'toaster', '$state',
-  function( $rootScope, $scope, $location, $stateParams, Projects, toaster, $state ) {
+  ['$rootScope', '$scope', '$location', '$stateParams', 'Projects', 'toaster', '$state', 'ProjectsApiKeyRegen', 'ScriptLatest',
+  function( $rootScope, $scope, $location, $stateParams, Projects, toaster, $state, ProjectsApiKeyRegen, ScriptLatest ) {
 
-    Projects.get({projectKey:$stateParams.projectKey}, function(project){
-      $scope.project = project;
+    $scope.regenerateScriptCode = function(){
+      $scope.generatedScript = angular.copy($scope.script);
+      $scope.generatedScript.script = $scope.script.script.replace('{{host}}', $scope.project.host);
+      $scope.generatedScript.script = $scope.generatedScript.script.replace('{{projectKey}}', $scope.project.projectKey);
+      $scope.generatedScript.script = $scope.generatedScript.script.replace('{{apiKey}}', $scope.project.apiKey);
+    };
+
+    $scope.project = $rootScope.project;
+    ScriptLatest.get(function(script){
+      $scope.script = script;
+      $scope.regenerateScriptCode();
     });
 
+    $scope.regenerateApiKey = function(){
+      ProjectsApiKeyRegen.get({projectKey:$scope.project.projectKey}, function(regenApiKey){
+        $scope.project.apiKey = regenApiKey.apiKey;
+        $scope.regenerateScriptCode();
+      });
+    }
 
+    $scope.save = function() {
+      Projects.update({projectKey: $scope.project.projectKey}, $scope.project).$promise.then(function(project) {
+        toaster.pop({
+          type: 'success',
+          title: project.name,
+          body: 'A Project Info has been changed.'
+        });
+      });
+    };
 }]);

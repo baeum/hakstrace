@@ -14,9 +14,7 @@ module.exports = function(app) {
   app.route('/api/projects/:projectKey/hakstrace.js')
     .get(projectServerController.getScript);
 
-  app.route('/api/projects/:projectKey/error')
-    .get(projectServerController.createError);
-
-
+  app.route('/api/projects/:projectKey/regenerateApiKey')
+    .get(projectServerController.regenerateApiKey);
 
 };

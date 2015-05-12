@@ -10,12 +10,21 @@
 
       <div class="form-horizontal">
 
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Host </label>
+          <div class="col-sm-4">
+            <p class="form-control-static">
+            	<a editable-text="project.host" onaftersave="regenerateScriptCode()">{{ project.host }}</a>
+            </p>
+          </div>
+        </div>
 
         <div class="form-group">
           <label class="col-sm-3 control-label">API Key </label>
           <div class="col-sm-6">
-            <p class="form-control-static">
-                  {{ project.apiKey }}
+            <p class="form-control-static text-primary">
+              {{ project.apiKey }}
+              &nbsp;<button class="btn btn-sm btn-default btn-edit" ng-click="regenerateApiKey()"><i class="fa fa-refresh"></i> Regnerate</button>
             </p>
           </div>
         </div>
@@ -23,18 +32,16 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">Script URL </label>
           <div class="col-sm-6">
-            <p class="form-control-static">
-                  http://localhost:8080/projects/apikey
+            <p class="form-control-static text-primary">
+              {{ project.host }}/api/projects/{{ project.projectKey}}/hakstrace.js
             </p>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Script </label>
-          <div class="col-sm-4">
-            <p class="form-control-static">
-            	<a editable-text="project.name" e-required e-placeholder="Enter name">{{ project.name }}</a>
-            </p>
+          <label class="col-sm-3 control-label">Script Code </label>
+          <div class="col-sm-8">
+            <pre class="form-control-static">{{generatedScript.script}}</pre>
           </div>
         </div>
 

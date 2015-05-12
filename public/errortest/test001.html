@@ -1,0 +1,30 @@
+<html>
+<script>
+
+var fancyerror = function(message, url, linenumber) {
+	var errorbox = document.createElement('div');
+	errorbox.className = 'fancyerror';
+	errorbox.innerHTML = 'JS: <span class="errmsg"' +
+		message.replace('<', '&lt;').replace('>', '&gt;') +
+		'</span><br>line number: ' + linenumber +
+		'<br>located: ' + url;
+	document.body.appendChild(errorbox);
+	return false;
+}
+
+
+window.onerror = function(message, url, lineNumber) {
+
+  return true;
+};
+
+function aaa(){
+  for(){
+
+  }
+};
+</script>
+<body>
+  hi 
+</body>
+</html>
