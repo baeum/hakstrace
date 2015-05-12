@@ -112,7 +112,23 @@
   *border-left-color: #ffffff;
 }
 
+/* hakstrace app.css redefine */
+.text-primary{
+  color:#337ab7 !important;
+}
 /* hakstrace  custom css */
 .no-scroll .table-responsive{
   overflow-x:hidden;
+}
+
+.btn-edit {
+  color:#428bca !important;
+}
+
+.btn-edit:hover, .btn-edit:focus, .btn-edit:active, .btn-edit.active, .open > .dropdown-toggle.btn-edit {
+  color:#2a6496 !important;
+}
+
+.btn-edit:active, .btn-primary.edit {
+  color:#2a6496 !important;
 }

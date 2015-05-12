@@ -28,3 +28,27 @@ lib/venturocket-angular-slider/build/angular-slider.css 이것도 걍 복사
 db.userauths.insert({_id:"A", code:"A", name:"Administrator", order: 1})
 db.userauths.insert({_id:"M", code:"M", name:"Manager", order: 2})
 db.userauths.insert({_id:"U", code:"U", name:"User", order: 3})
+
+
+// hakstrace script
+hakstraceCalls = [];
+hakstrace = {
+  send : function(message, filename, lineno, colno, stack){
+    for( var inx = 0 ; inx < hakstraceCalls.length ; inx++ ){
+      document.body.removeChild(document.getElementById(hakstraceCalls[inx]));
+    }
+    hakstraceCalls = [];
+    var script = document.createElement('script');
+    script.id = 'hakstrace_jsonp_' + Math.round(100000 * Math.random());
+    var param = 'a={{apiKey}}&m=' + escape(message) + '&f=' + escape(filename) + '&l=' + escape(lineno) + '&c=' + escape(colno) + '&s=' + escape(stack);
+    script.src = '{{host}}/api/errors/{{projectKey}}/fetch?' + param;
+    document.body.appendChild(script);
+    hakstraceCalls.push(script.id);
+  }
+};
+
+window.onerror = function (message, filename, lineno, colno, error) {
+  var colno = (colno && error)? colno:-1;
+  var stack = (colno && error)? error.stack:'';
+  hakstrace.send(message, filename, lineno, colno, stack);
+};

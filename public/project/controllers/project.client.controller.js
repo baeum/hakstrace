@@ -53,6 +53,7 @@ angular.module('project').controller('ProjectDetailCtrl', ['$rootScope', '$scope
   function( $rootScope, $scope, $stateParams, $state, Projects ) {
 
     Projects.get({projectKey:$stateParams.projectKey}, function(project){
+      $rootScope.project = project;
       $scope.project = project;
     });
 

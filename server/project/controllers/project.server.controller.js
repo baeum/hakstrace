@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-  Project = mongoose.model('Project');
+  Project = mongoose.model('Project')
+  Script = mongoose.model('Script');
 
 exports.createProject = function(req, res, next) {
 
@@ -22,10 +23,7 @@ exports.createProject = function(req, res, next) {
       }
       res.json(project);
     });
-
-
   });
-
 };
 
 // project 검색 조건 filter.
@@ -87,6 +85,8 @@ exports.updateProject = function(req, res, next) {
     project.name = req.body.name;
     project.active = req.body.active;
     project.address = req.body.address;
+    project.apiKey = req.body.apiKey;
+    project.host = req.body.host;
     project.description = req.body.description;
     project.save(function(err) {
       if (err) {
@@ -111,4 +111,29 @@ exports.deleteProject = function(req, res, next) {
 
     res.json({numberRemoved: numberRemoved});
   });
+};
+
+exports.getScript = function(req, res, next){
+  var projectKey = req.params.projectKey;
+  Script.findLatest(function(err, script){
+    if(err){
+      res.end();
+    }
+    var latestScript = script;
+    Project.findOne({ projectKey: projectKey })
+        .exec(function(err, project){
+      if(err){
+        res.end();
+      }
+      var generatedScript = latestScript.script.replace('{{projectKey}}', projectKey);
+      generatedScript = generatedScript.replace('{{apiKey}}', project.apiKey);
+      generatedScript = generatedScript.replace('{{host}}', project.host);
+      res.send(generatedScript);
+    });
+  });
+};
+
+exports.regenerateApiKey = function(req, res, next) {
+
+  res.json({apiKey:Project.generateApiKey()});
 };

@@ -24,8 +24,6 @@
 
     </div>
 
-
-
   </div>
 
 
@@ -44,7 +42,7 @@
         </thead>
         <tbody>
           <tr ng-repeat="project in projects">
-            <td><a ui-sref="app.project-detail({projectKey:project.projectKey})">{{ project.projectKey }}</a></td>
+            <td><a class="text-primary" ui-sref="app.project-detail({projectKey:project.projectKey})">{{ project.projectKey }}</a></td>
             <td>{{ project.name }}</td>
             <td>{{ project.address }}</td>
             <td>{{ project.description }}</td>

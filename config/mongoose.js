@@ -20,6 +20,8 @@ module.exports = function() {
 
 	require('../server/models/script.server.model');
 
+	require('../server/models/error.server.model');
+
 	return db;
 
 };
