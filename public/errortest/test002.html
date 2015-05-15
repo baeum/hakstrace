@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+
 <html>
     <head>
         <title></title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script type="text/javascript" src="http://localhost:3000/api/projects/ASD11DDDDDD/hakstrace.js" />
+        <script type="text/javascript" src="http://localhost:3000/api/projects/ASD11DDDDDD/hakstrace.js"></script>
         <script type="text/javascript">
-        alert("goof");
            function invokeUndefinedError1(){
+
              var x = document.getElementById("demo").value;
            };
 
@@ -22,6 +22,16 @@
              var doc = document.ifm_google.contentWindow.document;
            };
 
+           function invokeEvalError(){
+             var sum = eval('function test(( { return 1 + 1; }');
+              alert("NO ERROR CAUGHT: Your browser doesn't seem to mind that we just set eval to the letter 'x'!");
+          };
+
+          function invokeRefError(){
+            var sum = x + y;
+            alert(sum);
+          }
+
          </script>
     </head>
 
@@ -33,6 +43,8 @@
     <input type="button" onclick="invokeUndefinedError2()" value="invokeUndefinedError2" /> <br/>
     <input type="button" onclick="invokeThrowError()" value="invokeThrowError" /> <br/>
     <input type="button" onclick="invokeCrossOrginIframe()" value="invokeCrossOrginIframe" /> <br/>
+    <input type="button" onclick="invokeEvalError()" value="invokeEvalError" /> <br/>
+    <input type="button" onclick="invokeRefError()" value="invokeRefError" /> <br/>
 
 
 

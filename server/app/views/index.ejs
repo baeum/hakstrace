@@ -21,17 +21,20 @@
   <div class="app" id="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}" ui-view></div>
 
 
+  <!-- others -->
+  <script src="/lib/moment/moment.js"></script>
+
   <!-- jQuery -->
   <script src="./lib/jquery/dist/jquery.min.js"></script>
   <script src="./lib/datatables/media/js/jquery.dataTables.min.js"></script>
   <script src="./lib/plugins/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 
   <!-- Angular -->
-  <script src="./lib/angular/angular.js"></script>
-
+  <script src="/lib/angular/angular.js"></script>
   <script src="/lib/angular-animate/angular-animate.js"></script>
   <script src="/lib/angular-cookies/angular-cookies.js"></script>
   <script src="/lib/angular-datatables/dist/angular-datatables.min.js"></script>
+  <script src="/lib/angular-moment/angular-moment.js"></script>
   <script src="/lib/angular-resource/angular-resource.js"></script>
   <script src="/lib/angular-route/angular-route.js"></script>
   <script src="/lib/angular-sanitize/angular-sanitize.js"></script>
@@ -41,7 +44,7 @@
   <script src="/lib/ngstorage/ngStorage.js"></script>
   <script src="/lib/angular-ui-utils/ui-utils.js"></script>
   <script src="/lib/angularjs-toaster/toaster.js"></script>
-,
+
   <!-- bootstrap -->
   <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <!-- lazyload -->
@@ -69,6 +72,7 @@
   <script src="/project/config/project.client.routes.js"></script>
   <script src="/project/controllers/project.client.controller.js"></script>
   <script src="/project/controllers/project-settings.client.controller.js"></script>
+  <script src="/project/controllers/project-stream.client.controller.js"></script>
   <script src="/project/services/project.client.service.js"></script>
 
   <!-- directives -->

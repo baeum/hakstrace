@@ -30,11 +30,9 @@
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Script URL </label>
-          <div class="col-sm-6">
-            <p class="form-control-static text-primary">
-              {{ project.host }}/api/projects/{{ project.projectKey}}/hakstrace.js
-            </p>
+          <label class="col-sm-3 control-label">Script Tag </label>
+          <div class="col-sm-8">
+            <pre class="form-control-static">&lt;script type="text/javascript" src="{{ project.host }}/api/projects/{{ project.projectKey}}/hakstrace.js"&gt;&lt;/script&gt;</pre>
           </div>
         </div>
 

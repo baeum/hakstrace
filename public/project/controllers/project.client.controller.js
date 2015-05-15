@@ -52,7 +52,7 @@ angular.module('project').controller('ProjectSearchCtrl',
 angular.module('project').controller('ProjectDetailCtrl', ['$rootScope', '$scope', '$stateParams', '$state', 'Projects',
   function( $rootScope, $scope, $stateParams, $state, Projects ) {
 
-    Projects.get({projectKey:$stateParams.projectKey}, function(project){
+    Projects.get({projectKey:$stateParams.projectKey}).$promise.then(function(project){
       $rootScope.project = project;
       $scope.project = project;
     });

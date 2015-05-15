@@ -48,7 +48,7 @@ exports.listProjectSearchFilter = function(req, res, next) {
 };
 
 
-exports.listProject = function(req, res) {
+exports.listProject = function(req, res, next) {
   Project.find(req.query).sort('-projectKey')
 		.exec(function(err, projects) {
 			if (err) {
@@ -59,7 +59,7 @@ exports.listProject = function(req, res) {
 };
 
 
-exports.getProject = function(req, res) {
+exports.getProject = function(req, res, next) {
   Project.findOne({ projectKey: req.params.projectKey })
       .exec(function(err, project){
     if(err){
@@ -115,6 +115,7 @@ exports.deleteProject = function(req, res, next) {
 
 exports.getScript = function(req, res, next){
   var projectKey = req.params.projectKey;
+  res.setHeader('content-type', 'application/javascript');
   Script.findLatest(function(err, script){
     if(err){
       res.end();
