@@ -7,6 +7,10 @@ var HErrorSchema = new Schema({
     type: String,
     required:true
   },
+  type:{
+    type: String,
+    default:''
+  },
   message:{
     type: String,
     required:true
@@ -43,7 +47,8 @@ var HErrorSchema = new Schema({
     type: Date,
     default: Date.now,
     get: function(date) {
-        return moment(date).format('YYYY-MM-DD hh:mm:ss');
+        //return moment(date).format('YYYY-MM-DD hh:mm:ss');
+        return new Date(date).toTimeString();
     }
   }
 }, { collection: 'errors' });

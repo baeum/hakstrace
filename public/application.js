@@ -12,11 +12,18 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'ngRoute',
     'toaster',
     'xeditable',
+    'angularMoment',
     'app',
     'datatables',
     'admin',
     'project'
 ]);
+
+mainApplicationModule.constant('angularMomentConfig', {
+  preprocess: 'utc',
+  timezone: 'Korea/Seoul'
+});
+
 
 
 angular.element(document).ready(function() {
