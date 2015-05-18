@@ -9,14 +9,17 @@ var HErrorSchema = new Schema({
   },
   type:{
     type: String,
+    trim: true,
     default:''
   },
   message:{
     type: String,
+    trim: true,
     required:true
   },
   fileName:{
     type: String,
+    trim: true,
     required:true
   },
   lineNo:{
@@ -29,6 +32,7 @@ var HErrorSchema = new Schema({
   },
   stack:{
     type: String,
+    trim: true,
     default:''
   },
   userAgent:{
@@ -42,6 +46,15 @@ var HErrorSchema = new Schema({
   },
   clientIp:{
     type: String
+  },
+  browser:{
+    name: {type: String}, major: {type: String}, version: {type: String}
+  },
+  device:{
+    model: {type: String}, type: {type: String}, vendor: {type: String}
+  },
+  os: {
+    name: {type: String}, version: {type: String}
   },
   created: {
     type: Date,

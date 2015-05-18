@@ -11,16 +11,50 @@
             <div class="text-lt"><h5>{{herror.created| date:"MMMM d"}}</h5><h4><strong>{{herror.created| date:"H:mm"}}</strong></h4></div>
           </div>
 
-          <div class="tl-content panel padder b-a block">
+          <div class="tl-content panel padder b-a block" style="padding-top:1px;padding-bottom:1px;">
             <span class="arrow left pull-up hidden-left"></span>
             <span class="arrow right pull-up visible-left"></span>
             <div class="text-lt m-b-sm">
-              {{herror.message}}
-              <small class="block text-muted"><i class="fa fa-fw fa-clock-o"></i><span am-time-ago="herror.created"></span></small>
+              <h5>
+                <strong>{{herror.message}} </strong>
+                &nbsp;<span class="label bg-info">{{herror.type || 'CustomError'}} </span>
+              </h5>
+              <small class="text-muted box">
+                <i class="fa fa-fw fa-clock-o"></i><span am-time-ago="herror.created"></span>
+              </small>
+              at <u>{{herror.fileName}}</u>
             </div>
             <div class="panel-body pull-in b-t b-light">
-              <p>{{herror.created| date:"MM/dd/yyyy 'at' HH:mm:ss.sss"}} - {{herror.type || 'CustomError'}}</p>
-              <p>{{herror.stack}}</p>
+              <div class="row">
+                <div class="col-xs-4">
+                  <dl class="dl-horizontal">
+                    <dt>Browser</dt>
+                    <dd>{{herror.browser.name}} {{herror.browser.major}}</dd>
+                    <dt>Device</dt>
+                    <dd>{{herror.device}}</dd>
+                    <dt>Client IP</dt>
+                    <dd>{{herror.clientIp}}</dd>
+                  </dl>
+                </div>
+                <div class="col-xs-8">
+                  <dl class="dl-horizontal">
+                    <dt>OS</dt>
+                    <dd>{{herror.os.name}} {{herror.os.version}}</dd>
+                    <dt>Timestamp</dt>
+                    <dd>{{herror.created| date:"MM/dd/yyyy 'at' HH:mm:ss.sss"}}</dd>
+                  </dl>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <dl class="dl-horizontal">
+                    <dt>Error row, col</dt>
+                    <dd>{{herror.rowNo}}, {{herror.colNo}}</dd>
+                    <dt>ErrorStack</dt>
+                    <dd>{{herror.stack}}</dd>
+                  </dl>
+                </div>
+              </div>
             </div>
           </div>
         </div>
