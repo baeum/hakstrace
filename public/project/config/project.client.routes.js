@@ -21,6 +21,10 @@ angular.module('project').config(['$stateProvider', '$routeProvider',
             url: '/stream',
             templateUrl: 'project/views/project-detail-stream.client.view.html'
         })
+        .state('app.project-detail.errors', {
+            url: '/errors',
+            templateUrl: 'project/views/project-detail-errors.client.view.html'
+        })
         .state('app.project-detail.settings', {
             url: '/settings',
             templateUrl: 'project/views/project-detail-settings.client.view.html'
