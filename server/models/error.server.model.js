@@ -7,29 +7,13 @@ var HErrorSchema = new Schema({
     type: String,
     required:true
   },
-  type:{
-    type: String,
-    default:''
+  errorTypeRep: {
+    type: Schema.Types.ObjectId,
+    ref: 'HErrorType'
   },
-  message:{
-    type: String,
-    required:true
-  },
-  fileName:{
-    type: String,
-    required:true
-  },
-  lineNo:{
-    type: Number,
-    default:-1
-  },
-  colNo:{
-    type: Number,
-    default:-1
-  },
-  stack:{
-    type: String,
-    default:''
+  errorType: {
+    type: Schema.Types.ObjectId,
+    ref: 'HErrorType'
   },
   userAgent:{
     type: String
@@ -42,6 +26,15 @@ var HErrorSchema = new Schema({
   },
   clientIp:{
     type: String
+  },
+  browser:{
+    name: {type: String}, major: {type: String}, version: {type: String}
+  },
+  device:{
+    model: {type: String}, type: {type: String}, vendor: {type: String}
+  },
+  os: {
+    name: {type: String}, version: {type: String}
   },
   created: {
     type: Date,

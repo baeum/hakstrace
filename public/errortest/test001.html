@@ -1,30 +1,37 @@
 <html>
-<script>
-
-var fancyerror = function(message, url, linenumber) {
-	var errorbox = document.createElement('div');
-	errorbox.className = 'fancyerror';
-	errorbox.innerHTML = 'JS: <span class="errmsg"' +
-		message.replace('<', '&lt;').replace('>', '&gt;') +
-		'</span><br>line number: ' + linenumber +
-		'<br>located: ' + url;
-	document.body.appendChild(errorbox);
-	return false;
-}
+<head>	
+<script type="text/javascript">
 
 
-window.onerror = function(message, url, lineNumber) {
-
-  return true;
-};
-
-function aaa(){
-  for(){
+var hakstraceCalls = [];
+var hakstrace = {
+  send : function(message, filename, lineno, colno, stack, name){
+    for( var inx = 0 ; inx < hakstraceCalls.length ; inx++ ){
+      document.body.removeChild(document.getElementById(hakstraceCalls[inx]));
+    }
+    hakstraceCalls = [];
+    var script = document.createElement('script');
+    script.id = 'hakstrace_jsonp_' + Math.round(100000 * Math.random());
+    var param = 'a=48731be8d426b9e7713b1bc6ad2c596d&m=' + escape(message) + '&f=' + escape(filename) + '&l=' + escape(lineno) + '&c=' + escape(colno) + '&s=' + escape(stack) + '&t=' + escape(name);
+    script.src = 'http://localhost:3000/api/errors/ASD11DDDDDD/fetch?' + param;
+    //document.body.appendChild(script);
+    //hakstraceCalls.push(script.id);
 
   }
 };
+
+window.onerror = function (message, filename, lineno, colno, error) {
+	alert(colno);
+  var colno = (colno && error)? colno:-1;
+  var stack = (colno && error)? error.stack:'';
+  var name = (colno && error && error.name)? error.name:'';
+  hakstrace.send(message, filename, lineno, colno, stack, name);
+};
+
 </script>
+</head>
 <body>
-  hi 
+  hi
+	<input type="button" onclick="test()" value="test" />
 </body>
 </html>
