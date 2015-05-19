@@ -7,33 +7,13 @@ var HErrorSchema = new Schema({
     type: String,
     required:true
   },
-  type:{
-    type: String,
-    trim: true,
-    default:''
+  errorTypeRep: {
+    type: Schema.Types.ObjectId,
+    ref: 'HErrorType'
   },
-  message:{
-    type: String,
-    trim: true,
-    required:true
-  },
-  fileName:{
-    type: String,
-    trim: true,
-    required:true
-  },
-  lineNo:{
-    type: Number,
-    default:-1
-  },
-  colNo:{
-    type: Number,
-    default:-1
-  },
-  stack:{
-    type: String,
-    trim: true,
-    default:''
+  errorType: {
+    type: Schema.Types.ObjectId,
+    ref: 'HErrorType'
   },
   userAgent:{
     type: String
