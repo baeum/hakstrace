@@ -179,46 +179,60 @@
           <i class="fa-fw fa fa-code"></i>&nbsp; Detail Information
         </tab-heading>
 
-        <div class="form-horizontal">
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Script URL Pattern </label>
-            <div class="col-sm-6">
-              <p class="form-control-static">
-                    /api/projects/{projectKey}/hakstrace.js
-              </p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Current Version </label>
-            <div class="col-sm-6">
-              <p class="form-control-static">
-                    {{script.version}}.0
-              </p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label">Script</label>
-            <div class="col-sm-9">
-              <a href="#" editable-textarea="script.script" e-rows="20" e-cols="100">
-                <pre>{{script.script}}</pre>
-              </a>
-            </div>
-          </div>
-
-          <div class="line line-dashed b-b line-lg pull-in"></div>
-
-          <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-10 pull-right">
-              <button class="btn btn-success text-uc" ng-click="save()">Save</button>
-            </div>
-          </div>
-
+        <div class="panel-body">
+          <p>Morbi nec <a href class="text-info">@Jonathan George</a> 대충 에러에 대한 어떠한 정보. 이런 종류의 오류 대응 방안?</p>
         </div>
+        <table class="table">
+          <tbody>
+            <tr>
+              <th scope="row">Message</th>
+              <td>test is not defined</td>
+            </tr>
+            <tr>
+              <th scope="row">Type</th>
+              <td>RefereceError</td>
+            </tr>
+            <tr>
+              <th scope="row">URL</th>
+              <td>http://localhost:3000/errortest/test001.html</td>
+            </tr>
+            <tr>
+              <th scope="row">Stack</th>
+              <td>onclick@http://localhost:3000/errortest/test001.html:1:1</td>
+            </tr>
+          </tbody>
+        </table>
+
 
       </tab>
       <tab>
         <tab-heading>
           <i class="fa-fw fa fa-history"></i>&nbsp; History
+        </tab-heading>
+        <div class="table-responsive">
+          <table datatable="ng" dt-options="scriptDtOptions" class="table table-striped b-t b-b">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Script</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="script in scripts">
+                <td>v{{ script.version }}.0</td>
+                <td>{{ script.created }}</td>
+                <td><pre>{{ script.script }}</pre></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </tab>
+
+      <tab>
+        <tab-heading>
+          <i class="fa-fw fa fa-history"></i>&nbsp; Comments
         </tab-heading>
         <div class="table-responsive">
           <table datatable="ng" dt-options="scriptDtOptions" class="table table-striped b-t b-b">

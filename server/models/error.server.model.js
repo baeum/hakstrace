@@ -15,6 +15,9 @@ var HErrorSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'HErrorType'
   },
+  language:{
+    type: String
+  },
   userAgent:{
     type: String
   },
