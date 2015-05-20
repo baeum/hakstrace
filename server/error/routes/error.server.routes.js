@@ -1,14 +1,15 @@
-var projectServerController = require('../controllers/error.server.controller');
+var errorServerController = require('../controllers/error.server.controller');
 
 module.exports = function(app) {
 
 
   app.route('/api/errors/:projectKey/fetch')
-    .get(projectServerController.createError);
+    .get(errorServerController.createError);
 
   app.route('/api/errors/:projectKey/stream')
-    .get(projectServerController.listErrorStream);
+    .get(errorServerController.listErrorStream);
 
-
+  //app.route('/api/errors/:projectKey/errortypes')
+  //  .get(errorServerController.listErrorTypes);
 
 };

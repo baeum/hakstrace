@@ -6,16 +6,12 @@ var mongoose = require('mongoose'),
 
 exports.createError = function(req, res, next) {
 
-  if( !( req.query.t && req.query.m && req.query.f && req.query.c && req.query.l && req.query.s ) ){
-    console.error("invalid req params - " + req.headers );
-    res.end();
-  }
-
   // @TO-DO
   // projectKey 랑 apiKey 로 유효성 검즈하는 로직 필요
   var herror = new HError();
   herror.projectKey = req.params.projectKey;
-  herror.userAgent = req.headers['user-agent'];
+  herror.userAgent = req.query.userAgent;
+  herror.language = req.query.language;
   herror.host = req.headers.host;
   herror.referer = req.headers.referer;
   herror.clientIp = req.ip;
@@ -29,22 +25,24 @@ exports.createError = function(req, res, next) {
 
   HErrorType.findOne({
     projectKey: req.params.projectKey,
-    type: req.query.t,
-    message: unescape(req.query.m),
-    fileName: req.query.f,
-    colNo: req.query.c.length < 1 ? -1: req.query.c,
-    lineNo: req.query.l.length < 1 ? -1: req.query.l
+    type: req.query.name,
+    message: unescape(req.query.message),
+    fileName: req.query.file,
+    colNo: req.query.columnNumber.length < 1 ? -1: req.query.columnNumber,
+    lineNo: req.query.lineNumber.length < 1 ? -1: req.query.lineNumber
   }).exec(function(err, fherrorType) {
 
     if(!fherrorType){
       var herrorType = new HErrorType();
       herrorType.projectKey= req.params.projectKey;
-      herrorType.type= req.query.t;
-      herrorType.message= unescape(req.query.m);
-      herrorType.fileName= req.query.f;
-      herrorType.colNo= req.query.c;
-      herrorType.lineNo= req.query.l;
-      herrorType.stack= req.query.s;
+      herrorType.projectRoot= req.query.projectRoot;
+      herrorType.context= req.query.context;
+      herrorType.type= req.query.name;
+      herrorType.message= unescape(req.query.message);
+      herrorType.fileName= req.query.file;
+      herrorType.colNo= req.query.columnNumber;
+      herrorType.lineNo= req.query.lineNumber;
+      herrorType.stack= req.query.stacktrace;
       // 크롬에서는 message가 errortype:message 형식으로 와서 짤라냈는데 일단 그거 하지 말자
       //if( herrorType.message.indexOf(':') > -1 ) herrorType.message = herrorType.message.slice(herrorType.message.indexOf(':')+1);
 
@@ -101,7 +99,7 @@ exports.createError = function(req, res, next) {
 
 exports.listErrorStream = function(req, res, next) {
   HError.find({projectKey: req.params.projectKey,
-              created: { $lt: req.query.createdBefore }}).limit(req.query.limit).sort('-created')
+              created: { $lt: req.query.createdBefore }}).populate('errorType').limit(req.query.limit).sort('-created')
 		.exec(function(err, herrors) {
 			if (err) {
 				return next(err);

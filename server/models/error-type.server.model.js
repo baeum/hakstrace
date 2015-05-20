@@ -6,6 +6,12 @@ var HErrorTypeSchema = new Schema({
     type: String,
     required:true
   },
+  projectRoot:{
+    type: String
+  },
+  context: {
+    type: String
+  },
   type:{
     type: String,
     trim: true,

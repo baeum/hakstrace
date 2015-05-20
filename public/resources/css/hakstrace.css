@@ -112,6 +112,31 @@
   *border-left-color: #ffffff;
 }
 
+/* hakstrace progress app.css redefine*/
+.progress {
+  position: relative;
+	height: 35px;
+  margin-bottom:7px !important;
+}
+.progress > .progress-type {
+	position: absolute;
+	left: 0px;
+	/*font-weight: 800;*/
+	padding: 7px 30px 12px 10px;
+	color: rgb(255, 255, 255);
+	background-color: rgba(25, 25, 25, 0.2);
+  white-space: nowrap;
+}
+.progress > .progress-completed {
+	position: absolute;
+	right: 0px;
+	font-weight: 800;
+	padding: 7px 10px 6px 2px;
+}
+
+.progress-bar-warning{
+  background-color: #f0ad4e !important;
+}
 /* hakstrace app.css redefine */
 .text-primary{
   color:#337ab7 !important;

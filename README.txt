@@ -31,25 +31,5 @@ db.userauths.insert({_id:"U", code:"U", name:"User", order: 3})
 
 
 // hakstrace script
-var hakstraceCalls = [];
-var hakstrace = {
-  send : function(message, filename, lineno, colno, stack, name){
-    for( var inx = 0 ; inx < hakstraceCalls.length ; inx++ ){
-      document.body.removeChild(document.getElementById(hakstraceCalls[inx]));
-    }
-    hakstraceCalls = [];
-    var script = document.createElement('script');
-    script.id = 'hakstrace_jsonp_' + Math.round(100000 * Math.random());
-    var param = 'a={{apiKey}}&m=' + escape(message) + '&f=' + escape(filename) + '&l=' + escape(lineno) + '&c=' + escape(colno) + '&s=' + escape(stack) + '&t=' + escape(name);
-    script.src = '{{host}}/api/errors/{{projectKey}}/fetch?' + param;
-    document.body.appendChild(script);
-    hakstraceCalls.push(script.id);
-  }
-};
-
-window.onerror = function (message, filename, lineno, colno, error) {
-  var colno = (colno && error)? colno:-1;
-  var stack = (colno && error)? error.stack:'';
-  var name = (colno && error && error.name)? error.name:'';
-  hakstrace.send(message, filename, lineno, colno, stack, name);
-};
+public/errortest/hakstrace.js
+이거 열어서 그대로 복붙 저장
