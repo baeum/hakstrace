@@ -50,4 +50,5 @@ var HErrorTypeSchema = new Schema({
   }
 }, { collection: 'errortypes' });
 
+
 mongoose.model('HErrorType', HErrorTypeSchema);

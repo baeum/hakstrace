@@ -9,7 +9,7 @@ module.exports = function(app) {
   app.route('/api/errors/:projectKey/stream')
     .get(errorServerController.listErrorStream);
 
-  //app.route('/api/errors/:projectKey/errortypes')
-  //  .get(errorServerController.listErrorTypes);
+  app.route('/api/errors/:projectKey/errors/errortypes')
+    .get(errorServerController.listErrorTypeSummary);
 
 };
