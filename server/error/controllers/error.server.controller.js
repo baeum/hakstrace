@@ -69,8 +69,10 @@ exports.createError = function(req, res, next) {
         });
       });
     }else{
-      fherrorType.lastSeen = new Date();
-      fherrorType.save(function(err){
+      HErrorType.update( {_id:fherrorType._id},
+          {
+           lastSeen: new Date()
+          },function(err){
         if(err){
           console.error(err);
         }
@@ -82,7 +84,7 @@ exports.createError = function(req, res, next) {
               console.error(err);
             }
             herror.errorType = fherrorType;
-            herror.errorTypeRep = fherrorTypeGroup?fherrorTypeGroup.errorTypeRef:fherrorType;
+            herror.errorTypeRep = fherrorTypeGroup?fherrorTypeGroup.errorTypeRep:fherrorType;
             herror.save(function(err) {
               if (err) {
                 console.error(err);
@@ -91,11 +93,45 @@ exports.createError = function(req, res, next) {
             });
         });
       });
+      /*
+      HError.findOne({
+        projectKey: req.params.projectKey,
+        errorType: fherrorType,
+        clientIp: herror.clientIp
+      }).exec(function(err, ferror){
+        if(err){
+          console.error(err);
+        }
+        HErrorType.update( {_id:fherrorType._id},
+            {$inc: { occurances: 1 },
+             $inc: { users: ferror?0:1},
+             lastSeen: new Date()
+            },function(err){
+          if(err){
+            console.error(err);
+          }
+          HErrorTypeGroup.findOne({
+              projectKey: req.params.projectKey,
+              errorType: fherrorType
+            }).exec(function(err, fherrorTypeGroup) {
+              if (err) {
+                console.error(err);
+              }
+              herror.errorType = fherrorType;
+              herror.errorTypeRep = fherrorTypeGroup?fherrorTypeGroup.errorTypeRef:fherrorType;
+              herror.save(function(err) {
+                if (err) {
+                  console.error(err);
+                }
+                res.end();
+              });
+          });
+        });
+      });
+      */
     }
 	});
 };
-
-
 
 exports.listErrorStream = function(req, res, next) {
   HError.find({projectKey: req.params.projectKey,
@@ -106,4 +142,52 @@ exports.listErrorStream = function(req, res, next) {
 			}
 			res.json(herrors);
 	});
+};
+
+exports.listErrorTypeSummary = function(req, res, next) {
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        'errorTypeRep':{'$exists':true},
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: "$errorTypeRep",
+        occurances: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { occurances : -1 }
+    },
+    {
+      $limit : 50
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+   HErrorType.populate( result, {path:'_id', name:'errorType'}, function(err, errorTypeSummaryList){
+     if (err) {
+       return next(err);
+     }
+
+     var totalOccurances = 0;
+     errorTypeSummaryList.forEach(function(a, b) {
+       totalOccurances += a.occurances;
+     });
+     var errorTypeSummary = {
+       totalOccurances: totalOccurances,
+       list: errorTypeSummaryList
+     };
+     res.json(errorTypeSummary);
+   })
+
+ });
+
 };

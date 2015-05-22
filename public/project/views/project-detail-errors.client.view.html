@@ -3,7 +3,7 @@
   <div class="wrapper" style="display:table;width:100%;">
 
 
-  <div class="col w-lg lt">
+  <div class="col lt" style="width:400px;">
     <div class="vbox">
 
 
@@ -18,9 +18,10 @@
 
             <div class="m-b-sm">
               <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm">15 mins</button>
-                <button type="button" class="btn btn-default btn-sm">1 hour</button>
-                <button type="button" class="btn btn-default btn-sm">24 hours</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(15)">15 mins</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60)">1 hour</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24)">24 hours</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24*14)">2 weeks</button>
                 <button type="button" class="btn btn-default btn-sm">More</button>
               </div>
             </div>
@@ -28,43 +29,18 @@
 
           </li>
           <li class="list-group-item">
-            <div class="progress">
-                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+            <div class="progress" ng-repeat="herrorType in errorTypeSummary.list">
+                <div class="progress-bar progress-bar-danger" style="width: {{(100*herrorType.occurances/errorTypeSummary.totalOccurances)| number:0}}%;">
                     <span class="sr-only">60% Complete</span>
                 </div>
-                <span class="progress-type">HTML / HTML5 error new type undefined ddd</span>
-                <span class="progress-completed">201</span>
+                <span class="progress-type">{{herrorType._id.message}}</span>
+                <span class="progress-completed">{{herrorType.occurances}}</span>
             </div>
-
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                    <span class="sr-only">60% Complete</span>
-                </div>
-                <span class="progress-type">HTML / HTML5</span>
-                <span class="progress-completed">201</span>
-            </div>
-
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 30%;">
-                    <span class="sr-only">30% Complete</span>
-                </div>
-                <span class="progress-type">HTML / HTML5</span>
-                <span class="progress-completed">201</span>
-            </div>
-
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 10%;">
-                    <span class="sr-only">10% Complete</span>
-                </div>
-                <span class="progress-type">HTML / HTML5</span>
-                <span class="progress-completed">201</span>
-            </div>
-
 
           </li>
           <li class="list-group-item">
-              <p><a href class="text-info">@Josh Long</a> Vestibulum ullamcorper sodales nisi nec adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis</p>
-              <small class="block text-muted"><i class="fa fa-fw fa-clock-o"></i> 2 hours ago</small>
+              <p><a href class="text-info">@Josh Long</a>most frequently occured Errors (top 50)</p>
+              <small class="block text-muted"><i class="fa fa-fw fa-clock-o"></i><span am-time-ago="Date.now()"></span></small>
           </li>
         </ul>
 
