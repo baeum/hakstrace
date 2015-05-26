@@ -12,4 +12,7 @@ module.exports = function(app) {
   app.route('/api/errors/:projectKey/errors/errortypes')
     .get(errorServerController.listErrorTypeSummary);
 
+  app.route('/api/errors/:projectKey/errors/errortypes/:errorType/history')
+    .get(errorServerController.listErrorTypeHistory);
+
 };

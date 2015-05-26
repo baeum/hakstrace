@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+  ObjectId = mongoose.Types.ObjectId,
   HError = mongoose.model('HError'),
   HErrorType = mongoose.model('HErrorType'),
   HErrorTypeGroup = mongoose.model('HErrorTypeGroup'),
@@ -188,6 +189,63 @@ exports.listErrorTypeSummary = function(req, res, next) {
      res.json(errorTypeSummary);
    })
 
+ });
+
+};
+
+
+exports.listErrorTypeHistory = function(req, res, next) {
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        errorTypeRep: new ObjectId(req.params.errorType),
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id : { year: { $year : "$created" }, month: { $month : "$created" },day: { $dayOfMonth : "$created" }},
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { _id : 1 }
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+
+   var resultWithEmptyDates = [];
+   var curDate = new Date(req.query.start);
+   var historyData = result.length > 0 ? result.shift():{};
+   for( var inx = 0 ; inx < 15 ; inx++ ){
+     var count = 0;
+     if( historyData._id &&
+          historyData._id.year == curDate.getFullYear() &&
+          historyData._id.month == (curDate.getMonth()+1) &&
+          historyData._id.day == curDate.getDate() ){
+        count = historyData.count;
+        historyData = result.length > 0 ? result.shift():{};
+      }
+      resultWithEmptyDates.push({
+                                  timestamp: {
+                                    year: curDate.getFullYear(),
+                                    month: curDate.getMonth()+1,
+                                    day: curDate.getDate()
+                                  },
+                                  count: count
+                                });
+      curDate.setDate(curDate.getDate()+1);
+   }
+
+
+
+   res.json(resultWithEmptyDates);
  });
 
 };

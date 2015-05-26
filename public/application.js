@@ -13,6 +13,7 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'toaster',
     'xeditable',
     'angularMoment',
+    'chart.js',
     'app',
     'datatables',
     'admin',
