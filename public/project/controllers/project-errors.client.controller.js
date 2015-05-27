@@ -36,7 +36,7 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
     $scope.getErrorTypeHistory = function(errorType){
       $scope.errorTypeHistoryLabel = [];
       $scope.errorTypeHistoryData = [];
-      
+
       ErrorsErrorTypesHistory.query({projectKey: $scope.project.projectKey,
                         errorType: errorType,
                         start: $scope.dateRange.start,
@@ -44,7 +44,7 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
         var errorTypeHistoryLabelEach = [];
         var errorTypeHistoryDataEach = [];
         errorTypeHistory.forEach(function(e) {
-          errorTypeHistoryLabelEach.push(e.timestamp.month + "/" + e.timestamp.day);
+          errorTypeHistoryLabelEach.push(e.label);
           errorTypeHistoryDataEach.push(e.count);
         });
         angular.copy(errorTypeHistoryLabelEach, $scope.errorTypeHistoryLabel);

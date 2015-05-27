@@ -18,8 +18,8 @@
 
             <div class="m-b-sm">
               <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(15)">15 mins</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60)">1 hour</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(30)">30 mins</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*12)">12 hour</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24)">24 hours</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24*14)">2 weeks</button>
                 <button type="button" class="btn btn-default btn-sm">More</button>
@@ -31,9 +31,9 @@
           <li class="list-group-item">
             <div class="progress" ng-repeat="herrorType in errorTypeSummary.list" ng-click="getErrorTypeHistory(herrorType._id._id)">
                 <div class="progress-bar progress-bar-danger" style="width: {{(100*herrorType.occurances/errorTypeSummary.totalOccurances)| number:0}}%;">
-                    <span class="sr-only">60% Complete</span>
+                    <span class="sr-only">{{herrorType.occurances}}</span>
                 </div>
-                <span class="progress-type">{{herrorType._id.message}}</span>
+                <span class="progress-type"><a href>{{herrorType._id.message}}</a></span>
                 <span class="progress-completed">{{herrorType.occurances}}</span>
             </div>
 
@@ -65,8 +65,8 @@
                 <div>History</div>
                 <div class="inline m-t-sm">
                   <canvas  id="line" class="chart chart-line" data="errorTypeHistoryData"
-  labels="errorTypeHistoryLabel" series="series">
-</canvas>
+                    labels="errorTypeHistoryLabel" series="series" options="{animation : false}">
+                  </canvas>
                 </div>
               </div>
 
