@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+  ObjectId = mongoose.Types.ObjectId,
   HError = mongoose.model('HError'),
   HErrorType = mongoose.model('HErrorType'),
   HErrorTypeGroup = mongoose.model('HErrorTypeGroup'),
@@ -190,4 +191,111 @@ exports.listErrorTypeSummary = function(req, res, next) {
 
  });
 
+};
+
+
+exports.listErrorTypeHistory = function(req, res, next) {
+  var start = new Date(req.query.start);
+  var end = new Date(req.query.end);
+  var diffMs = end - start;
+  var diffDays = Math.round(diffMs / 86400000); // days
+  var diffHrs = Math.round(diffMs / (1000*60*60)); // hours
+  var diffMins = Math.round(diffMs / (1000*60)); // minutes
+
+  // day
+  var historyGroup = { year: { $year : "$created" }, month: { $month : "$created" },day: { $dayOfMonth : "$created" }};
+  var historyMatch = function(data, date){
+    return data._id &&
+      data._id.year == date.getFullYear() &&
+      data._id.month == (date.getMonth()+1) &&
+      data._id.day == date.getDate();
+  };
+  var historyAdd = function(date){
+    date.setDate(date.getDate()+1);
+  };
+  var historyRange = diffDays;
+  var resultLabel = function(date){
+    return (date.getMonth()+1) + "/" + date.getDate();
+  };
+
+  if( diffMins < 61 ){        // 60분 이하면 분 단위 그루핑
+    historyGroup.hour = { $hour : "$created" };
+    historyGroup.minutes = { $minute : "$created" };
+    historyMatch = function(data, date){
+      console.log();
+      return data._id &&
+        data._id.year == date.getFullYear() &&
+        data._id.month == (date.getMonth()+1) &&
+        data._id.day == date.getDate() &&
+        data._id.hour == date.getUTCHours() &&
+        data._id.minutes == date.getMinutes();
+    };
+    historyAdd = function(date){
+      date.setMinutes(date.getMinutes()+1);
+    };
+    historyRange = diffMins;
+    resultLabel = function(date){
+      return (date.getHours() + ":" + date.getMinutes());
+    };
+  }else if( diffHrs < 25 ){   // 24시간 이하면 시간 단위 그루핑
+    historyGroup.hour = { $hour : "$created" };
+    historyMatch = function(data, date){
+      return data._id &&
+        data._id.year == date.getFullYear() &&
+        data._id.month == (date.getMonth()+1) &&
+        data._id.day == date.getDate() &&
+        data._id.hour == date.getUTCHours();  // db 에서 긁어온건 UTC hour 임. 비교할 때만 utc 로 하고 나머지는 걍 hour 로 하믄 됨
+    };
+    historyAdd = function(date){
+      date.setHours(date.getHours()+1);
+    };
+    historyRange = diffHrs;
+    resultLabel = function(date){
+      return (date.getHours() + ":00");
+    };
+  }
+
+
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        errorTypeRep: new ObjectId(req.params.errorType),
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id : historyGroup,
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { _id : 1 }
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+   console.log("result: %j", result);
+   var resultWithEmptyDates = [];
+   var curDate = new Date(req.query.start);
+   var historyData = result.length > 0 ? result.shift():{};
+   for( var inx = 0 ; inx < historyRange+1 ; inx++ ){
+     var count = 0;
+     if( historyMatch(historyData, curDate) ){
+        count = historyData.count;
+        historyData = result.length > 0 ? result.shift():{};
+      }
+      resultWithEmptyDates.push({
+                                  label: resultLabel(curDate),
+                                  count: count
+                                });
+      historyAdd(curDate);
+   }
+   res.json(resultWithEmptyDates);
+ });
 };
