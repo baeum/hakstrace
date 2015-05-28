@@ -142,6 +142,18 @@
   background-color: rgba(151,187,205,1) !important;
 }
 
+/* chart.js */
+.donut-inner{
+  margin-top: -100px;
+  margin-bottom: 100px;
+}
+.donut-inner h5{
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+.donut-inner span {font-size: 12px;}
+
+
 /* hakstrace app.css redefine */
 .text-primary{
   color:#337ab7 !important;

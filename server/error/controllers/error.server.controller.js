@@ -17,6 +17,9 @@ exports.createError = function(req, res, next) {
   herror.referer = req.headers.referer;
   herror.clientIp = req.ip;
 
+  //safari 에서 columnNumber 가 아예 안 넘어오네
+  req.query.columnNumber = req.query.columnNumber ? req.query.columnNumber: -1;
+
   //https://github.com/faisalman/ua-parser-js
   var uaparser = new UAParser();
   var uaResult = uaparser.setUA(herror.userAgent).getResult();
@@ -94,42 +97,6 @@ exports.createError = function(req, res, next) {
             });
         });
       });
-      /*
-      HError.findOne({
-        projectKey: req.params.projectKey,
-        errorType: fherrorType,
-        clientIp: herror.clientIp
-      }).exec(function(err, ferror){
-        if(err){
-          console.error(err);
-        }
-        HErrorType.update( {_id:fherrorType._id},
-            {$inc: { occurances: 1 },
-             $inc: { users: ferror?0:1},
-             lastSeen: new Date()
-            },function(err){
-          if(err){
-            console.error(err);
-          }
-          HErrorTypeGroup.findOne({
-              projectKey: req.params.projectKey,
-              errorType: fherrorType
-            }).exec(function(err, fherrorTypeGroup) {
-              if (err) {
-                console.error(err);
-              }
-              herror.errorType = fherrorType;
-              herror.errorTypeRep = fherrorTypeGroup?fherrorTypeGroup.errorTypeRef:fherrorType;
-              herror.save(function(err) {
-                if (err) {
-                  console.error(err);
-                }
-                res.end();
-              });
-          });
-        });
-      });
-      */
     }
 	});
 };
@@ -206,9 +173,9 @@ exports.listErrorTypeHistory = function(req, res, next) {
   var historyGroup = { year: { $year : "$created" }, month: { $month : "$created" },day: { $dayOfMonth : "$created" }};
   var historyMatch = function(data, date){
     return data._id &&
-      data._id.year == date.getFullYear() &&
-      data._id.month == (date.getMonth()+1) &&
-      data._id.day == date.getDate();
+      data._id.year == date.getUTCFullYear() &&
+      data._id.month == (date.getUTCMonth()+1) &&
+      data._id.day == date.getUTCDate();
   };
   var historyAdd = function(date){
     date.setDate(date.getDate()+1);
@@ -222,11 +189,10 @@ exports.listErrorTypeHistory = function(req, res, next) {
     historyGroup.hour = { $hour : "$created" };
     historyGroup.minutes = { $minute : "$created" };
     historyMatch = function(data, date){
-      console.log();
       return data._id &&
-        data._id.year == date.getFullYear() &&
-        data._id.month == (date.getMonth()+1) &&
-        data._id.day == date.getDate() &&
+        data._id.year == date.getUTCFullYear() &&
+        data._id.month == (date.getUTCMonth()+1) &&
+        data._id.day == date.getUTCDate() &&
         data._id.hour == date.getUTCHours() &&
         data._id.minutes == date.getMinutes();
     };
@@ -241,9 +207,9 @@ exports.listErrorTypeHistory = function(req, res, next) {
     historyGroup.hour = { $hour : "$created" };
     historyMatch = function(data, date){
       return data._id &&
-        data._id.year == date.getFullYear() &&
-        data._id.month == (date.getMonth()+1) &&
-        data._id.day == date.getDate() &&
+        data._id.year == date.getUTCFullYear() &&
+        data._id.month == (date.getUTCMonth()+1) &&
+        data._id.day == date.getUTCDate() &&
         data._id.hour == date.getUTCHours();  // db 에서 긁어온건 UTC hour 임. 비교할 때만 utc 로 하고 나머지는 걍 hour 로 하믄 됨
     };
     historyAdd = function(date){
@@ -280,7 +246,6 @@ exports.listErrorTypeHistory = function(req, res, next) {
    if (err) {
      return next(err);
    }
-   console.log("result: %j", result);
    var resultWithEmptyDates = [];
    var curDate = new Date(req.query.start);
    var historyData = result.length > 0 ? result.shift():{};
@@ -298,4 +263,65 @@ exports.listErrorTypeHistory = function(req, res, next) {
    }
    res.json(resultWithEmptyDates);
  });
+};
+
+exports.listErrorTypeBrowserShare = function(req, res, next) {
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        errorTypeRep: new ObjectId(req.params.errorType),
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: {name: "$browser.name", major: "$browser.major"},
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { count : -1 }
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+
+   res.json(result);
+ });
+};
+
+exports.listErrorTypeDeviceShare = function(req, res, next) {
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        errorTypeRep: new ObjectId(req.params.errorType),
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: { model: {$ifNull: [ "$device.model", "PC" ]},
+               vendor: {$ifNull: [ "$device.vendor", "" ]}},
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { count : -1 }
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+   res.json(result);
+ });
+
 };
