@@ -201,7 +201,7 @@ exports.listErrorTypeHistory = function(req, res, next) {
     };
     historyRange = diffMins;
     resultLabel = function(date){
-      return (date.getHours() + ":" + date.getMinutes());
+      return (date.getHours() + ":" + (date.getMinutes()<10? "0":"") + date.getMinutes());
     };
   }else if( diffHrs < 25 ){   // 24시간 이하면 시간 단위 그루핑
     historyGroup.hour = { $hour : "$created" };
@@ -266,17 +266,39 @@ exports.listErrorTypeHistory = function(req, res, next) {
 };
 
 exports.listErrorTypeBrowserShare = function(req, res, next) {
-  HError.aggregate([
-    {
-      $match: {
-        projectKey: req.params.projectKey,
-        errorTypeRep: new ObjectId(req.params.errorType),
-        created: {
-          $gt: new Date(req.query.start),
-          $lt: new Date(req.query.end)
-        }
+  var matchOption = {
+    $match :{
+      projectKey: req.params.projectKey,
+      errorTypeRep: new ObjectId(req.params.errorType),
+      created: {
+        $gt: new Date(req.query.start),
+        $lt: new Date(req.query.end)
       }
-    },
+    }
+  };
+
+  if( req.query.filter == "true" ){
+    var filterDevice = JSON.parse(req.query.device);
+    var filterOS = JSON.parse(req.query.os);
+    if(filterDevice._id){
+      // https://www.safaribooksonline.com/library/view/mongodb-the-definitive/9781449344795/ch04.html
+      // subdocument의 경우 dot notation 을 쓰지 않으면 모든 속성이 맞아야 검색 가능
+      // device 의 경우 type 을 빼고 검색하기 때문에 dot notation을 안 쓰고 걍 하면 안 됨
+      matchOption.$match = {
+        "device.vendor" : filterDevice._id.vendor,
+        "device.model" : filterDevice._id.model == 'PC'?'':filterDevice._id.model
+      };
+    }
+    if(filterOS._id){
+      matchOption.$match.os = {
+        name : filterOS._id.name,
+        version : filterOS._id.version
+      };
+    }
+  }
+
+  HError.aggregate([
+    matchOption,
     {
       $group: {
         _id: {name: "$browser.name", major: "$browser.major"},
@@ -311,6 +333,35 @@ exports.listErrorTypeDeviceShare = function(req, res, next) {
       $group: {
         _id: { model: {$ifNull: [ "$device.model", "PC" ]},
                vendor: {$ifNull: [ "$device.vendor", "" ]}},
+        count: { $sum: 1 }
+      }
+    },
+    {
+      $sort : { count : -1 }
+    }
+ ], function( err, result){
+   if (err) {
+     return next(err);
+   }
+   res.json(result);
+ });
+};
+
+exports.listErrorTypeOSShare = function(req, res, next) {
+  HError.aggregate([
+    {
+      $match: {
+        projectKey: req.params.projectKey,
+        errorTypeRep: new ObjectId(req.params.errorType),
+        created: {
+          $gt: new Date(req.query.start),
+          $lt: new Date(req.query.end)
+        }
+      }
+    },
+    {
+      $group: {
+        _id: "$os",
         count: { $sum: 1 }
       }
     },

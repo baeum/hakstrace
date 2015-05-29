@@ -1,12 +1,13 @@
 
 angular.module('project').controller('ProjectDetailErrorsCtrl',
   ['$rootScope', '$scope', '$location', 'toaster', '$log',
-    'ErrorsErrorTypes', 'ErrorsErrorTypesHistory', 'ErrorsErrorTypesBrowserShare', 'ErrorsErrorTypesDeviceShare',
+    'ErrorsErrorTypes', 'ErrorsErrorTypesHistory', 'ErrorsErrorTypesBrowserShare', 'ErrorsErrorTypesDeviceShare', 'ErrorsErrorTypesOSShare',
   function( $rootScope, $scope, $location, toaster, $log,
-      ErrorsErrorTypes, ErrorsErrorTypesHistory, ErrorsErrorTypesBrowserShare, ErrorsErrorTypesDeviceShare ) {
+      ErrorsErrorTypes, ErrorsErrorTypesHistory, ErrorsErrorTypesBrowserShare, ErrorsErrorTypesDeviceShare, ErrorsErrorTypesOSShare ) {
 
     $scope.project = $rootScope.project;
     $scope.dateRange = {};
+
 
     $scope.getErrorTypeSummary = function(start, end){
       $scope.dateRange = {start: start, end: end};
@@ -34,12 +35,12 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
       $scope.getErrorTypeSummaryMinutesAgo(60*24*14);  //default 2 weeks
     });
 
-    $scope.getErrorTypeHistory = function(errorType){
+    $scope.getErrorTypeHistory = function(){
       $scope.errorTypeHistoryLabel = [];
       $scope.errorTypeHistoryData = [];
 
       ErrorsErrorTypesHistory.query({projectKey: $scope.project.projectKey,
-                        errorType: errorType,
+                        errorType: $scope.errorType,
                         start: $scope.dateRange.start,
                         end: $scope.dateRange.end}).$promise.then(function(errorTypeHistory) {
         var errorTypeHistoryLabelEach = [];
@@ -54,12 +55,17 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
 
     };
 
-    $scope.getErrorTypeBrowserShare = function(errorType){
+    $scope.getErrorTypeBrowserShare = function(){
       $scope.errorTypeBrowserShareLabel = [];
       $scope.errorTypeBrowserShareData = [];
+      var noFilter = angular.isUndefined($scope.errorTypeShareFilter.browser.device._id) && angular.isUndefined($scope.errorTypeShareFilter.browser.os._id);
+      if(noFilter) $scope.errorTypeBrowserShareList = [];
 
       ErrorsErrorTypesBrowserShare.query({projectKey: $scope.project.projectKey,
-                        errorType: errorType,
+                        errorType: $scope.errorType,
+                        filter: !noFilter,
+                        device: $scope.errorTypeShareFilter.browser.device,
+                        os: $scope.errorTypeShareFilter.browser.os,
                         start: $scope.dateRange.start,
                         end: $scope.dateRange.end}).$promise.then(function(errorTypeBrowserShare) {
         var errorTypeBrowserShareLabelEach = [];
@@ -76,15 +82,27 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
         };
         angular.copy(errorTypeBrowserShareLabelEach, $scope.errorTypeBrowserShareLabel);
         angular.copy(errorTypeBrowserShareDataEach, $scope.errorTypeBrowserShareData);
+        if(noFilter) angular.copy(errorTypeBrowserShare, $scope.errorTypeBrowserShareList);
       });
     };
 
-    $scope.getErrorTypeDeviceShare = function(errorType){
+    $scope.getErrorTypeBrowserShareByDevice = function(device){
+      $scope.errorTypeShareFilter.browser.device = device?device:{};
+      $scope.getErrorTypeBrowserShare();
+    };
+
+    $scope.getErrorTypeBrowserShareByOS = function(os){
+      $scope.errorTypeShareFilter.browser.os = os?os:{};
+      $scope.getErrorTypeBrowserShare();
+    };
+
+    $scope.getErrorTypeDeviceShare = function(){
       $scope.errorTypeDeviceShareLabel = [];
       $scope.errorTypeDeviceShareData = [];
+      $scope.errorTypeDeviceShareList = [];
 
       ErrorsErrorTypesDeviceShare.query({projectKey: $scope.project.projectKey,
-                        errorType: errorType,
+                        errorType: $scope.errorType,
                         start: $scope.dateRange.start,
                         end: $scope.dateRange.end}).$promise.then(function(errorTypeDeviceShare) {
         var errorTypeDeviceShareLabelEach = [];
@@ -101,13 +119,46 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
         };
         angular.copy(errorTypeDeviceShareLabelEach, $scope.errorTypeDeviceShareLabel);
         angular.copy(errorTypeDeviceShareDataEach, $scope.errorTypeDeviceShareData);
+        angular.copy(errorTypeDeviceShare, $scope.errorTypeDeviceShareList);
+      });
+    };
+
+    $scope.getErrorTypeOSShare = function(){
+      $scope.errorTypeOSShareLabel = [];
+      $scope.errorTypeOSShareData = [];
+      $scope.errorTypeOSShareList = [];
+
+      ErrorsErrorTypesOSShare.query({projectKey: $scope.project.projectKey,
+                        errorType: $scope.errorType,
+                        start: $scope.dateRange.start,
+                        end: $scope.dateRange.end}).$promise.then(function(errorTypeOSShare) {
+        var errorTypeOSShareLabelEach = [];
+        var errorTypeOSShareDataEach = [];
+        var total = 0;
+        errorTypeOSShare.forEach(function(e) {
+          errorTypeOSShareLabelEach.push(e._id.name + " "  + e._id.version);
+          errorTypeOSShareDataEach.push(e.count);
+          total += e.count;
+        });
+        $scope.errorTypeOSShareHighest = {
+          name : errorTypeOSShareLabelEach.length > 0 ? errorTypeOSShareLabelEach[0]:'N/A',
+          occupancy : errorTypeOSShareLabelEach.length > 0 ? (((errorTypeOSShareDataEach[0]*100)/total)):0
+        };
+        angular.copy(errorTypeOSShareLabelEach, $scope.errorTypeOSShareLabel);
+        angular.copy(errorTypeOSShareDataEach, $scope.errorTypeOSShareData);
+        angular.copy(errorTypeOSShare, $scope.errorTypeOSShareList);
       });
     };
 
     $scope.getErrorTypeDetail = function(errorType){
-      $scope.getErrorTypeHistory(errorType);
-      $scope.getErrorTypeBrowserShare(errorType);
-      $scope.getErrorTypeDeviceShare(errorType);
+      $scope.errorTypeShareFilter = {
+        browser: {device:{},os:{}}, device:{browser:{},os:{}}, os:{browser:{},device:{}}
+      };
+      $scope.errorType = errorType;
+      $scope.getErrorTypeHistory();
+      $scope.getErrorTypeBrowserShare();
+      $scope.getErrorTypeDeviceShare();
+      $scope.getErrorTypeOSShare();
     };
 
     $scope.clearErrorTypeDetail = function(){
@@ -115,13 +166,22 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
       $scope.errorTypeHistoryData = [];
       $scope.errorTypeBrowserShareLabel = [];
       $scope.errorTypeBrowserShareData = [];
+      $scope.errorTypeBrowserShareList = [];
       $scope.errorTypeBrowserShareHighest = {
         name : 'N/A',
         occupancy : 0
       };
       $scope.errorTypeDeviceShareLabel = [];
       $scope.errorTypeDeviceShareData = [];
+      $scope.errorTypeDeviceShareList = [];
       $scope.errorTypeDeviceShareHighest = {
+        name : 'N/A',
+        occupancy : 0
+      };
+      $scope.errorTypeOSShareLabel = [];
+      $scope.errorTypeOSShareData = [];
+      $scope.errorTypeOSShareList = [];
+      $scope.errorTypeOSShareHighest = {
         name : 'N/A',
         occupancy : 0
       };
