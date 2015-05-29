@@ -21,4 +21,7 @@ module.exports = function(app) {
   app.route('/api/errors/:projectKey/errors/errortypes/:errorType/deviceShare')
     .get(errorServerController.listErrorTypeDeviceShare);
 
+  app.route('/api/errors/:projectKey/errors/errortypes/:errorType/osShare')
+    .get(errorServerController.listErrorTypeOSShare);
+
 };

@@ -19,7 +19,7 @@
             <div class="m-b-sm">
               <div class="btn-group">
                 <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(30)">30 mins</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*12)">12 hour</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*12)">12 hours</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24)">24 hours</button>
                 <button type="button" class="btn btn-default btn-sm" ng-click="getErrorTypeSummaryMinutesAgo(60*24*14)">2 weeks</button>
                 <button type="button" class="btn btn-default btn-sm">More</button>
@@ -76,42 +76,6 @@
           </div>
       </div>
 
-            <!--
-            <div class="padder-v b-t b-light bg-light lter row text-center no-gutter">
-
-              <div class="col-xs-6">
-                <div>Browsers</div>
-                <div class="m-t-sm">
-                  <canvas class="chart chart-doughnut" height="150"
-                    data="errorTypeBrowserShareData"
-                    labels="errorTypeBrowserShareLabel"
-                    options="{animation : false}">
-                  </canvas>
-                  <div class="donut-inner">
-                    <h5>{{errorTypeBrowserShareHighest.name}}</h5>
-                    <span>{{errorTypeBrowserShareHighest.occupancy | number:2}} %</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-xs-6">
-                <div>Devices</div>
-                <div class="m-t-sm">
-                  <canvas class="chart chart-doughnut" height="150"
-                    data="errorTypeDeviceShareData"
-                    labels="errorTypeDeviceShareLabel"
-                    options="{animation : false}">
-                  </canvas>
-                  <div class="donut-inner">
-                    <h5>{{errorTypeDeviceShareHighest.name}}</h5>
-                    <span>{{errorTypeDeviceShareHighest.occupancy | number:2}} %</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          -->
-
       <div class="hbox text-center b-t b-light">
         <div class="col padder-v b-r b-light">
           <div class="h3 text-info"><b>5032</b></div>
@@ -129,9 +93,6 @@
     </div>
 
 
-
-
-
     <tabset class="tab-container no-scroll">
 
       <tab>
@@ -143,7 +104,45 @@
 
           <div class="hbox text-center b-t b-b b-light">
             <div class="col padder-v b-r b-l b-light">
-              <div>Browsers</div>
+              <div>Browser Share</div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">Device:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.browser.device._id.vendor}} {{errorTypeShareFilter.browser.device._id.model||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeBrowserShareByDevice()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeBrowserShareByDevice(device)" ng-repeat="device in errorTypeDeviceShareList">
+                      {{device._id.vendor}} {{device._id.model}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">OS:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.browser.os._id.name}} {{errorTypeShareFilter.browser.os._id.version||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeBrowserShareByOS()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeBrowserShareByOS(os)" ng-repeat="os in errorTypeOSShareList">
+                      {{os._id.name}} {{os._id.version}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="line line-dashed b-b"></div>
+
+
               <div class="m-t-sm">
                 <canvas class="chart chart-doughnut"
                   height="220"
@@ -164,7 +163,30 @@
 
             </div>
             <div class="col padder-v b-r b-light">
-              <div>Devices</div>
+              <div>Device</div>
+              <div class="input-group">
+                <div class="input-group-btn dropdown" dropdown>
+                  <button type="button" class="btn btn-default" dropdown-toggle>Browser: All <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href ng-click="listUsersByFilter()">All (No Filter)</a></li>
+                    <li class="divider"></li>
+                    <li><a href ng-click="listUsersByFilter('Administrator')">Administrators Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('Manager')">Managers Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('User')">Users Only</a></li>
+                  </ul>
+                </div>
+                <div class="input-group-btn dropdown" dropdown>
+                  <button type="button" class="btn btn-default" dropdown-toggle>OS: All <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href ng-click="listUsersByFilter()">All (No Filter)</a></li>
+                    <li class="divider"></li>
+                    <li><a href ng-click="listUsersByFilter('Administrator')">Administrators Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('Manager')">Managers Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('User')">Users Only</a></li>
+                  </ul>
+                </div>
+              </div>
+
               <div class="m-t-sm">
                 <canvas class="chart chart-doughnut"
                   height="220"
@@ -196,17 +218,40 @@
               </ul>
             </div>
             <div class="col padder-v b-r b-light">
-              <div>Devices</div>
+              <div>OS</div>
+              <div class="input-group">
+                <div class="input-group-btn dropdown" dropdown>
+                  <button type="button" class="btn btn-default" dropdown-toggle>Browser: All <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href ng-click="listUsersByFilter()">All (No Filter)</a></li>
+                    <li class="divider"></li>
+                    <li><a href ng-click="listUsersByFilter('Administrator')">Administrators Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('Manager')">Managers Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('User')">Users Only</a></li>
+                  </ul>
+                </div>
+                <div class="input-group-btn dropdown" dropdown>
+                  <button type="button" class="btn btn-default" dropdown-toggle>Device: All <span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                    <li><a href ng-click="listUsersByFilter()">All (No Filter)</a></li>
+                    <li class="divider"></li>
+                    <li><a href ng-click="listUsersByFilter('Administrator')">Administrators Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('Manager')">Managers Only</a></li>
+                    <li><a href ng-click="listUsersByFilter('User')">Users Only</a></li>
+                  </ul>
+                </div>
+              </div>
+
               <div class="m-t-sm">
                 <canvas class="chart chart-doughnut"
                   height="220"
-                  data="errorTypeDeviceShareData"
-                  labels="errorTypeDeviceShareLabel"
+                  data="errorTypeOSShareData"
+                  labels="errorTypeOSShareLabel"
                   options="{animation : false}">
                 </canvas>
                 <div class="donut-inner">
-                  <h5>{{errorTypeDeviceShareHighest.name}}</h5>
-                  <span>{{errorTypeDeviceShareHighest.occupancy | number:2}} %</span>
+                  <h5>{{errorTypeOSShareHighest.name}}</h5>
+                  <span>{{errorTypeOSShareHighest.occupancy | number:2}} %</span>
                 </div>
               </div>
               <ul class="list-group no-radius">

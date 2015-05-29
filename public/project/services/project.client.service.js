@@ -35,3 +35,8 @@ angular.module('project').factory('ErrorsErrorTypesDeviceShare', ['$resource',
   function($resource) {
     return $resource('api/errors/:projectKey/errors/errortypes/:errorType/deviceShare',{},{cache:false});
 }]);
+
+angular.module('project').factory('ErrorsErrorTypesOSShare', ['$resource',
+  function($resource) {
+    return $resource('api/errors/:projectKey/errors/errortypes/:errorType/osShare',{},{cache:false});
+}]);
