@@ -127,6 +127,7 @@ exports.listErrorTypeSummary = function(req, res, next) {
     {
       $group: {
         _id: "$errorTypeRep",
+        users: { $addToSet: "$clientIp" }, // clientIp 를 여기서 다 가져오는게 맞을까...
         occurances: { $sum: 1 }
       }
     },
@@ -148,6 +149,7 @@ exports.listErrorTypeSummary = function(req, res, next) {
      var totalOccurances = 0;
      errorTypeSummaryList.forEach(function(a, b) {
        totalOccurances += a.occurances;
+       a.users = a.users.length;
      });
      var errorTypeSummary = {
        totalOccurances: totalOccurances,
@@ -318,17 +320,37 @@ exports.listErrorTypeBrowserShare = function(req, res, next) {
 };
 
 exports.listErrorTypeDeviceShare = function(req, res, next) {
-  HError.aggregate([
-    {
-      $match: {
-        projectKey: req.params.projectKey,
-        errorTypeRep: new ObjectId(req.params.errorType),
-        created: {
-          $gt: new Date(req.query.start),
-          $lt: new Date(req.query.end)
-        }
+
+  var matchOption = {
+    $match :{
+      projectKey: req.params.projectKey,
+      errorTypeRep: new ObjectId(req.params.errorType),
+      created: {
+        $gt: new Date(req.query.start),
+        $lt: new Date(req.query.end)
       }
-    },
+    }
+  };
+
+  if( req.query.filter == "true" ){
+    var filterBrowser = JSON.parse(req.query.browser);
+    var filterOS = JSON.parse(req.query.os);
+    if(filterBrowser._id){
+      matchOption.$match = {
+        "browser.name" : filterBrowser._id.name,
+        "browser.major" : filterBrowser._id.major
+      };
+    }
+    if(filterOS._id){
+      matchOption.$match.os = {
+        name : filterOS._id.name,
+        version : filterOS._id.version
+      };
+    }
+  }
+
+  HError.aggregate([
+    matchOption,
     {
       $group: {
         _id: { model: {$ifNull: [ "$device.model", "PC" ]},
@@ -348,17 +370,36 @@ exports.listErrorTypeDeviceShare = function(req, res, next) {
 };
 
 exports.listErrorTypeOSShare = function(req, res, next) {
-  HError.aggregate([
-    {
-      $match: {
-        projectKey: req.params.projectKey,
-        errorTypeRep: new ObjectId(req.params.errorType),
-        created: {
-          $gt: new Date(req.query.start),
-          $lt: new Date(req.query.end)
-        }
+  var matchOption = {
+    $match :{
+      projectKey: req.params.projectKey,
+      errorTypeRep: new ObjectId(req.params.errorType),
+      created: {
+        $gt: new Date(req.query.start),
+        $lt: new Date(req.query.end)
       }
-    },
+    }
+  };
+
+  if( req.query.filter == "true" ){
+    var filterBrowser = JSON.parse(req.query.browser);
+    var filterDevice = JSON.parse(req.query.device);
+    if(filterBrowser._id){
+      matchOption.$match = {
+        "browser.name" : filterBrowser._id.name,
+        "browser.major" : filterBrowser._id.major
+      };
+    }
+    if(filterDevice._id){
+      matchOption.$match = {
+        "device.vendor" : filterDevice._id.vendor,
+        "device.model" : filterDevice._id.model == 'PC'?'':filterDevice._id.model
+      };
+    }
+  }
+
+  HError.aggregate([
+    matchOption,
     {
       $group: {
         _id: "$os",
