@@ -1,13 +1,14 @@
 
 angular.module('project').controller('ProjectDetailErrorsCtrl',
   ['$rootScope', '$scope', '$location', 'toaster', '$log',
-    'ErrorsErrorTypes', 'ErrorsErrorTypesHistory', 'ErrorsErrorTypesBrowserShare', 'ErrorsErrorTypesDeviceShare', 'ErrorsErrorTypesOSShare',
+    'ErrorsErrorTypes', 'ErrorsErrorTypesHistory', 'ErrorsErrorTypesStream',
+    'ErrorsErrorTypesBrowserShare', 'ErrorsErrorTypesDeviceShare', 'ErrorsErrorTypesOSShare',
   function( $rootScope, $scope, $location, toaster, $log,
-      ErrorsErrorTypes, ErrorsErrorTypesHistory, ErrorsErrorTypesBrowserShare, ErrorsErrorTypesDeviceShare, ErrorsErrorTypesOSShare ) {
+      ErrorsErrorTypes, ErrorsErrorTypesHistory, ErrorsErrorTypesStream,
+      ErrorsErrorTypesBrowserShare, ErrorsErrorTypesDeviceShare, ErrorsErrorTypesOSShare ) {
 
     $scope.project = $rootScope.project;
     $scope.dateRange = {};
-
 
     $scope.getErrorTypeSummary = function(start, end){
       $scope.dateRange = {start: start, end: end};
@@ -178,6 +179,15 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
       $scope.getErrorTypeOSShare();
     };
 
+    $scope.getErrorTypeStream = function(){
+      ErrorsErrorTypesStream.query({projectKey: $scope.project.projectKey,
+          errorType: $scope.errorType._id._id,
+          start: $scope.dateRange.start,
+          end: $scope.dateRange.end}).$promise.then(function(errorTypeStream) {
+        $scope.errorTypeStream = errorTypeStream;
+      });
+    };
+
     $scope.getErrorTypeDetail = function(errorType){
       $scope.errorTypeShareFilter = {
         browser: {device:{},os:{}}, device:{browser:{},os:{}}, os:{browser:{},device:{}}
@@ -187,6 +197,7 @@ angular.module('project').controller('ProjectDetailErrorsCtrl',
       $scope.getErrorTypeBrowserShare();
       $scope.getErrorTypeDeviceShare();
       $scope.getErrorTypeOSShare();
+      $scope.getErrorTypeStream();
     };
 
     $scope.isActiveErrorType = function(errorTypeId){

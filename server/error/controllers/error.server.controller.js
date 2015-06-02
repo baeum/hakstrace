@@ -417,3 +417,19 @@ exports.listErrorTypeOSShare = function(req, res, next) {
  });
 
 };
+
+exports.listErrorTypeStream = function(req, res, next) {
+  HError.find({
+      projectKey: req.params.projectKey,
+      errorTypeRep: new ObjectId(req.params.errorType),
+      created: {
+        $gt: new Date(req.query.start),
+        $lt: new Date(req.query.end)
+      }}).populate('errorType').limit(500).sort('created')
+    .exec(function(err, herrors) {
+      if (err) {
+        return next(err);
+      }
+      res.json(herrors);
+  });
+};

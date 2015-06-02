@@ -26,6 +26,11 @@ angular.module('project').factory('ErrorsErrorTypesHistory', ['$resource',
     return $resource('api/errors/:projectKey/errors/errortypes/:errorType/history',{},{cache:false});
 }]);
 
+angular.module('project').factory('ErrorsErrorTypesStream', ['$resource',
+  function($resource) {
+    return $resource('api/errors/:projectKey/errors/errortypes/:errorType/stream',{},{cache:false});
+}]);
+
 angular.module('project').factory('ErrorsErrorTypesBrowserShare', ['$resource',
   function($resource) {
     return $resource('api/errors/:projectKey/errors/errortypes/:errorType/browserShare',{},{cache:false});

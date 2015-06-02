@@ -159,9 +159,9 @@
                 </div>
               </div>
               <ol class="text-left">
-                <li><span class="pull-right">{{errorTypeBrowserShareData[0]}}</span>{{errorTypeBrowserShareLabel[0]}}</li>
-                <li><span class="pull-right">{{errorTypeBrowserShareData[1]}}</span>{{errorTypeBrowserShareLabel[1]}}</li>
-                <li><span class="pull-right">{{errorTypeBrowserShareData[2]}}</span>{{errorTypeBrowserShareLabel[2]}}</li>
+                <li>{{errorTypeBrowserShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeBrowserShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeBrowserShareLabel[2] || 'N/A'}}</li>
               </ol>
 
             </div>
@@ -216,23 +216,11 @@
                   <span>{{errorTypeDeviceShareHighest.occupancy | number:2}} %</span>
                 </div>
               </div>
-              <ul class="list-group no-radius">
-                <li class="list-group-item">
-                  <span class="pull-right">45,000</span>
-                  <span class="label bg-primary">1</span>
-                  .inc company
-                </li>
-                <li class="list-group-item">
-                  <span class="pull-right">23,200</span>
-                  <span class="label bg-info">2</span>
-                  Gamecorp
-                </li>
-                <li class="list-group-item">
-                  <span class="pull-right">21,000</span>
-                  <span class="label bg-warning">3</span>
-                  Starup
-                </li>
-              </ul>
+              <ol class="text-left">
+                <li>{{errorTypeDeviceShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeDeviceShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeDeviceShareLabel[2] || 'N/A'}}</li>
+              </ol>
             </div>
             <div class="col padder-v b-r b-light">
               <div>OS Share</div>
@@ -285,23 +273,11 @@
                   <span>{{errorTypeOSShareHighest.occupancy | number:2}} %</span>
                 </div>
               </div>
-              <ul class="list-group no-radius">
-                <li class="list-group-item">
-                  <span class="pull-right">45,000</span>
-                  <span class="label bg-primary">1</span>
-                  .inc company
-                </li>
-                <li class="list-group-item">
-                  <span class="pull-right">23,200</span>
-                  <span class="label bg-info">2</span>
-                  Gamecorp
-                </li>
-                <li class="list-group-item">
-                  <span class="pull-right">21,000</span>
-                  <span class="label bg-warning">3</span>
-                  Starup
-                </li>
-              </ul>
+              <ol class="text-left">
+                <li>{{errorTypeOSShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeOSShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeOSShareLabel[2] || 'N/A'}}</li>
+              </ol>
             </div>
           </div>
 
@@ -321,33 +297,31 @@
         <div class="panel-body">
           <p>Morbi nec <a href class="text-info">@Jonathan George</a> 대충 에러에 대한 어떠한 정보. 이런 종류의 오류 대응 방안?</p>
         </div>
-        <table class="table">
-          <tbody>
-            <tr>
-              <th scope="row">Message</th>
-              <td>{{errorType._id.message}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Type</th>
-              <td>{{errorType._id.type}}</td>
-            </tr>
-            <tr>
-              <th scope="row">URL</th>
-              <td>{{errorType._id.fileName}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Line</th>
-              <td>{{errorType._id.lineNo}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Column</th>
-              <td>{{errorType._id.colNo}}</td>
-            </tr>
-            <tr>
-              <th scope="row">Stack</th>
-              <td><pre>{{errorType._id.stack}}</pre></td>
-            </tr>
-          </tbody>
+        <table class="table table-striped">
+          <tr>
+            <th>Message</th>
+            <td style="padding-right:0;">{{errorType._id.message}}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td style="padding-right:0;">{{errorType._id.type}}</td>
+          </tr>
+          <tr>
+            <th>URL</th>
+            <td style="padding-right:0;">{{errorType._id.fileName}}</td>
+          </tr>
+          <tr>
+            <th>Line</th>
+            <td style="padding-right:0;">{{errorType._id.lineNo}}</td>
+          </tr>
+          <tr>
+            <th>Column</th>
+            <td style="padding-right:0;">{{errorType._id.colNo}}</td>
+          </tr>
+          <tr>
+            <th>Stack</th>
+            <td style="padding-right:0;"><pre>{{errorType._id.stack}}</pre></td>
+          </tr>
         </table>
 
       </tab>
@@ -356,20 +330,25 @@
         <tab-heading>
           <i class="fa-fw fa fa-history"></i>&nbsp; History
         </tab-heading>
+        <div>asdsd</div>
         <div class="table-responsive">
           <table datatable="ng" dt-options="scriptDtOptions" class="table table-striped b-t b-b">
             <thead>
               <tr>
-                <th>Version</th>
-                <th>Date</th>
-                <th>Script</th>
+                <th>At</th>
+                <th>Device</th>
+                <th>OS</th>
+                <th>Browser</th>
+                <th>Client</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="script in scripts">
-                <td>v{{ script.version }}.0</td>
-                <td>{{ script.created }}</td>
-                <td><pre>{{ script.script }}</pre></td>
+              <tr ng-repeat="error in errorTypeStream">
+                <td>{{error.created| date:"MM/dd HH:mm:ss"}}</td>
+                <td>{{error.device.vendor}} {{error.device.model}}</td>
+                <td>{{error.os.name}} {{error.os.version}}</td>
+                <td>{{error.browser.name}} {{error.browser.major}}</td>
+                <td>{{ error.clientIp }}</td>
               </tr>
             </tbody>
           </table>
