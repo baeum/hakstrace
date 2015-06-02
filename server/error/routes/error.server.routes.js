@@ -15,6 +15,9 @@ module.exports = function(app) {
   app.route('/api/errors/:projectKey/errors/errortypes/:errorType/history')
     .get(errorServerController.listErrorTypeHistory);
 
+  app.route('/api/errors/:projectKey/errors/errortypes/:errorType/stream')
+    .get(errorServerController.listErrorTypeStream);
+
   app.route('/api/errors/:projectKey/errors/errortypes/:errorType/browserShare')
     .get(errorServerController.listErrorTypeBrowserShare);
 

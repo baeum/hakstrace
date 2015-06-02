@@ -134,13 +134,21 @@
   font-size:13px;
 }
 
-.progress-bar-warning{
-  background-color: rgba(151,187,205,1) !important;
-}
-
 .progress-bar-danger{
   background-color: rgba(151,187,205,1) !important;
 }
+
+.active > .progress-bar-danger{
+  background-color: #d9534f !important; /*#f05050  d9534f*/
+}
+
+.active.progress > .progress-type {
+  background-color: rgba(199, 37, 78, 0.2);
+}
+
+
+
+
 
 /* chart.js */
 .donut-inner{
