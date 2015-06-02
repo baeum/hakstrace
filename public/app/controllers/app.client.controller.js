@@ -16,8 +16,8 @@ angular.module('app')
 
       // config
       $scope.app =  {
-  			name: 'Angular',
-  			version: '2.0.1',
+  			name: 'Hakstrace',
+  			version: '0.0.1b',
   			// for chart colors
   			color: {
   				primary: '#7266ba',
@@ -42,7 +42,7 @@ angular.module('app')
   			}
   		};
 
-      //$scope.app = $rootScope.app;
+      $rootScope.app = $scope.app;
 
       // save settings to local storage
       if ( angular.isDefined($localStorage.settings) ) {
