@@ -1,0 +1,31 @@
+<!-- navbar -->
+<div data-ng-include=" '/app/views/app-partial/app-header.client.view.html' " class="app-header navbar">
+</div>
+<!-- / navbar -->
+
+<!-- menu -->
+<!--
+<div data-ng-include=" '/blocks/aside' " class="app-aside hidden-xs {{app.settings.asideColor}}">
+</div>
+-->
+<!-- / menu -->
+
+<!-- toaster -->
+<toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
+<!-- /toaster -->
+
+<!-- content -->
+<div class="app-content">
+  <div ui-butterbar></div>
+  <a href class="off-screen-toggle hide" ui-toggle-class="off-screen" data-target=".app-aside" ></a>
+  <div class="app-content-body fade-in-up" ui-view></div>
+</div>
+<!-- /content -->
+
+<!-- footer -->
+<div data-ng-include=" '/app/views/app-partial/app-footer.client.view.html' ">
+</div>
+<!-- / footer -->
+
+<div data-ng-include=" '/app/views/app-partial/app-settings.client.view.html' " class="settings panel panel-default">
+</div>
