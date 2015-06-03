@@ -23,7 +23,7 @@ angular.module('app')
           $stateProvider
               .state('app', {
                   abstract: true, // abstract <-- 이거 상속 같은 개념임. 중요함
-                  templateUrl: '/app'
+                  templateUrl: '/app/views/app.client.view.html'
               })
               // main dashboard
               .state('app.dashboard-v2', {
