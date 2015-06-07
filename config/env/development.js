@@ -6,6 +6,6 @@ module.exports = {
 	//dbpass: 'sH85EXN6S7-F'
 	//sessionSecret: 'developmentSessionSecret'
 
-	mongoDebug: 'default'
+	mongoDebug: 'default',
 	sessionSecret: 'developmentSessionSecret'
 };
