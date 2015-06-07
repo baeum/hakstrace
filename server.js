@@ -13,7 +13,7 @@ var mongoose = require('./config/mongoose'),
 var db = mongoose();	// 이게 먼저 되야됨. db 니깐
 //var app = express(db);
 var app = express(db);
-//var passport = passport();
+var passport = passport();
 
 app.listen(httpPort);
 //module.exports = app;

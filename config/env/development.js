@@ -7,4 +7,5 @@ module.exports = {
 	//sessionSecret: 'developmentSessionSecret'
 
 	mongoDebug: 'default'
+	sessionSecret: 'developmentSessionSecret'
 };
