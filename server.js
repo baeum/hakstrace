@@ -8,7 +8,8 @@ var mongoose = require('./config/mongoose'),
 	*/
 
 var mongoose = require('./config/mongoose'),
-	express = require('./config/express');
+	express = require('./config/express'),
+	passport = require('./config/passport');
 
 var db = mongoose();	// 이게 먼저 되야됨. db 니깐
 //var app = express(db);
