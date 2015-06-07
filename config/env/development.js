@@ -4,5 +4,8 @@ module.exports = {
 	db: 'mongodb://localhost/hakstrace',
 	//dbuser: 'admin',
 	//dbpass: 'sH85EXN6S7-F'
+	//sessionSecret: 'developmentSessionSecret'
+
+	mongoDebug: 'default'
 	sessionSecret: 'developmentSessionSecret'
 };

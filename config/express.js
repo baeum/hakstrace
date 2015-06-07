@@ -112,10 +112,13 @@ function logErrors(err, req, res, next) {
 function clientErrorHandler(err, req, res, next) {
 	var errorMessage = 'Unknown server error';
 	if(err.message){
-		errorMessage = err.message;
-	}else if(err.errors){
+		errorMessage = '[' + err.name + ']' + err.message;
+	}
+	if(err.errors){
 		for (var errName in err.errors) {
-			if (err.errors[errName].message) errorMessage = err.errors[errName].message;
+			if (err.errors[errName].message) {
+				errorMessage = errorMessage + '\n\t->' + err.errors[errName].message;
+			}
 		}
 	}
 
