@@ -5,4 +5,6 @@ module.exports = {
 	//dbuser: 'admin',
 	//dbpass: 'sH85EXN6S7-F'
 	//sessionSecret: 'developmentSessionSecret'
+
+	mongoDebug: 'default'
 };

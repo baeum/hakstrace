@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-  Project = mongoose.model('Project')
+  Project = mongoose.model('Project'),
   Script = mongoose.model('Script');
 
 exports.createProject = function(req, res, next) {
@@ -14,8 +14,8 @@ exports.createProject = function(req, res, next) {
     }
 
     var project = new Project(req.body);
-		project._id = project.projectKey;
-		project.apiKey = Project.generateApiKey();
+    project._id = project.projectKey;
+    project.apiKey = Project.generateApiKey();
     project.active = false;
     project.save(function(err) {
       if (err) {
