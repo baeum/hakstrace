@@ -47,8 +47,41 @@ module.exports = function(db) {
 	app.set('view engine', 'ejs');
 
 	app.use(flash());
+	app.use(session({
+		saveUninitialized: true,
+		resave: true,
+		secret: config.sessionSecret
+	}));
 	app.use(passport.initialize());
 	app.use(passport.session());
+	app.use(function (req, res, next) {
+		// 로그인, script, error fetch 는 제외
+		if(req.url.indexOf('/api/access/signin') > -1 ||
+			req.url.indexOf('/app-access-signin.client.view.html') > -1 ||
+			req.url.indexOf('/app-footer.client.view.html') > -1 ||
+			req.url.indexOf('/hakstrace.js') > -1 ||
+			req.url.indexOf('/fetch') > -1 ){
+			return next();
+		// static 중에서는 html 만 로그인 검증. api 는 다 검증
+		}else if(req.url.indexOf('.html') > -1 ||
+			req.url.indexOf('/api/') > -1){
+			if(req.isAuthenticated()){
+				return next();
+			}else{
+				res.status(403).send({ message: 'Need Login' });
+			}
+		}else{
+			return next();
+		}
+		/*
+		if (req.isAuthenticated()){
+			console.log("req is authenticated : " + req.url);
+		}else{
+			console.log("req is NOT NOT NOT authenticated: " + req.url);
+		}
+*/
+
+	});
 
 
 	require('../server/app/routes/app.server.routes.js')(app);

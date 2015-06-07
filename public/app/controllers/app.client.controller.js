@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$rootScope',
-    function(              $scope,   $translate,   $localStorage,   $window,  $rootScope ) {
+  .controller('AppCtrl', ['$scope', '$translate', '$localStorage', '$window', '$rootScope', '$log',
+    function(              $scope,   $translate,   $localStorage,   $window,  $rootScope, $log ) {
       // add 'ie' classes to html
 
 
@@ -43,12 +43,20 @@ angular.module('app')
   		};
 
       $rootScope.app = $scope.app;
+      //$scope.session = $rootScope.session;
+      //$log.log($scope.session + ": session");
 
       // save settings to local storage
       if ( angular.isDefined($localStorage.settings) ) {
         $scope.app.settings = $localStorage.settings;
       } else {
         $localStorage.settings = $scope.app.settings;
+      }
+
+      if ( angular.isDefined($localStorage.session) ) {
+        $scope.app.session = $localStorage.session;
+      } else {
+        $localStorage.session = $scope.app.session;
       }
       //$scope.$watch('app.settings', function(){
       //  if( $scope.app.settings.asideDock  &&  $scope.app.settings.asideFixed ){
