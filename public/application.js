@@ -40,7 +40,7 @@ mainApplicationModule.run(function(editableOptions, editableThemes) {
 
 // 요건 global error handle 할려고
 mainApplicationModule.config(function ($provide, $httpProvider){
-  $httpProvider.interceptors.push(function($q, $log, toaster) {
+  $httpProvider.interceptors.push(function($q, $log, toaster, $injector) {
     return {
       /*
       'request': function(config) {
@@ -53,6 +53,11 @@ mainApplicationModule.config(function ($provide, $httpProvider){
       */
 
       'responseError': function(rejection) {
+        if(rejection.status == 403){
+          $injector.get('$state').transitionTo('access.signin');
+          //state 를 바로 접근하면 오류남 (http://stackoverflow.com/questions/20230691/injecting-state-ui-router-into-http-interceptor-causes-circular-dependency)
+          //$state.go('access.signin');
+        }
         toaster.pop({
           type: 'error',
           title: rejection.status + ' ' + rejection.statusText,

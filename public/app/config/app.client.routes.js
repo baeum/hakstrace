@@ -26,7 +26,7 @@ angular.module('app')
                   templateUrl: '/app/views/app.client.view.html'
               })
               // main dashboard
-              .state('app.dashboard-v2', {
+              .state('app.dashboard', {
                   url: '',
                   templateUrl: '/app/views/app_dashboard_v2.html'
               })
@@ -37,23 +37,21 @@ angular.module('app')
               })
               .state('access.signin', {
                   url: '/signin',
-                  templateUrl: 'app/views/app-access-signin.client.view.html',
-                  resolve: {
-                      deps: ['uiLoad',
-                        function( uiLoad ){
-                          return uiLoad.load( ['app/controllers/app-access.client.controller.js'] );
-                      }]
+                  templateUrl: 'app/views/app-access-signin.client.view.html'
+              })
+              .state('access.signout',{
+                  url: '/signout',
+                  controller: function($scope, $http, $state, $localStorage){
+                    delete $localStorage.session;
+                    $http({method: 'POST', url: '/api/access/signout'})
+                         .then (function (data) {
+                             $state.go('access.signin');
+                         });
                   }
               })
               .state('access.signup', {
                   url: '/signup',
-                  templateUrl: 'app/views/page_signup.html',
-                  resolve: {
-                      deps: ['uiLoad',
-                        function( uiLoad ){
-                          return uiLoad.load( ['app/controllers/signup.js'] );
-                      }]
-                  }
+                  templateUrl: 'app/views/app-access-signup.client.view.html'
               })
               .state('access.forgotpwd', {
                   url: '/forgotpwd',
