@@ -3,8 +3,15 @@ var config = require('./config'),
 	autoIncrement = require('mongoose-auto-increment');
 
 module.exports = function() {
-
-	var db = mongoose.connect(config.db);
+	var db;
+	if(config.dbuser) {
+		db = mongoose.connect(config.db,{
+			user: config.dbuser,
+			pass: config.dbpass
+		});
+	} else {
+		db = mongoose.connect(config.db);
+	}
 
 	//mongoose debug options
 	switch(config.mongoDebug) {
@@ -16,12 +23,7 @@ module.exports = function() {
 	}
 
 	autoIncrement.initialize(db);
-/*
-	var db = mongoose.connect(config.db,{
-		user: config.dbuser,
-		pass: config.dbpass
-	});
-*/
+
 	require('../server/models/user.server.model');
 	require('../server/models/user-auth.server.model');
 
