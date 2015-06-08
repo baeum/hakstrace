@@ -1,11 +1,9 @@
 module.exports = {
 	// Development configuration options
 	//db: 'mongodb://ex-std-node488.prod.rhcloud.com/nodejs',
-	db: 'mongodb://localhost/hakstrace',
-	//dbuser: 'admin',
-	//dbpass: 'sH85EXN6S7-F'
-	//sessionSecret: 'developmentSessionSecret'
-
+	db: process.env.HAKSTRACE_DB_URL || 'mongodb://localhost/hakstrace',
+	dbuser: process.env.HAKSTRACE_DB_USER || '',
+	dbpass: process.env.HAKSTRACE_DB_PASS || '',
 	mongoDebug: 'default',
 	sessionSecret: 'developmentSessionSecret'
 };
