@@ -1,4 +1,5 @@
 var config = require('./config'),
+	authConfig = require('./authconfig'),
 	http = require('http'),
 	socketio = require('socket.io'),
 	express = require('express'),
@@ -9,7 +10,8 @@ var config = require('./config'),
 	session = require('express-session'),
 	MongoStore = require('connect-mongo')(session),
 	flash = require('connect-flash'),
-	passport = require('passport');
+	passport = require('passport')
+	;
 
 //module.exports = function(db) {
 module.exports = function(db) {
@@ -54,35 +56,7 @@ module.exports = function(db) {
 	}));
 	app.use(passport.initialize());
 	app.use(passport.session());
-	app.use(function (req, res, next) {
-		// 로그인, script, error fetch 는 제외
-		if(req.url.indexOf('/api/access/signin') > -1 ||
-			req.url.indexOf('/app-access-signin.client.view.html') > -1 ||
-			req.url.indexOf('/app-footer.client.view.html') > -1 ||
-			req.url.indexOf('/hakstrace.js') > -1 ||
-			req.url.indexOf('/fetch') > -1 ){
-			return next();
-		// static 중에서는 html 만 로그인 검증. api 는 다 검증
-		}else if(req.url.indexOf('.html') > -1 ||
-			req.url.indexOf('/api/') > -1){
-			if(req.isAuthenticated()){
-				return next();
-			}else{
-				res.status(403).send({ message: 'Need Login' });
-			}
-		}else{
-			return next();
-		}
-		/*
-		if (req.isAuthenticated()){
-			console.log("req is authenticated : " + req.url);
-		}else{
-			console.log("req is NOT NOT NOT authenticated: " + req.url);
-		}
-*/
-
-	});
-
+	app.use(fAuthentication);
 
 	require('../server/app/routes/app.server.routes.js')(app);
 	require('../server/admin/routes/admin.server.routes.js')(app);
@@ -133,3 +107,43 @@ function errorHandler(err, req, res, next) {
   res.status(500);
   res.render('error', { error: err });
 };
+
+
+var fAuthentication = function (req, res, next) {
+	var requestPath = req.path;
+	var isExcludeOrAuth = false;
+	//skip authentication on exclude paths
+	if(authConfig.excludeAuthenticaitonUriMap.has(requestPath)) {
+		//console.log("IsExclude:" + requestPath);
+		isExcludeOrAuth = true;
+	} else {
+		for(var excludeUriPart in authConfig.excludeAuthenticationUriPatterns) {
+			if(requestPath.indexOf(excludeUriPart) > -1) {
+				isExcludeOrAuth = true;
+			}
+		}
+
+		//do authentication (.html and all /api/)
+		if(!isExcludeOrAuth &&
+			(req.url.indexOf('.html') > -1 || req.url.indexOf('/api/') > -1)) {
+			if(req.isAuthenticated()){
+				isExcludeOrAuth = true;
+			}else{
+				res.status(403).send({ message: 'Need Login' });
+			}
+		} else {
+			isExcludeOrAuth = true;
+		}
+	}
+
+	if(isExcludeOrAuth) {
+		next();
+	}
+
+	/*
+	 if (req.isAuthenticated()){
+	 console.log("req is authenticated : " + req.url);
+	 }else{
+	 console.log("req is NOT NOT NOT authenticated: " + req.url);
+	 }*/
+}
