@@ -8,13 +8,13 @@ var config = require('./config'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override'),
 	session = require('express-session'),
-	MongoStore = require('connect-mongo')(session),
+	//MongoStore = require('connect-mongo')(session),
 	flash = require('connect-flash'),
 	passport = require('passport')
 	;
 
 //module.exports = function(db) {
-module.exports = function(db) {
+module.exports = (function() {
 	var app = express();
 	var server = http.createServer(app);
 	var io = socketio.listen(server);
@@ -25,6 +25,8 @@ module.exports = function(db) {
 		app.use(compress());
 	}
 
+	app.use(express.static('./public'));
+
 	app.use(bodyParser.urlencoded({
 		extended: true
 	}));
@@ -32,11 +34,10 @@ module.exports = function(db) {
 	app.use(bodyParser.json());
 	app.use(methodOverride());
 
+	/*
 	var mongoStore = new MongoStore({
 		db: db.connection.db
 	});
-
-/*
 	app.use(session({
 		saveUninitialized: true,
 		resave: true,
@@ -56,7 +57,7 @@ module.exports = function(db) {
 	}));
 	app.use(passport.initialize());
 	app.use(passport.session());
-	app.use(fAuthentication);
+	app.use(authenticate);
 
 	require('../server/app/routes/app.server.routes.js')(app);
 	require('../server/admin/routes/admin.server.routes.js')(app);
@@ -64,8 +65,6 @@ module.exports = function(db) {
 	require('../server/admin/routes/admin-script.server.routes.js')(app);
 	require('../server/project/routes/project.server.routes.js')(app);
 	require('../server/error/routes/error.server.routes.js')(app);
-
-	app.use(express.static('./public'));
 
 	// error handling 은 app.use 제일 마지막에 해야됨
 	app.use(logErrors);
@@ -76,12 +75,12 @@ module.exports = function(db) {
 	require('./socketio')(server, io);
 
 	return server;
-};
+});
 
 function logErrors(err, req, res, next) {
   console.error(err.stack);
   next(err);
-};
+}
 
 function clientErrorHandler(err, req, res, next) {
 	var errorMessage = 'Unknown server error';
@@ -101,49 +100,34 @@ function clientErrorHandler(err, req, res, next) {
   } else {
     next(err);
   }
-};
+}
 
 function errorHandler(err, req, res, next) {
   res.status(500);
   res.render('error', { error: err });
-};
+}
 
 
-var fAuthentication = function (req, res, next) {
+function authenticate(req, res, next) {
 	var requestPath = req.path;
-	var isExcludeOrAuth = false;
-	//skip authentication on exclude paths
-	if(authConfig.excludeAuthenticaitonUriMap.has(requestPath)) {
-		//console.log("IsExclude:" + requestPath);
-		isExcludeOrAuth = true;
-	} else {
-		for(var excludeUriPart in authConfig.excludeAuthenticationUriPatterns) {
-			if(requestPath.indexOf(excludeUriPart) > -1) {
-				isExcludeOrAuth = true;
-			}
-		}
 
-		//do authentication (.html and all /api/)
-		if(!isExcludeOrAuth &&
-			(req.url.indexOf('.html') > -1 || req.url.indexOf('/api/') > -1)) {
-			if(req.isAuthenticated()){
-				isExcludeOrAuth = true;
-			}else{
-				res.status(403).send({ message: 'Need Login' });
-			}
-		} else {
-			isExcludeOrAuth = true;
+	//check exclude uri
+	var isExcludeUri =  (authConfig.excludeAuthenticaitonUriMap.has(requestPath));
+
+	//exclude uri pattern
+	for(var excludeUriPart in authConfig.excludeAuthenticationUriPatterns) {
+		if(requestPath.indexOf(excludeUriPart) > -1) {
+			isExcludeUri = true; break;
 		}
 	}
 
-	if(isExcludeOrAuth) {
+	if(isExcludeUri) {
 		next();
+	} else {
+		if(req.isAuthenticated()){
+			next();
+		}else{
+			res.status(403).send({ message: 'Need Login' });
+		}
 	}
-
-	/*
-	 if (req.isAuthenticated()){
-	 console.log("req is authenticated : " + req.url);
-	 }else{
-	 console.log("req is NOT NOT NOT authenticated: " + req.url);
-	 }*/
 }

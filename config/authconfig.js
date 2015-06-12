@@ -8,7 +8,8 @@ function AuthConfig() {
         .set('/api/access/signin', '')
         .set('/app/views/app-access-signin.client.view.html', '')
         .set('/app/views/app-footer.client.view.html', '')
-        .set('/fetch', '');
+        .set('/fetch', '')
+        .set('/', '');
 
     this.excludeAuthenticationUriPatterns = [
         '/hakstrace.js'
