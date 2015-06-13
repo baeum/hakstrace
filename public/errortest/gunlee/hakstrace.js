@@ -49,7 +49,7 @@
       return _super;
     }
     if (!_super.hakstrace) {
-      _super.bugsnag = function (event) {
+      _super.hakstrace = function (event) {
         if (options && options.eventHandler) {
           lastEvent = event;
         }
@@ -85,8 +85,8 @@
   var FUNCTION_REGEX = /function\s*([\w\-$]+)?\s*\(/i;
 
   // Set up default notifier settings.
-  var DEFAULT_API_KEY = "{{apiKey}}";
-  var DEFAULT_NOTIFIER_ENDPOINT = "{{host}}/api/errors/{{projectKey}}/fetch";
+  var DEFAULT_API_KEY = "7df3e769327e0b100f3d6750fc57e9d3";
+  var DEFAULT_NOTIFIER_ENDPOINT = "http://localhost:3000/api/errors/YosiJoA/fetch";
 
   // Keep a reference to the currently executing script in the DOM.
   // We'll use this later to extract settings from attributes.
@@ -200,8 +200,8 @@
     }
 
     if (lastEvent) {
-       metaData = metaData || {};
-       metaData.Event = eventToMetaData(lastEvent);
+      metaData = metaData || {};
+      metaData.Event = eventToMetaData(lastEvent);
     }
     // Merge the local and global `metaData`.
     var mergedMetaData = merge(getSetting("metaData"), metaData);
@@ -290,7 +290,7 @@
         }
         return ret + ">";
       } else {
-         // e.g. #document
+        // e.g. #document
         return target.nodeName;
       }
     }
@@ -308,8 +308,8 @@
   if (!window.atob) {
     shouldCatch = false;
 
-  // Disable catching on browsers that support HTML5 ErrorEvents properly.
-  // This lets debug on unhandled exceptions work.
+    // Disable catching on browsers that support HTML5 ErrorEvents properly.
+    // This lets debug on unhandled exceptions work.
   } else if (window.ErrorEvent) {
     try {
       if (new window.ErrorEvent("test").colno === 0) {
@@ -351,6 +351,8 @@
       }
 
       return function hakstrace(message, url, lineNo, charNo, exception) {
+        log('Test Log 1234');
+
         var shouldNotify = getSetting("autoNotify", true);
         var metaData = {};
 
@@ -419,7 +421,24 @@
         polyFill(prototype, "removeEventListener", hijackEventFunc);
       }
     });
+
   }
+
+/*  window.onload = function() {
+    //alert('load');
+    var imgs = document.getElementsByTagName('img');
+    for(var i=0; i<imgs.length; i++) {
+      log(imgs[i].src);
+      imgs[i].addEventListener("error", function() { log('image error!!!!'); });
+      imgs[i].onerror = (function(){ log('err111111'); });
+      imgs[i].onload = (function(){ log('load111111'); });
+      imgs[i].onclick = (function(){ log('click111'); });
+
+      imgs[i].src='y';
+
+    }
+
+  }*/
 
   return self;
 
