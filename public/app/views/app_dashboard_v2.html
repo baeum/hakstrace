@@ -1,28 +1,35 @@
 <section>
-<div class="hbox hbox-auto-xs hbox-auto-sm" >
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-controller="MainDashboardCtrl">
   <!-- main -->
   <div class="col">
-    <div class="bg-black dker wrapper-lg">
+    <!--<div class="bg-black dker wrapper-lg">-->
+    <div class="bg-gd-dk wrapper-lg">
+      <div>
+
+      </div>
         <ul class="nav nav-pills nav-xxs nav-rounded m-b-lg">
           <li class="active"><a href>Day</a></li>
           <li><a href ng-click="refreshData()">Week</a></li>
           <li><a href ng-click="refreshData()">Month</a></li>
         </ul>
-        <div ui-jq="plot" ui-refresh="d0_1" ui-options="
-        [
-          { data: {{d0_1}}, points: { show: true, radius: 2}, splines: { show: true, tension: 0.4, lineWidth: 1 } }
-        ],
-        {
-          colors: ['{{app.color.info}}', '{{app.color.primary}}'],
-          series: { shadowSize: 3 },
-          xaxis:{ font: { color: '#507b9b' } },
-          yaxis:{ font: { color: '#507b9b' }, max:16 },
-          grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#1c2b36' },
-          tooltip: true,
-          tooltipOpts: { content: 'Visits of %x.1 is %y.4',  defaultTheme: false, shifts: { x: 10, y: -25 } }
-        }
-      " style="min-height:360px" >
-      </div>
+        <div>
+          <nvd3 options="options" data="data" config="{refreshDataOnly: true}"></nvd3>
+        </div>
+        <!--<div ui-jq="plot" ui-refresh="d0_1" ui-options="-->
+        <!--[-->
+          <!--{ data: {{d0_1}}, points: { show: true, radius: 2}, splines: { show: true, tension: 0.4, lineWidth: 1 } }-->
+        <!--],-->
+        <!--{-->
+          <!--colors: ['{{app.color.info}}', '{{app.color.primary}}'],-->
+          <!--series: { shadowSize: 3 },-->
+          <!--xaxis:{ font: { color: '#507b9b' } },-->
+          <!--yaxis:{ font: { color: '#507b9b' }, max:16 },-->
+          <!--grid: { hoverable: true, clickable: true, borderWidth: 0, color: '#1c2b36' },-->
+          <!--tooltip: true,-->
+          <!--tooltipOpts: { content: 'Visits of %x.1 is %y.4',  defaultTheme: false, shifts: { x: 10, y: -25 } }-->
+        <!--}-->
+      <!--" style="min-height:360px" >-->
+      <!--</div>-->
     </div>
     <div class="wrapper-md bg-white-only b-b">
       <div class="row text-center">
@@ -167,7 +174,7 @@
         </div>
         <div class="col-md-6">
           <div class="list-group list-group-lg list-group-sp">
-            <a herf class="list-group-item clearfix">
+            <a href class="list-group-item clearfix">
               <span class="pull-left thumb-sm avatar m-r">
                 <img src="img/a4.jpg" alt="...">
                 <i class="on b-white right"></i>
@@ -177,7 +184,7 @@
                 <small class="text-muted clear text-ellipsis">What's up, buddy</small>
               </span>
             </a>
-            <a herf class="list-group-item clearfix">
+            <a href class="list-group-item clearfix">
               <span class="pull-left thumb-sm avatar m-r">
                 <img src="img/a5.jpg" alt="...">
                 <i class="on b-white right"></i>
@@ -187,7 +194,7 @@
                 <small class="text-muted clear text-ellipsis">Come online and we need talk about the plans that we have discussed</small>
               </span>
             </a>
-            <a herf class="list-group-item clearfix">
+            <a href class="list-group-item clearfix">
               <span class="pull-left thumb-sm avatar m-r">
                 <img src="img/a6.jpg" alt="...">
                 <i class="busy b-white right"></i>
@@ -197,7 +204,7 @@
                 <small class="text-muted clear text-ellipsis">Hey, Some good news</small>
               </span>
             </a>
-            <a herf class="list-group-item clearfix">
+            <a href class="list-group-item clearfix">
               <span class="pull-left thumb-sm avatar m-r">
                 <img src="img/a7.jpg" alt="...">
                 <i class="busy b-white right"></i>
@@ -207,7 +214,7 @@
                 <small class="text-muted clear text-ellipsis">Nice to talk with you.</small>
               </span>
             </a>
-            <a herf class="list-group-item clearfix">
+            <a href class="list-group-item clearfix">
               <span class="pull-left thumb-sm avatar m-r">
                 <img src="img/a8.jpg" alt="...">
                 <i class="away b-white right"></i>
@@ -230,7 +237,7 @@
       <div class="m-b-sm text-md">Who to follow</div>
       <ul class="list-group no-bg no-borders pull-in">
         <li class="list-group-item">
-          <a herf class="pull-left thumb-sm avatar m-r">
+          <a href class="pull-left thumb-sm avatar m-r">
             <img src="img/a4.jpg" alt="..." class="img-circle">
             <i class="on b-white bottom"></i>
           </a>
@@ -240,7 +247,7 @@
           </div>
         </li>
         <li class="list-group-item active">
-          <a herf class="pull-left thumb-sm avatar m-r">
+          <a href class="pull-left thumb-sm avatar m-r">
             <img src="img/a5.jpg" alt="..." class="img-circle">
             <i class="on b-white bottom"></i>
           </a>
@@ -250,7 +257,7 @@
           </div>
         </li>
         <li class="list-group-item">
-          <a herf class="pull-left thumb-sm avatar m-r">
+          <a href class="pull-left thumb-sm avatar m-r">
             <img src="img/a6.jpg" alt="..." class="img-circle">
             <i class="busy b-white bottom"></i>
           </a>
@@ -260,7 +267,7 @@
           </div>
         </li>
         <li class="list-group-item">
-          <a herf class="pull-left thumb-sm avatar m-r">
+          <a href class="pull-left thumb-sm avatar m-r">
             <img src="img/a7.jpg" alt="..." class="img-circle">
             <i class="away b-white bottom"></i>
           </a>
@@ -270,7 +277,7 @@
           </div>
         </li>
         <li class="list-group-item">
-          <a herf class="pull-left thumb-sm avatar m-r">
+          <a href class="pull-left thumb-sm avatar m-r">
             <img src="img/a8.jpg" alt="..." class="img-circle">
             <i class="away b-white bottom"></i>
           </a>

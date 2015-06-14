@@ -1,0 +1,72 @@
+<html>
+<head>
+    <meta charset="utf-8">  <!-- it's important for d3.js -->
+    <!--<script>document.write('<base href="' + document.location + '" />');</script>-->
+    <script src="../../lib/angular/angular.js"></script>
+    <script src="../../lib/d3/d3.js"></script>
+    <script src="../../lib/nvd3/nv.d3.js"></script> <!-- or use another assembly -->
+
+    <script src="../../lib/angular-nvd3/dist/angular-nvd3.js"></script>
+    <link rel="stylesheet" href="../../lib/nvd3/nv.d3.css">
+
+    <script>
+        var app = angular.module('myApp', ['nvd3']);
+
+        app.controller('MainCtrl', function($scope) {
+            $scope.options = {
+                chart: {
+                    type: 'stackedAreaChart',
+                    height: 180,
+                    margin : {
+                        top: 20,
+                        right: 20,
+                        bottom: 40,
+                        left: 55
+                    },
+                    x: function(d){ return d.x; },
+                    y: function(d){ return d.y; },
+                    useInteractiveGuideline: true,
+                    transitionDuration:1,
+                    yDomain: [0,1000],
+                    yAxis: {
+                        tickFormat: function(d){
+                            return d3.format('.01f')(d);
+                        }
+                    }
+                }
+            };
+
+            //$scope.options1 = angular.copy($scope.options);
+            //$scope.options1.chart.transitionDuration = 1;
+            //$scope.options1.chart.yDomain = [-1,1];
+
+            $scope.data = [{ values: [], key: 'Random Walk' }];
+
+            for(var i=0; i<500; i++) {
+                $scope.data[0].values.push({ x: i,	y:0});
+            }
+
+            $scope.run = true;
+            //$scope.$apply();
+
+            var x = 500;
+            setInterval(function(){
+                if (!$scope.run) return;
+                $scope.data[0].values.push({ x: x,	y: Math.random()*1000});
+                if ($scope.data[0].values.length > 500) $scope.data[0].values.shift();
+                x++;
+                $scope.$apply();
+            }, 100);
+        });
+    </script>
+</head>
+
+<body ng-app="myApp">
+    <div ng-controller="MainCtrl">
+        <div>
+            <nvd3 options="options" data="data" config="{refreshDataOnly: true}"></nvd3>
+        </div>
+    </div>
+</body>
+
+</html>

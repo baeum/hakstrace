@@ -17,7 +17,8 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'app',
     'datatables',
     'admin',
-    'project'
+    'project',
+    'nvd3'
 ]);
 
 mainApplicationModule.constant('angularMomentConfig', {
