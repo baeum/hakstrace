@@ -3,8 +3,24 @@
 /* Controllers */
 
 angular.module('app')
-    .controller('MainDashboardCtrl', ['$scope',
-      function($scope) {
+    .controller('MainDashboardCtrl', ['$scope', '$ocLazyLoad',
+      function($scope, $ocLazyLoad) {
+        console.log('log, log, log');
+
+        //$ocLazyLoad.config({events: true});
+
+        //$ocLazyLoad.load('/socket.io/socket.io.js');
+        //
+        //$scope.$on('ocLazyLoad.moduleLoaded', function(e, module) {
+        //  console.log('module loaded', module);
+        //});
+        //var socket = io.connect('http://localhost:3000');
+        //socket.on('news', function (data) {
+        //  console.log(data);
+        //  socket.emit('my other event', { my: 'data' });
+        //});
+        //console.log('test log 1234 - main dashboard controller');
+
 
         $scope.options = {
           chart: {
@@ -46,4 +62,6 @@ angular.module('app')
           x++;
           $scope.$apply();
         }, 3000);
-}]);
+
+
+      }]);

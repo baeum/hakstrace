@@ -2,9 +2,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var httpPort = process.env.HAKSTRACE_WEB_PORT || 3000;
 
-require('./config/mongoose')();
+var db = require('./config/mongoose')();
 
-var app = require('./config/express')();
+var app = require('./config/express')(db);
 
 require('./config/passport')();
 
