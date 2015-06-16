@@ -2,7 +2,7 @@ var appServerController = require('../controllers/app.server.controller'),
 	passport = require('passport');
 
 module.exports = function(app) {
-	app.get('/', appServerController.renderIndex);
+	//app.get('/', appServerController.renderIndex);
 
 	app.post('/api/access/signin', function(req, res, next) {
 		passport.authenticate('signin', function(err, user, info){

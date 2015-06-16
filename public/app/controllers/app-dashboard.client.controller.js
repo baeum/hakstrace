@@ -1,10 +1,10 @@
 'use strict';
 
 /* Controllers */
-
 angular.module('app')
-    .controller('MainDashboardCtrl', ['$scope',
-      function($scope) {
+    .controller('MainDashboardCtrl', ['$scope', 'mySocket',
+      function($scope, mySocket) {
+        var maxY = 50;
 
         $scope.options = {
           chart: {
@@ -19,31 +19,48 @@ angular.module('app')
             x: function(d){ return d.x; },
             y: function(d){ return d.y; },
             useInteractiveGuideline: true,
-            transitionDuration:1,
-            yDomain: [0,100],
+            showControls: false,
+            clipEdge: true,
+            transitionDuration: 1,
+            yDomain: [0,maxY],
             yAxis: {
               tickFormat: function(d){
-                return d3.format('.01f')(d);
+                return d3.format('d')(d);
+              }
+            },
+            xAxis: {
+              tickFormat: function(d){
+                return d3.time.format('%H:%M:%S')(new Date(d));
               }
             }
           }
         };
 
-        $scope.data = [{ values: [], key: 'All errors - Random Test Data' }];
+        $scope.data = [{ values: [], key: 'All errors' }];
 
-        var max=200;
+        var interval = 3;
+        var max=10*60/interval;
+
         for(var i=0; i<max; i++) {
-          $scope.data[0].values.push({ x: i,	y:0});
+          $scope.data[0].values.push({ x: Date.now()-(max-i)*interval*1000,	y:0});
         }
 
         $scope.run = true;
 
-        var x = max;
-        setInterval(function(){
-          if (!$scope.run) return;
-          $scope.data[0].values.push({ x: x,	y: Math.random()*100});
+        //connect to socket
+        mySocket.forward('news', $scope);
+        $scope.$on('socket:news', function (ev, data) {
+          console.log(data);
+
+          if(data.y > maxY) {
+            maxY = data.y;
+            $scope.options.chart.yDomain = [0,maxY];
+          }
+
+          $scope.data[0].values.push({ x: Date.now(),	y: data.y});
           if ($scope.data[0].values.length > max) $scope.data[0].values.shift();
-          x++;
+
           $scope.$apply();
-        }, 3000);
-}]);
+        });
+
+      }]);

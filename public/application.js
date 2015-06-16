@@ -18,7 +18,8 @@ var mainApplicationModule = angular.module(mainApplicationModuleName, [
     'datatables',
     'admin',
     'project',
-    'nvd3'
+    'nvd3',
+    'btford.socket-io'
 ]);
 
 mainApplicationModule.constant('angularMomentConfig', {
@@ -26,7 +27,9 @@ mainApplicationModule.constant('angularMomentConfig', {
   timezone: 'Korea/Seoul'
 });
 
-
+mainApplicationModule.factory('mySocket', function (socketFactory) {
+  return socketFactory();
+});
 
 angular.element(document).ready(function() {
   angular.bootstrap(document, [mainApplicationModuleName]);
@@ -100,3 +103,6 @@ mainApplicationModule.directive('ngEnter', function () {
         });
     };
 });
+
+//connect to socket
+//var socketDashboard = io.connect('http://localhost:3000');
