@@ -33,15 +33,16 @@ module.exports = (function (db) {
   app.use(bodyParser.json());
   app.use(methodOverride());
 
-   //var mongoStore = new MongoStore({
-   //db: db.connection.db
-   //});
-   //app.use(session({
-   //saveUninitialized: true,
-   //resave: true,
-   //secret: config.sessionSecret,
-   //store: mongoStore  // socket.io 와 express 의 세션이 공유되지 않아 몽고db 를 sessionstore 로 사용한다.
-   //}));
+  //TODO : add socketio seesion validation logic
+  //var mongoStore = new MongoStore({
+  //db: db.connection.db
+  //});
+  //app.use(session({
+  //saveUninitialized: true,
+  //resave: true,
+  //secret: config.sessionSecret,
+  //store: mongoStore  // socket.io 와 express 의 세션이 공유되지 않아 몽고db 를 sessionstore 로 사용한다.
+  //}));
 
   app.set('views', './server');
   app.set('view engine', 'ejs');

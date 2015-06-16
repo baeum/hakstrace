@@ -1,0 +1,24 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- it's important for d3.js -->
+  <!--<script>document.write('<base href="' + document.location + '" />');</script>-->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:3000');
+    socket.on('news', function (data) {
+      console.log(data);
+      socket.emit('other data', {my: 'data'});
+    });
+  </script>
+</head>
+
+<body ng-app="myApp">
+<div ng-controller="MainCtrl">
+  <div>
+    <nvd3 options="options" data="data" config="{refreshDataOnly: true}"></nvd3>
+  </div>
+</div>
+</body>
+
+</html>

@@ -24,12 +24,14 @@ module.exports = function(server, io, mongoStore) {
 
 	io.on('connection', function(socket) {
     console.log('socket connected !!!!');
-    socket.emit('news', {hello: 'world'});
-    socket.on('other data', function(data) {
-      console.log('socket-io-on : %s', data);
-    });
+    socket.join('@error10m');
 	});
-	//io.on('connection', function(socket) {
-	//	require('../app/controllers/chat.server.controller')(io, socket);
-	//});
+
+  var tick = setInterval(function() {
+    var now = Date.now();
+    var pushData = { x: now,	y: Math.floor(Math.random()*125) };
+
+    io.to('@error10m').emit('news', pushData);
+  }, 3000);
+
 };
