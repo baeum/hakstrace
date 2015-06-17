@@ -123,7 +123,7 @@ function authenticate(req, res, next) {
       break;
     }
   }
-  console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
+  //console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
 
   if (isExcludeUri) {
     next();
