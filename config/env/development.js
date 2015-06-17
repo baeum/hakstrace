@@ -5,5 +5,8 @@ module.exports = {
 	dbuser: process.env.HAKSTRACE_DB_USER || '',
 	dbpass: process.env.HAKSTRACE_DB_PASS || '',
 	mongoDebug: 'default',
-	sessionSecret: 'developmentSessionSecret'
+	sessionSecret: 'developmentSessionSecret',
+
+	mainDashboardInterval: 3000,
+	mainDashboardLazy: 10000
 };
