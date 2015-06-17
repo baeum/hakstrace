@@ -104,20 +104,26 @@ function errorHandler(err, req, res, next) {
   res.render('error', {error: err});
 }
 
+//var gii = 0;
 
 function authenticate(req, res, next) {
+  //gii++;
   var requestPath = req.path;
 
   //check exclude uri
   var isExcludeUri = (authConfig.excludeAuthenticaitonUriMap.has(requestPath));
+  //console.log('%d:requestPath=%s', gii, requestPath);
+  //console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
 
   //exclude uri pattern
-  for (var excludeUriPart in authConfig.excludeAuthenticationUriPatterns) {
-    if (requestPath.indexOf(excludeUriPart) > -1) {
+  for (var i=0; i < authConfig.excludeAuthenticationUriPatterns.length; i++) {
+    //console.log('%d:authConfig.excludeAuthenticationUriPatterns=%s', gii, authConfig.excludeAuthenticationUriPatterns[i]);
+    if (requestPath.indexOf(authConfig.excludeAuthenticationUriPatterns[i]) > -1) {
       isExcludeUri = true;
       break;
     }
   }
+  console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
 
   if (isExcludeUri) {
     next();
