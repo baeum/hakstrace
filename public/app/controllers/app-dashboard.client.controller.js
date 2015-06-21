@@ -4,7 +4,7 @@
 angular.module('app')
     .controller('MainDashboardCtrl', ['$scope', 'mySocket',
       function($scope, mySocket) {
-        var maxY = 50;
+        var maxY = 10;
 
         $scope.options = {
           chart: {
@@ -44,23 +44,24 @@ angular.module('app')
         for(var i=0; i<max; i++) {
           $scope.data[0].values.push({ x: Date.now()-(max-i)*interval*1000,	y:0});
         }
-
         $scope.run = true;
 
         //connect to socket
-        mySocket.forward('news', $scope);
-        $scope.$on('socket:news', function (ev, data) {
-          console.log(data);
-
+        mySocket.forward('allErrorCount', $scope);
+        $scope.$on('socket:allErrorCount', function (ev, data) {
+          //console.log('received from socket - %s', JSON.stringify(data));
+          //resize y axis scale
           if(data.y > maxY) {
             maxY = data.y;
             $scope.options.chart.yDomain = [0,maxY];
           }
 
+          //put data & graph shift
           $scope.data[0].values.push({ x: Date.now(),	y: data.y});
           if ($scope.data[0].values.length > max) $scope.data[0].values.shift();
 
           $scope.$apply();
         });
 
+        //mySocket.emit('signin');
       }]);

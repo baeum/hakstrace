@@ -29,6 +29,4 @@ angular.module('project').controller('ProjectDetailStreamCtrl',
     });
 
 
-
-
 }]);
