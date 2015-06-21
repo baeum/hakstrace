@@ -44,13 +44,12 @@ angular.module('app')
         for(var i=0; i<max; i++) {
           $scope.data[0].values.push({ x: Date.now()-(max-i)*interval*1000,	y:0});
         }
-
         $scope.run = true;
 
         //connect to socket
         mySocket.forward('allErrorCount', $scope);
         $scope.$on('socket:allErrorCount', function (ev, data) {
-          console.log(data);
+          //console.log('received from socket - %s', JSON.stringify(data));
           //resize y axis scale
           if(data.y > maxY) {
             maxY = data.y;
@@ -64,4 +63,5 @@ angular.module('app')
           $scope.$apply();
         });
 
+        //mySocket.emit('signin');
       }]);

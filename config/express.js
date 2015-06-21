@@ -29,30 +29,28 @@ module.exports = (function (db) {
   app.use(bodyParser.urlencoded({
     extended: true
   }));
-
   app.use(bodyParser.json());
   app.use(methodOverride());
-
-  //TODO : add socketio seesion validation logic
-  //var mongoStore = new MongoStore({
-  //db: db.connection.db
-  //});
-  //app.use(session({
-  //saveUninitialized: true,
-  //resave: true,
-  //secret: config.sessionSecret,
-  //store: mongoStore  // socket.io 와 express 의 세션이 공유되지 않아 몽고db 를 sessionstore 로 사용한다.
-  //}));
 
   app.set('views', './server');
   app.set('view engine', 'ejs');
 
   app.use(flash());
-  app.use(session({
+
+  //TODO : add socketio seesion validation logic
+  var sessionStore = new MongoStore({
+    db: db.connection.db
+  });
+
+  var sessionMiddleware = session({
     saveUninitialized: true,
-    resave: true,
+    resave: false,
     secret: config.sessionSecret
-  }));
+    //,
+    //store: sessionStore
+  });
+
+  app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(authenticate);
@@ -69,6 +67,10 @@ module.exports = (function (db) {
   app.use(clientErrorHandler);
   app.use(errorHandler);
   //require('./socketio')(server, io, mongoStore);
+
+  io.use(function(socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+  });
   require('./socketio')(server, io);
 
   return server;
@@ -104,26 +106,19 @@ function errorHandler(err, req, res, next) {
   res.render('error', {error: err});
 }
 
-//var gii = 0;
-
 function authenticate(req, res, next) {
-  //gii++;
+
   var requestPath = req.path;
 
-  //check exclude uri
   var isExcludeUri = (authConfig.excludeAuthenticaitonUriMap.has(requestPath));
-  //console.log('%d:requestPath=%s', gii, requestPath);
-  //console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
 
   //exclude uri pattern
   for (var i=0; i < authConfig.excludeAuthenticationUriPatterns.length; i++) {
-    //console.log('%d:authConfig.excludeAuthenticationUriPatterns=%s', gii, authConfig.excludeAuthenticationUriPatterns[i]);
     if (requestPath.indexOf(authConfig.excludeAuthenticationUriPatterns[i]) > -1) {
       isExcludeUri = true;
       break;
     }
   }
-  //console.log('%d:isExcludeUri=%s', gii, isExcludeUri);
 
   if (isExcludeUri) {
     next();
