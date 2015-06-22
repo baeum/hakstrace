@@ -26,6 +26,7 @@ module.exports = function (server, io, mongoStore) {
   //	});
   //});
 
+  //why is Socket#use invoked only for onconnection?? not for client's emit ?? why???
   io.use(function(socket, next) {
     console.log('[SCK]io.use-test');
     next();
@@ -35,23 +36,37 @@ module.exports = function (server, io, mongoStore) {
   //currently push all projects errors
   //first of all, it should change mongodb collection schemes.
   //( which projects, who owns? )
+  var connCount = 0;
   io.on('connection', function (socket) {
+    connCount++;
     var userId;
     if(socket.request.session.passport) {
       userId = socket.request.session.passport['user'];
     }
-    console.log('[SCK]connected - user:%s socket:%s', userId, socket.id);
+    console.log('[SCK]connected %d - user:%s socket:%s', connCount, userId, socket.id);
     if(userId) {
       socket.join('@' + userId);
       console.log('[SCK]join to @%s', userId);
     }
 
     socket.on('disconnect', function() {
-      console.log('[SCK]disconnect - user:%s socket:%s', userId, socket.id)
+      connCount--;
+      console.log('[SCK]disconnect - user:%s socket:%s', userId, socket.id);
+    });
+
+    //just for message testing
+    socket.on('signin', function() {
+      console.log('[SCK]signin - user:%s socket:%s', userId, socket.id);
     });
   });
 
   var tick = setInterval(function () {
+    if(connCount == 0) return; // do not get data when nobody connect
+    else if(connCount < 0) {
+      console.error('[ERR][TIMER]minus connection !!! why ???');
+      return;
+    }
+
     aggrErrorsRealtime(config.mainDashboardInterval, config.mainDashboardLazy,
       function (err, result) {
         var time = Date.now() - config.mainDashboardLazy;

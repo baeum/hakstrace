@@ -63,5 +63,5 @@ angular.module('app')
           $scope.$apply();
         });
 
-        //mySocket.emit('signin');
+        mySocket.emit('signin');
       }]);
