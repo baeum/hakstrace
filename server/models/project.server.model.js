@@ -1,6 +1,6 @@
-var mongoose = require('mongoose'),
-    hat = require('hat'),
-  Schema = mongoose.Schema;
+var mongoose = require('mongoose');
+var hat = require('hat');
+var Schema = mongoose.Schema;
 
 var ProjectSchema = new Schema({
   _id: {
@@ -13,7 +13,7 @@ var ProjectSchema = new Schema({
     validate: [
       function(key) {
         return key && key.length > 6;
-      }, 'Project Key should be longer'
+      }, 'Project Key should be longer than 6.'
     ]
   },
   host :{
@@ -38,6 +38,13 @@ var ProjectSchema = new Schema({
   },
   active:{
     type: Boolean
+  },
+  owner: {
+    type: String
+  },
+  lastUpdated: {
+    type: Date,
+    default: Date.now
   }
 }, { collection: 'projects' });
 
