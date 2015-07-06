@@ -48,7 +48,8 @@ var UserSchema = new Schema({
   auth: {
 		type: String,
 		ref: 'UserAuth'
-	}
+	},
+  projects: [String]
 }, { collection: 'users' });
 
 
@@ -64,6 +65,11 @@ UserSchema.virtual('fullName').get(function() {
 */
 
 UserSchema.pre('save', function(next) {
+  if (!this.isModified('password')) {
+    console.log('password not modified');
+    return next();
+  }
+
   if (this.password) {
     this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
     this.password = this.hashPassword(this.password);

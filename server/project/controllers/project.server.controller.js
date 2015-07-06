@@ -1,6 +1,7 @@
-var mongoose = require('mongoose'),
-  Project = mongoose.model('Project'),
-  Script = mongoose.model('Script');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
+var Project = mongoose.model('Project');
+var Script = mongoose.model('Script');
 
 exports.createProject = function(req, res, next) {
 
@@ -17,11 +18,32 @@ exports.createProject = function(req, res, next) {
     project._id = project.projectKey;
     project.apiKey = Project.generateApiKey();
     project.active = false;
+    project.owner = req.user.id;
     project.save(function(err) {
       if (err) {
         return next(err);
       }
-      res.json(project);
+
+      //add project to user
+      User.findOne({ _id: project.owner }, function(err, user){
+        if(err){
+          return next(err);
+        }else if(!user){
+          var notExistError = new Error("none exist user");
+          notExistError.message = "none exist user";
+          return next(notExistError);
+        }
+
+        user.lastUpdated = Date.now;
+        user.projects.push(project._id);
+
+        user.save(function(err) {
+          if (err) {
+            return next(err);
+          }
+          res.json(project);
+        });
+      });
     });
   });
 };
@@ -47,7 +69,7 @@ exports.listProjectSearchFilter = function(req, res, next) {
   */
 };
 
-
+//TODO - add data access control layer
 exports.listProject = function(req, res, next) {
   Project.find(req.query).sort('-projectKey')
 		.exec(function(err, projects) {
@@ -58,7 +80,7 @@ exports.listProject = function(req, res, next) {
 	});
 };
 
-
+//TODO - add data access control layer
 exports.getProject = function(req, res, next) {
   Project.findOne({ projectKey: req.params.projectKey })
       .exec(function(err, project){
@@ -72,6 +94,7 @@ exports.getProject = function(req, res, next) {
 
 exports.updateProject = function(req, res, next) {
 
+  //TODO - add data access control layer
   Project.findOne({ projectKey: req.params.projectKey }, function(err, project){
     if(err){
       return next(err);
@@ -100,6 +123,7 @@ exports.updateProject = function(req, res, next) {
 
 exports.deleteProject = function(req, res, next) {
 
+  //TODO - add data access control layer
   Project.remove({ _id: req.params.projectKey }, function(err, numberRemoved){
     if(err){
       return next(err);

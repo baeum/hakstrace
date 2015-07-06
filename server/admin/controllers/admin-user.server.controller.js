@@ -42,6 +42,7 @@ exports.updateUser = function(req, res, next) {
     // 변경 되는 속성은 name, auth 만 일단
     user.name = req.body.name;
     user.auth = req.body.auth;
+    user.lastUpdated = Date.now;
     user.save(function(err) {
       if (err) {
         return next(err);
