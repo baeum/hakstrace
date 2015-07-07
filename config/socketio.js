@@ -4,7 +4,9 @@ var passport = require('passport');
 
 var mongoose = require('mongoose');
 var HError = mongoose.model('HError');
+var Project = mongoose.model('Project');
 
+var HashMap = require('hashmap');
 
 module.exports = function (server, io, mongoStore) {
   //io.use(function(socket, next) {
@@ -27,7 +29,7 @@ module.exports = function (server, io, mongoStore) {
   //});
 
   //why is Socket#use invoked only for onconnection?? not for client's emit ?? why???
-  io.use(function(socket, next) {
+  io.use(function (socket, next) {
     console.log('[SCK]io.use-test');
     next();
   });
@@ -40,40 +42,74 @@ module.exports = function (server, io, mongoStore) {
   io.on('connection', function (socket) {
     connCount++;
     var userId;
-    if(socket.request.session.passport) {
+    if (socket.request.session.passport) {
       userId = socket.request.session.passport['user'];
     }
     console.log('[SCK]connected %d - user:%s socket:%s', connCount, userId, socket.id);
-    if(userId) {
-      socket.join('@' + userId);
-      console.log('[SCK]join to @%s', userId);
+    if (userId) {
+      User.findOne({_id: userId})
+        .select('projects').exec(function (err, user) {
+          if (err) {
+            return next(err);
+          } else if (!user) {
+            return;
+          }
+          var arrLen = user.projects.length;
+          for (var i = 0; i < arrLen; i++) {
+            var room = '@' + user.projects[i];
+            socket.join(room);
+            console.log('[SCK]%s join to %s', userId, room);
+          }
+        });
     }
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
       connCount--;
       console.log('[SCK]disconnect - user:%s socket:%s', userId, socket.id);
     });
 
     //just for message testing
-    socket.on('signin', function() {
+    socket.on('signin', function () {
       console.log('[SCK]signin - user:%s socket:%s', userId, socket.id);
     });
   });
 
   var tick = setInterval(function () {
-    if(connCount == 0) return; // do not get data when nobody connect
-    else if(connCount < 0) {
-      console.error('[ERR][TIMER]minus connection !!! why ???');
+    if (connCount == 0) return; // do not get data when nobody connect
+    else if (connCount < 0) {
+      console.error('[ERR][TIMER]negative number of connection !!! why ???');
       return;
     }
 
+    var time = Date.now() - config.mainDashboardLazy;
     aggrErrorsRealtime(config.mainDashboardInterval, config.mainDashboardLazy,
       function (err, result) {
-        var time = Date.now() - config.mainDashboardLazy;
-        var total = result[0] ? result[0].total : 0;
-        var pushData = {x: time, y: total};
-        //console.log('[SCK]#pushData=%s', JSON.stringify(pushData));
-        io.emit('allErrorCount', pushData); //TODO push to project owner's specific room only
+        if (err) {
+          console.error('[ERR]on aggr realtime');
+          return;
+        }
+
+        var resultMap = new HashMap();
+        for (var i = 0; i < result.length; i++) {
+          resultMap.set(result[i]._id, result[i]);
+        }
+
+        Project.find({active: true}).select('_id').exec(function (err, projects) {
+          if (err) {
+            return;
+          } else if (!projects || projects.length == 0) {
+            return;
+          }
+          var len = projects.length;
+          for (var i = 0; i < len; i++) {
+            var resultInId = resultMap.get(projects[i]._id);
+            var total = resultInId ? resultInId.total : 0;
+            var pushData = {project: projects[i]._id, x: time, y: total};
+
+            console.log('[SCK]#to=@%s#pushData=%s', projects[i]._id, JSON.stringify(pushData));
+            io.sockets.in('@' + projects[i]._id).emit('allErrorCount', pushData);
+          }
+        });
       });
   }, config.mainDashboardInterval);
 };

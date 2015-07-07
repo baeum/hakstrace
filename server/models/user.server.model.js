@@ -49,7 +49,7 @@ var UserSchema = new Schema({
 		type: String,
 		ref: 'UserAuth'
 	},
-  projects: [String]
+  projects: [{type: String, ref: 'Project' }]
 }, { collection: 'users' });
 
 

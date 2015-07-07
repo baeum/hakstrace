@@ -49,4 +49,9 @@ var HErrorSchema = new Schema({
   }
 }, { collection: 'errors' });
 
+HErrorSchema.set('autoIndex', false);
+HErrorSchema.index({created: -1, projectKey: 1});
+HErrorSchema.index({projectKey: 1, created: -1});
+
+
 mongoose.model('HError', HErrorSchema);
