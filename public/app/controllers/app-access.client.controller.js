@@ -28,6 +28,8 @@ angular.module('app')
               };
               $log.log("rootscope: " + $rootScope.session.name);
               $state.go('app.dashboard');
+              //$log.log($state.href("app.dashboard"));
+              //location.replace('/#/dashboard');
             }else{
               $scope.authError = 'Login failed';
             }
