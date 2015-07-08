@@ -1,5 +1,23 @@
 /* custom inclusion of right, left and below tabs */
 
+body {
+  font-family: "jaf-bernino-sans","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+svg text {
+  font-family: "jaf-bernino-sans","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif !important;
+  fill: #58666e !important;
+}
+
+.ff-serif {
+  font-family: "freight-text-pro",Georgia,Cambria,"Times New Roman",Times,serif;
+}
+
+.m-t-0 {
+  margin-top: 0;
+}
+
 .huge {
   font-size: 40px;
 }

@@ -45,3 +45,6 @@ angular.module('project').factory('ErrorsErrorTypesOSShare', ['$resource',
   function($resource) {
     return $resource('api/errors/:projectKey/errors/errortypes/:errorType/osShare',{},{cache:false});
 }]);
+
+
+

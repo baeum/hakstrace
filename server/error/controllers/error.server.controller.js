@@ -5,6 +5,10 @@ var mongoose = require('mongoose'),
   HErrorTypeGroup = mongoose.model('HErrorTypeGroup'),
   UAParser = require('ua-parser-js');
 
+var userService = require('../../admin/services/admin-user.server.service');
+var errorService = require('../../error/services/error.server.service');
+
+
 exports.createError = function (req, res, next) {
 
   // @TO-DO
@@ -437,4 +441,38 @@ exports.listErrorTypeStream = function (req, res, next) {
       }
       res.json(herrors);
     });
+};
+
+exports.listDailySummaryForDashboard = function (req, res, next) {
+
+  var fromDateStamp = req.query.fromDateStamp*1;
+  var userId = userId = req.session.passport['user'];
+
+  //get user's project id list
+  userService.listUserProject(userId, function (err, projects) {
+    if (err) return next(err);
+
+    //get daily summary
+    errorService.listDailySummaryByBrowser(fromDateStamp, projects, function (err, summary) {
+      if (err) return next(err);
+
+      var reduced = summary.reduce(function(pre, cur){
+        if(!(cur._id.key in pre)) {
+          pre.__arr.push(pre[cur._id.key] = cur);
+          pre[cur._id.key].topBrowser = cur._id.browserName + '/' + cur._id.browserMajor;
+          pre[cur._id.key].key = cur._id.key;
+          delete pre[cur._id.key]._id;
+        } else {
+          pre[cur._id.key].total += cur.total;
+        }
+        return pre;
+      }, {__arr:[]});
+
+      //console.log(JSON.stringify(reduced));
+      //console.log(JSON.stringify(summary));
+
+      res.json(reduced.__arr);
+
+    });
+  });
 };
