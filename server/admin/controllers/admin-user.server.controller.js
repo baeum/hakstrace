@@ -1,6 +1,6 @@
-var mongoose = require('mongoose'),
-  User = mongoose.model('User'),
-  UserAuth = mongoose.model('UserAuth');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
+var UserAuth = mongoose.model('UserAuth');
 
 exports.createUser = function(req, res, next) {
 
@@ -118,3 +118,4 @@ exports.listUserAuth = function(req, res) {
 			res.json(userAuths);
 	});
 };
+

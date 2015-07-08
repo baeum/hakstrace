@@ -1,8 +1,6 @@
 var errorServerController = require('../controllers/error.server.controller');
 
 module.exports = function(app) {
-
-
   app.route('/api/errors/:projectKey/fetch')
     .get(errorServerController.createError);
 
@@ -27,4 +25,6 @@ module.exports = function(app) {
   app.route('/api/errors/:projectKey/errors/errortypes/:errorType/osShare')
     .get(errorServerController.listErrorTypeOSShare);
 
+  app.route('/api/errors/summary/dailySummaryForDashboard')
+    .get(errorServerController.listDailySummaryForDashboard);
 };

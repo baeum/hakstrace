@@ -7,6 +7,7 @@ var HError = mongoose.model('HError');
 var Project = mongoose.model('Project');
 
 var HashMap = require('hashmap');
+var userService = require('../server/admin/services/admin-user.server.service');
 
 module.exports = function (server, io, mongoStore) {
   //io.use(function(socket, next) {
@@ -34,10 +35,6 @@ module.exports = function (server, io, mongoStore) {
     next();
   });
 
-  //TODO : push errors only of owned projects. (plan to use a socket-io room.)
-  //currently push all projects errors
-  //first of all, it should change mongodb collection schemes.
-  //( which projects, who owns? )
   var connCount = 0;
   io.on('connection', function (socket) {
     connCount++;
@@ -47,20 +44,18 @@ module.exports = function (server, io, mongoStore) {
     }
     console.log('[SCK]connected %d - user:%s socket:%s', connCount, userId, socket.id);
     if (userId) {
-      User.findOne({_id: userId})
-        .select('projects').exec(function (err, user) {
-          if (err) {
-            return next(err);
-          } else if (!user) {
-            return;
-          }
-          var arrLen = user.projects.length;
-          for (var i = 0; i < arrLen; i++) {
-            var room = '@' + user.projects[i];
-            socket.join(room);
-            console.log('[SCK]%s join to %s', userId, room);
-          }
-        });
+      userService.listUserProject(userId, function(err, projects){
+        if(err) {
+          console.log('[DB][ERR]on listUserProject');
+          return;
+        }
+        var arrLen = projects.length;
+        for (var i = 0; i < arrLen; i++) {
+          var room = '@' + projects[i];
+          socket.join(room);
+          console.log('[SCK]%s join to %s', userId, room);
+        }
+      });
     }
 
     socket.on('disconnect', function () {

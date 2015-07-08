@@ -2,16 +2,26 @@
 
 /* Controllers */
 var dashboaraApp = angular.module('app');
-dashboaraApp.controller('MainDashboardCtrl', ['$scope', 'mySocket',
-  function ($scope, mySocket) {
+dashboaraApp.controller('MainDashboardCtrl', ['$scope', '$resource', 'mySocket',
+  function ($scope, $resource, mySocket) {
+
+    var ResourceDailySummary = $resource('/api/errors/summary/dailySummaryForDashboard',{},{cache:false});
+
+    ResourceDailySummary.query({fromDateStamp: new Date().setHours(0,0,0,0)})
+      .$promise.then(function (errorDailySummary) {
+        console.log(errorDailySummary);
+      });
+
+    //temporary test data
     $scope.projects = [
       {_id: 'YosiJoA', errors: '50', topBrowser: 'Chrome1.1.12'},
       {_id: 'HaksYoMan', errors: '150', topBrowser: 'Chrome1.9.12'},
       {_id: 'MyPantom', errors: '13113', topBrowser: 'IE1.1.12'}];
 
-
+    //Y axis max
     var maxY = 10;
 
+    //realtime graph data
     $scope.options = {
       chart: {
         type: 'stackedAreaChart',
@@ -61,11 +71,6 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', 'mySocket',
     //connect to socket
     mySocket.forward('allErrorCount', $scope);
     $scope.$on('socket:allErrorCount', function (ev, data) {
-      //resize y axis scale
-      if (data.y > maxY) {
-        maxY = data.y;
-        $scope.options.chart.yDomain = [0, maxY];
-      }
       //console.log(data);
 
       //put data & graph shift
@@ -77,6 +82,19 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', 'mySocket',
 
       $scope.data[dataIndex].values.push({x: data.x, y: data.y});
       if ($scope.data[dataIndex].values.length > max) $scope.data[dataIndex].values.shift();
+
+      //resize y axis scale
+      var sumY = 0;
+      var tempLen = $scope.data[dataIndex].values.length;
+      console.log('tempLen=%d', tempLen);
+      for (var i = 0; i < $scope.data.length; i++) {
+        sumY += $scope.data[i].values[tempLen-1].y;
+      }
+      console.log('sumY=' + sumY);
+      if (sumY > maxY) {
+        maxY = sumY;
+        $scope.options.chart.yDomain = [0, maxY];
+      }
 
       //TODO - pending & matching all series (currently script error on nvd3. but working)
       /*        console.log('$scope.data.length=%d', $scope.data.length);
@@ -107,10 +125,10 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', 'mySocket',
 dashboaraApp.controller('PanelController', ['$scope',
   function ($scope) {
     $scope.panelClass = 'panel-red';
-    if($scope.project.errors > 1000) {
+    if ($scope.project.errors > 1000) {
       $scope.panelClass = 'panel-red';
       $scope.faIcon = 'fa-umbrella';
-    } else if($scope.project.errors > 100) {
+    } else if ($scope.project.errors > 100) {
       $scope.panelClass = 'panel-yellow';
       $scope.faIcon = 'fa-cloud';
     } else {
