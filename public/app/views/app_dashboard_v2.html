@@ -5,7 +5,7 @@
       <!--<div class="bg-black dker wrapper-lg">-->
       <div class="bg-light wrapper-lg">
         <div>
-          <h3 class="m-t-0">Real-time Graph(/5sec)</h3>
+          <h3 class="m-t-0">Real-time Graph(/{{interval}}sec)</h3>
         </div>
         <div>
           <nvd3 options="options" data="data" config="{refreshDataOnly: true}"></nvd3>
@@ -47,7 +47,7 @@
               </div>
               <a href="#">
                 <div class="panel-footer">
-                  <span class="pull-left">Site : {{project.key}}</span>
+                  <span class="pull-left">Project : {{project.key}}</span>
                   <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                   <div class="clearfix"></div>

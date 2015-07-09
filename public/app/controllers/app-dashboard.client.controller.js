@@ -2,8 +2,13 @@
 
 /* Controllers */
 var dashboardApp = angular.module('app');
+
+var Panel = {CLOUDY: 50, RAINY: 100};
+
+
 dashboardApp.controller('MainDashboardCtrl', ['$scope', '$resource', '$timeout', 'mySocket',
   function ($scope, $resource, $timeout, mySocket) {
+
 
     var ResourceDailySummary = $resource('/api/errors/summary/dailySummaryForDashboard', {}, {cache: false});
 
@@ -60,17 +65,25 @@ dashboardApp.controller('MainDashboardCtrl', ['$scope', '$resource', '$timeout',
     //$scope.data = [{values: [], key: 'n/a'}];
     $scope.data = [];
     $scope.saved = [];
+    $scope.interval = 0;
 
-    var interval = 3;
-    var max = 10 * 60 / interval;
-
+    //dummy graph
+    //var interval = 5;
+    //var max = 10 * 60 / interval;
     //for (var i = 0; i < max; i++) {
     //  $scope.data[0].values.push({x: Date.now() - (max - i) * interval * 1000, y: 0});
     //}
     //$scope.run = true;
 
+
     //connect to socket
     mySocket.forward('allErrorCount', $scope);
+    mySocket.forward('interval', $scope);
+
+    $scope.$on('socket:interval', function(ev, data) {
+      $scope.interval = data.interval;
+      $scope.maxX = 10 * 60 / data.interval; //10 minute
+    });
 
     $scope.totalVisible = true;
     $scope.$on('socket:allErrorCount', function (ev, data) {
@@ -101,7 +114,7 @@ dashboardApp.controller('MainDashboardCtrl', ['$scope', '$resource', '$timeout',
       }
 
       $scope.data[dataIndex].values.push({x: data.x, y: data.y});
-      if ($scope.data[dataIndex].values.length > max) $scope.data[dataIndex].values.shift();
+      if ($scope.data[dataIndex].values.length > $scope.maxX) $scope.data[dataIndex].values.shift();
 
       //resize y axis scale
       var sumY = 0;
@@ -151,10 +164,10 @@ dashboardApp.controller('PanelController', ['$scope',
 
     function setPanelClass() {
       $scope.panelClass = 'panel-red';
-      if ($scope.project.total > 200) {
+      if ($scope.project.total > Panel.RAINY) {
         $scope.panelClass = 'panel-red';
         $scope.faIcon = 'fa-umbrella';
-      } else if ($scope.project.total > 100) {
+      } else if ($scope.project.total > Panel.CLOUDY) {
         $scope.panelClass = 'panel-yellow';
         $scope.faIcon = 'fa-cloud';
       } else {

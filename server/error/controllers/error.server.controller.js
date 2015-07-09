@@ -443,6 +443,7 @@ exports.listErrorTypeStream = function (req, res, next) {
     });
 };
 
+//daily errors summary by a project
 exports.listDailySummaryForDashboard = function (req, res, next) {
 
   var fromDateStamp = req.query.fromDateStamp*1;
@@ -467,6 +468,12 @@ exports.listDailySummaryForDashboard = function (req, res, next) {
         }
         return pre;
       }, {__arr:[]});
+
+      projects.forEach(function(project) {
+        if(!(project in reduced)) {
+          reduced.__arr.push(reduced[project]={total: 0, topBrowser: 'n/a', key: project});
+        }
+      });
 
       //console.log(JSON.stringify(reduced));
       //console.log(JSON.stringify(summary));
