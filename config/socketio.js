@@ -43,6 +43,8 @@ module.exports = function (server, io, mongoStore) {
       userId = socket.request.session.passport['user'];
     }
     console.log('[SCK]connected %d - user:%s socket:%s', connCount, userId, socket.id);
+    socket.emit('interval', {interval: config.mainDashboardInterval/1000});
+
     if (userId) {
       userService.listUserProject(userId, function(err, projects){
         if(err) {
