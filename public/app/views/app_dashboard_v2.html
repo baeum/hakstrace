@@ -5,7 +5,7 @@
       <!--<div class="bg-black dker wrapper-lg">-->
       <div class="bg-light wrapper-lg">
         <div>
-          <h3 class="m-t-0">Real-time Graph(avg/5sec)</h3>
+          <h3 class="m-t-0">Real-time Graph(/5sec)</h3>
         </div>
         <div>
           <nvd3 options="options" data="data" config="{refreshDataOnly: true}"></nvd3>
@@ -39,7 +39,7 @@
                     <i class="fa {{faIcon}} fa-4x"></i>
                   </div>
                   <div class="col-xs-9 text-right">
-                    <div class="huge">{{project.errors | number:0}}</div>
+                    <div class="huge" ngx-fade-toggle="totalVisible">{{project.total | number:0}}</div>
                     <div>Top Browser</div>
                     <div>{{project.topBrowser}}</div>
                   </div>
@@ -47,7 +47,7 @@
               </div>
               <a href="#">
                 <div class="panel-footer">
-                  <span class="pull-left">Site : {{project._id}}</span>
+                  <span class="pull-left">Site : {{project.key}}</span>
                   <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
 
                   <div class="clearfix"></div>

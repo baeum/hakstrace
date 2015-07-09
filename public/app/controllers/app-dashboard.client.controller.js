@@ -1,22 +1,23 @@
 'use strict';
 
 /* Controllers */
-var dashboaraApp = angular.module('app');
-dashboaraApp.controller('MainDashboardCtrl', ['$scope', '$resource', 'mySocket',
-  function ($scope, $resource, mySocket) {
+var dashboardApp = angular.module('app');
+dashboardApp.controller('MainDashboardCtrl', ['$scope', '$resource', '$timeout', 'mySocket',
+  function ($scope, $resource, $timeout, mySocket) {
 
-    var ResourceDailySummary = $resource('/api/errors/summary/dailySummaryForDashboard',{},{cache:false});
+    var ResourceDailySummary = $resource('/api/errors/summary/dailySummaryForDashboard', {}, {cache: false});
 
-    ResourceDailySummary.query({fromDateStamp: new Date().setHours(0,0,0,0)})
+    ResourceDailySummary.query({fromDateStamp: new Date().setHours(0, 0, 0, 0)})
       .$promise.then(function (errorDailySummary) {
         console.log(errorDailySummary);
+        $scope.projects = errorDailySummary;
       });
 
     //temporary test data
-    $scope.projects = [
-      {_id: 'YosiJoA', errors: '50', topBrowser: 'Chrome1.1.12'},
-      {_id: 'HaksYoMan', errors: '150', topBrowser: 'Chrome1.9.12'},
-      {_id: 'MyPantom', errors: '13113', topBrowser: 'IE1.1.12'}];
+    /*    $scope.projects = [
+     {key: 'YosiJoA', total: '50', topBrowser: 'Chrome1.1.12'},
+     {key: 'HaksYoMan', total: '150', topBrowser: 'Chrome1.9.12'},
+     {key: 'MyPantom', total: '13113', topBrowser: 'IE1.1.12'}];*/
 
     //Y axis max
     var maxY = 10;
@@ -70,10 +71,29 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', '$resource', 'mySocket',
 
     //connect to socket
     mySocket.forward('allErrorCount', $scope);
+
+    $scope.totalVisible = true;
     $scope.$on('socket:allErrorCount', function (ev, data) {
       //console.log(data);
 
-      //put data & graph shift
+      //##############################
+      //put data to panel
+      //##############################
+      //$scope.projects = [{key: 'YosiJoA', total: '50', topBrowser: 'Chrome1.1.12'}];
+      var projectIndex = getIndexByPjtId($scope.projects, data.project);
+      if (projectIndex >= 0 && data.y > 0) {
+        $scope.totalVisible = false;
+
+        $timeout(function () {
+          $scope.projects[projectIndex].total += data.y;
+          $scope.$broadcast('changeErrorCount');
+          $scope.totalVisible = true;
+        }, 1000);
+      }
+
+      //##############################
+      //put data to graph & shift
+      //##############################
       var dataIndex = getIndexByPjtId($scope.data, data.project);
       if (dataIndex < 0) {
         $scope.data.push({values: [], key: data.project});
@@ -88,7 +108,7 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', '$resource', 'mySocket',
       var tempLen = $scope.data[dataIndex].values.length;
       console.log('tempLen=%d', tempLen);
       for (var i = 0; i < $scope.data.length; i++) {
-        sumY += $scope.data[i].values[tempLen-1].y;
+        sumY += $scope.data[i].values[tempLen - 1].y;
       }
       console.log('sumY=' + sumY);
       if (sumY > maxY) {
@@ -122,20 +142,38 @@ dashboaraApp.controller('MainDashboardCtrl', ['$scope', '$resource', 'mySocket',
     //mySocket.emit('signin');
   }]);
 
-dashboaraApp.controller('PanelController', ['$scope',
+dashboardApp.controller('PanelController', ['$scope',
   function ($scope) {
-    $scope.panelClass = 'panel-red';
-    if ($scope.project.errors > 1000) {
+    $scope.$on('changeErrorCount', function () {
+      setPanelClass();
+    });
+    setPanelClass();
+
+    function setPanelClass() {
       $scope.panelClass = 'panel-red';
-      $scope.faIcon = 'fa-umbrella';
-    } else if ($scope.project.errors > 100) {
-      $scope.panelClass = 'panel-yellow';
-      $scope.faIcon = 'fa-cloud';
-    } else {
-      $scope.panelClass = 'panel-green';
-      $scope.faIcon = 'fa-certificate';
+      if ($scope.project.total > 200) {
+        $scope.panelClass = 'panel-red';
+        $scope.faIcon = 'fa-umbrella';
+      } else if ($scope.project.total > 100) {
+        $scope.panelClass = 'panel-yellow';
+        $scope.faIcon = 'fa-cloud';
+      } else {
+        $scope.panelClass = 'panel-green';
+        $scope.faIcon = 'fa-certificate';
+      }
     }
   }]);
+
+dashboardApp.directive('ngxFadeToggle', function () {
+  return {
+    link: function (scope, element, attrs) {
+      scope.$watch(attrs.ngxFadeToggle, function (val, oldVal) {
+        if (val === oldVal) return;
+        element[val ? 'fadeIn' : 'fadeOut'](1000);
+      });
+    }
+  }
+});
 
 var getIndexByPjtId = (function (scopeData, pjtId) {
   for (var i = 0; i < scopeData.length; i++) {
