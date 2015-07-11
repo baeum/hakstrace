@@ -3,16 +3,16 @@
 /* Controllers */
 
 angular.module('app')
-  .controller('AppAccessCtrl', ['$scope', '$rootScope', '$state', 'AccessSignin', '$log', '$localStorage',
-    function($scope, $rootScope, $state, AccessSignin, $log, $localStorage ) {
+  .controller('AppAccessCtrl', ['$scope', '$rootScope', '$state', 'AccessSignin', '$log', '$localStorage', 'myCookie',
+    function($scope, $rootScope, $state, AccessSignin, $log, $localStorage, myCookie ) {
 
       $scope.app = $rootScope.app;
-      //setCookie('haksTestId', '', 365);
-      //setCookie('haksTestPw', '', 365);
+      //myCookie.setCookie('haksTestId', '', 365);
+      //myCookie.setCookie('haksTestPw', '', 365);
 
       //for Testing ...
-      var emailFromCookie = getCookie('haksTestId');
-      var passwordFromCookie = getCookie('haksTestPw');
+      var emailFromCookie = myCookie.getCookie('haksTestId');
+      var passwordFromCookie = myCookie.getCookie('haksTestPw');
       if(emailFromCookie) $scope.email = emailFromCookie;
       if(passwordFromCookie) $scope.password = passwordFromCookie;
 
@@ -36,35 +36,26 @@ angular.module('app')
                 auth: response.auth
               };
               $log.log("rootscope: " + $rootScope.session.name);
+              /*$timeout(function() {
+                //location.href='/#/dashboard';
+                location.replace('/#/dashboard');
+              }, 100);*/
               $state.go('app.dashboard');
-              //$log.log($state.href("app.dashboard"));
-              //location.replace('/#/dashboard');
             }else{
               $scope.authError = 'Login failed';
             }
         });
       };
+}]);
 
-}]);;
 
-function setCookie(cName, cValue, cDay){
-  var expire = new Date();
-  expire.setDate(expire.getDate() + cDay);
-  var cookies = cName + '=' + encodeURI(cValue) + '; path=/ ';
-  if(typeof cDay != 'undefined') cookies += ';expires=' + expire.toGMTString() + ';';
-  document.cookie = cookies;
-}
-
-function getCookie(cName) {
-  cName = cName + '=';
-  var cookieData = document.cookie;
-  var start = cookieData.indexOf(cName);
-  var cValue = '';
-  if(start != -1){
-    start += cName.length;
-    var end = cookieData.indexOf(';', start);
-    if(end == -1)end = cookieData.length;
-    cValue = cookieData.substring(start, end);
-  }
-  return decodeURI(cValue);
-}
+//blank init page ( unsigned user --> move to login page / signed user --> dashboard )
+angular.module('app')
+  .controller('AppBlankCtrl', ['$scope', '$state', '$resource',
+    function($scope, $state, $resource ) {
+      var ResourceIsLogin = $resource('/api/access/isLogin', {}, {cache: false});
+      ResourceIsLogin.query({})
+        .$promise.then(function () {
+          $state.go('app.dashboard');
+        });
+    }]);

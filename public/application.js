@@ -27,10 +27,6 @@ mainApplicationModule.constant('angularMomentConfig', {
   timezone: 'Korea/Seoul'
 });
 
-mainApplicationModule.factory('mySocket', function (socketFactory) {
-  return socketFactory();
-});
-
 angular.element(document).ready(function () {
   angular.bootstrap(document, [mainApplicationModuleName]);
 });
@@ -103,6 +99,35 @@ mainApplicationModule.directive('ngEnter', function () {
     });
   };
 });
+
+mainApplicationModule.factory('mySocket', function (socketFactory) {
+  return socketFactory();
+});
+
+mainApplicationModule.service('myCookie', function() {
+  this.setCookie = function(cName, cValue, cDay) {
+    var expire = new Date();
+    expire.setDate(expire.getDate() + cDay);
+    var cookies = cName + '=' + encodeURI(cValue) + '; path=/ ';
+    if(typeof cDay != 'undefined') cookies += ';expires=' + expire.toGMTString() + ';';
+    document.cookie = cookies;
+  };
+
+  this.getCookie = function(cName) {
+    cName = cName + '=';
+    var cookieData = document.cookie;
+    var start = cookieData.indexOf(cName);
+    var cValue = '';
+    if(start != -1){
+      start += cName.length;
+      var end = cookieData.indexOf(';', start);
+      if(end == -1)end = cookieData.length;
+      cValue = cookieData.substring(start, end);
+    }
+    return decodeURI(cValue);
+  };
+});
+
 
 //connect to socket
 //var socketDashboard = io.connect('http://localhost:3000');
