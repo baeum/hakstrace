@@ -25,11 +25,9 @@ angular.module('app')
           abstract: true, // abstract <-- 이거 상속 같은 개념임. 중요함
           templateUrl: '/app/views/app.client.view.html'
         })
-        // main -- on testing something(use project main page temporarily)
-        // TODO : write main page for redirecting to signin page or dashboard
         .state('app.main', {
           url: '',
-          templateUrl: '/project/views/project-list.client.view.html'
+          templateUrl: '/app/views/app-access-blank.html'
         })
         // main dashboard
         .state('app.dashboard', {
