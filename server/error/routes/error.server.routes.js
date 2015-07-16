@@ -1,7 +1,7 @@
 var errorServerController = require('../controllers/error.server.controller');
 
 module.exports = function(app) {
-  app.route('/api/errors/:projectKey/fetch')
+  app.route('/api/errors/:projectKey/post')
     .get(errorServerController.createError);
 
   app.route('/api/errors/:projectKey/stream')

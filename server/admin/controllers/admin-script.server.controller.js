@@ -8,7 +8,7 @@ exports.getLatestScript = function(req, res, next) {
     if(err){
       return next(err);
     }
-    res.json(script);
+    res.json(script[0]);
   });
 
 };
