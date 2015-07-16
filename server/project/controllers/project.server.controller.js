@@ -144,7 +144,7 @@ exports.getScript = function(req, res, next){
     if(err){
       res.end();
     }
-    var latestScript = script;
+    var latestScript = script[0];
     Project.findOne({ projectKey: projectKey })
         .exec(function(err, project){
       if(err){

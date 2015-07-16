@@ -86,7 +86,7 @@
 
   // Set up default notifier settings.
   var DEFAULT_API_KEY = "{{apiKey}}";
-  var DEFAULT_NOTIFIER_ENDPOINT = "{{host}}/api/errors/{{projectKey}}/fetch";
+  var DEFAULT_NOTIFIER_ENDPOINT = "{{host}}/api/errors/{{projectKey}}/post";
 
   // Keep a reference to the currently executing script in the DOM.
   // We'll use this later to extract settings from attributes.

@@ -22,8 +22,9 @@ var ScriptSchema = new Schema({
 
 
 ScriptSchema.statics.findLatest = function (callback) {
-  this.findOne()
-    .sort('-version')
+  this.find()
+    .sort({'version': -1})
+    .limit(1)
     .exec(callback);
 }
 
