@@ -21,6 +21,7 @@ exports.createTiming = function (req, res, next) {
   navTiming.os = uaResult.os;
 
   navTiming.navigationStart = req.query.navigationStart;
+  navTiming.domainLookupStart = req.query.domainLookupStart;
   navTiming.connectStart = req.query.connectStart;
   navTiming.requestStart = req.query.requestStart;
   navTiming.responseStart = req.query.responseStart;
