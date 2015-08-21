@@ -1,0 +1,390 @@
+<section ng-controller="ProjectDetailNavtimingCtrl">
+
+  <div class="wrapper ff-serif" style="display:table;width:100%;">
+
+
+  <div class="col lt" style="width:400px;">
+    <div class="vbox">
+
+
+        <ul class="list-group">
+          <li class="list-group-item">
+
+            <div class="m-b-sm">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(30)">30 mins</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*12)">12 hours</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24)">24 hours</button>
+                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24*14)">2 weeks</button>
+                <button type="button" class="btn btn-default btn-sm">More</button>
+              </div>
+            </div>
+
+
+          </li>
+          <li class="list-group-item">
+            <div class="progress" ng-repeat="navtiming in navtimingSummary.list"
+              ng-click="getNavtimingDetail(navtiming)"
+              ng-class="{active: isActiveNavtiming(navtiming._id)}"
+              title="{{navtiming._id}}">
+                <div class="progress-bar progress-bar-danger" style="width: {{(100*navtiming.occurances/navtimingSummary.totalOccurances)| number:0}}%;">
+                    <span class="sr-only">{{navtiming.occurances}}</span>
+                </div>
+                <span class="progress-type"><a href>{{ navtiming._id | limitTo: 45 }}{{navtiming._id > 20 ? '...' : ''}}</a></span>
+                <span class="progress-completed">{{navtiming.occurances}}</span>
+            </div>
+
+          </li>
+          <li class="list-group-item">
+              <p><a href class="text-info">@Josh Long</a>most frequently called uris (top 50)</p>
+              <small class="block text-muted"><i class="fa fa-fw fa-clock-o"></i><span am-time-ago="Date.now()"></span></small>
+          </li>
+        </ul>
+
+
+
+    </div>
+  </div>
+  <!-- /column -->
+
+  <!-- column -->
+  <div class="col" style="padding-left:10px;">
+
+    <div class="vbox">
+
+
+      <div class="panel b-a">
+        <h5>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info">- {{errorType._id.message}}</span>&nbsp;&nbsp;<small>{{errorType._id.type}}</small>
+        </h5>
+        <div class="padder-v hbox text-center b-t b-light" style="padding:10px 10px 10px 10px;">
+          <div>
+            <em>from </em><span class="text-muted">{{dateRange.start| date:"MM/dd HH:mm"}}</span> ~
+            <em>to </em><span class="text-muted">{{dateRange.end| date:"MM/dd HH:mm"}}</span></strong>
+          </div>
+          <div class="m-t-sm">
+            <canvas class="chart chart-line"
+              height="70"
+              data="errorTypeHistoryData"
+              labels="errorTypeHistoryLabel"
+              series="series"
+              options="{animation : false, bezierCurve : false, pointDot : false, datasetFill : true}">
+            </canvas>
+          </div>
+      </div>
+
+      <div class="hbox text-center b-t b-light">
+        <div class="col padder-v b-r b-light">
+          <div class="h3 text-info"><b>{{errorType.occurances}}</b></div>
+          <span>Occurances</span>
+        </div>
+        <div class="col padder-v b-r b-light">
+          <div class="h3 text-info"><b>{{errorType.users}}</b></div>
+          <span>Users</span>
+        </div>
+        <div class="col padder-v b-r b-light">
+          <div>First Seen at <b class="text-info">{{errorType._id.firstSeen| date:"MM/dd HH:mm:ss"}}</b></div>
+          <div>Last Seen at <b class="text-info">{{errorType._id.lastSeen| date:"MM/dd HH:mm:ss"}}</b></div>
+        </div>
+      </div>
+    </div>
+
+
+    <tabset class="tab-container no-scroll">
+
+      <tab>
+        <tab-heading>
+          <i class="fa-fw icon-pie-chart"></i>&nbsp; Sharing
+        </tab-heading>
+
+        <div class="panel-body">
+
+          <div class="hbox text-center b-t b-b b-light">
+            <div class="col padder-v b-r b-l b-light">
+              <div>Browser Share</div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">Device:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.browser.device._id.vendor}} {{errorTypeShareFilter.browser.device._id.model||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeBrowserShareByDevice()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeBrowserShareByDevice(device)" ng-repeat="device in errorTypeDeviceShareList">
+                      {{device._id.vendor}} {{device._id.model}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">OS:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.browser.os._id.name}} {{errorTypeShareFilter.browser.os._id.version||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeBrowserShareByOS()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeBrowserShareByOS(os)" ng-repeat="os in errorTypeOSShareList">
+                      {{os._id.name}} {{os._id.version}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="line line-dashed b-b"></div>
+
+
+              <div class="m-t-sm">
+                <canvas class="chart chart-doughnut"
+                  height="220"
+                  data="errorTypeBrowserShareData"
+                  labels="errorTypeBrowserShareLabel"
+                  options="{animation : false}">
+                </canvas>
+                <div class="donut-inner">
+                  <h5>{{errorTypeBrowserShareHighest.name}}</h5>
+                  <span>{{errorTypeBrowserShareHighest.occupancy | number:2}} %</span>
+                </div>
+              </div>
+              <ol class="text-left">
+                <li>{{errorTypeBrowserShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeBrowserShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeBrowserShareLabel[2] || 'N/A'}}</li>
+              </ol>
+
+            </div>
+            <div class="col padder-v b-r b-light">
+              <div>Device Share</div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">Browser:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.device.browser._id.name}} {{errorTypeShareFilter.device.browser._id.major||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeDeviceShareByBrowser()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeDeviceShareByBrowser(browser)" ng-repeat="browser in errorTypeBrowserShareList">
+                      {{browser._id.name}} {{browser._id.major}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">OS:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.device.os._id.name}} {{errorTypeShareFilter.device.os._id.version||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeDeviceShareByOS()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeDeviceShareByOS(os)" ng-repeat="os in errorTypeOSShareList">
+                      {{os._id.name}} {{os._id.version}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="line line-dashed b-b"></div>
+
+              <div class="m-t-sm">
+                <canvas class="chart chart-doughnut"
+                  height="220"
+                  data="errorTypeDeviceShareData"
+                  labels="errorTypeDeviceShareLabel"
+                  options="{animation : false}">
+                </canvas>
+                <div class="donut-inner">
+                  <h5>{{errorTypeDeviceShareHighest.name}}</h5>
+                  <span>{{errorTypeDeviceShareHighest.occupancy | number:2}} %</span>
+                </div>
+              </div>
+              <ol class="text-left">
+                <li>{{errorTypeDeviceShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeDeviceShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeDeviceShareLabel[2] || 'N/A'}}</li>
+              </ol>
+            </div>
+            <div class="col padder-v b-r b-light">
+              <div>OS Share</div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">Browser:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.os.browser._id.name}} {{errorTypeShareFilter.os.browser._id.major||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeOSShareByBrowser()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeOSShareByBrowser(browser)" ng-repeat="browser in errorTypeBrowserShareList">
+                      {{browser._id.name}} {{browser._id.major}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="dropdown" dropdown>
+                <button type="button" style="width:90%;margin-left:3px;margin-top:3px;text-align:right;" class="btn btn-default btn-sm text-left" dropdown-toggle>
+                  <span class="pull-left">
+                    <span class="text-muted">Device:&nbsp;&nbsp;</span>
+                    <strong>{{errorTypeShareFilter.os.device._id.vendor}} {{errorTypeShareFilter.os.device._id.model||'All'}}</strong>
+                  </span><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href ng-click="getErrorTypeOSShareByDevice()">All (No Filter)</a></li>
+                  <li class="divider"></li>
+                  <li>
+                    <a href ng-click="getErrorTypeOSShareByDevice(device)" ng-repeat="device in errorTypeDeviceShareList">
+                      {{device._id.vendor}} {{device._id.model}}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="line line-dashed b-b"></div>
+
+              <div class="m-t-sm">
+                <canvas class="chart chart-doughnut"
+                  height="220"
+                  data="errorTypeOSShareData"
+                  labels="errorTypeOSShareLabel"
+                  options="{animation : false}">
+                </canvas>
+                <div class="donut-inner">
+                  <h5>{{errorTypeOSShareHighest.name}}</h5>
+                  <span>{{errorTypeOSShareHighest.occupancy | number:2}} %</span>
+                </div>
+              </div>
+              <ol class="text-left">
+                <li>{{errorTypeOSShareLabel[0] || 'N/A'}}</li>
+                <li>{{errorTypeOSShareLabel[1] || 'N/A'}}</li>
+                <li>{{errorTypeOSShareLabel[2] || 'N/A'}}</li>
+              </ol>
+            </div>
+          </div>
+
+
+
+
+
+        </div>
+      </tab>
+
+
+      <tab>
+        <tab-heading>
+          <i class="fa-fw fa fa-code"></i>&nbsp; Detail Information
+        </tab-heading>
+
+        <div class="panel-body">
+          <p>Morbi nec <a href class="text-info">@Jonathan George</a> 대충 에러에 대한 어떠한 정보. 이런 종류의 오류 대응 방안?</p>
+        </div>
+        <table class="table table-striped">
+          <tr>
+            <th>Message</th>
+            <td style="padding-right:0;">{{errorType._id.message}}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td style="padding-right:0;">{{errorType._id.type}}</td>
+          </tr>
+          <tr>
+            <th>URL</th>
+            <td style="padding-right:0;">{{errorType._id.fileName}}</td>
+          </tr>
+          <tr>
+            <th>Line</th>
+            <td style="padding-right:0;">{{errorType._id.lineNo}}</td>
+          </tr>
+          <tr>
+            <th>Column</th>
+            <td style="padding-right:0;">{{errorType._id.colNo}}</td>
+          </tr>
+          <tr>
+            <th>Stack</th>
+            <td style="padding-right:0;"><pre>{{errorType._id.stack}}</pre></td>
+          </tr>
+        </table>
+
+      </tab>
+
+      <tab>
+        <tab-heading>
+          <i class="fa-fw fa fa-history"></i>&nbsp; History
+        </tab-heading>
+        <div>asdsd</div>
+        <div class="table-responsive">
+          <table datatable="ng" dt-options="scriptDtOptions" class="table table-striped b-t b-b">
+            <thead>
+              <tr>
+                <th>At</th>
+                <th>Device</th>
+                <th>OS</th>
+                <th>Browser</th>
+                <th>Client</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="error in errorTypeStream">
+                <td>{{error.created| date:"MM/dd HH:mm:ss"}}</td>
+                <td>{{error.device.vendor}} {{error.device.model}}</td>
+                <td>{{error.os.name}} {{error.os.version}}</td>
+                <td>{{error.browser.name}} {{error.browser.major}}</td>
+                <td>{{ error.clientIp }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </tab>
+
+      <tab>
+        <tab-heading>
+          <i class="fa-fw icon-bubbles"></i>&nbsp; Comments
+        </tab-heading>
+        <div class="table-responsive">
+          <table datatable="ng" dt-options="scriptDtOptions" class="table table-striped b-t b-b">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Date</th>
+                <th>Script</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="script in scripts">
+                <td>v{{ script.version }}.0</td>
+                <td>{{ script.created }}</td>
+                <td><pre>{{ script.script }}</pre></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </tab>
+    </tabset>
+
+
+
+</div>
+
+
+
+  </div>
+
+
+</div>
+
+</section>

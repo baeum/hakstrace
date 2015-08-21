@@ -20,31 +20,31 @@ var NavtimingSchema = new Schema({
     type: String
   },
   navigationStart:{
-    type: String
+    type: Number
   },
   domainLookupStart:{
-    type: String
+    type: Number
   },
   connectStart:{
-    type: String
+    type: Number
   },
   requestStart:{
-    type: String
+    type: Number
   },
   responseStart:{
-    type: String
+    type: Number
   },
   responseEnd:{
-    type: String
+    type: Number
   },
   domLoading:{
-    type: String
+    type: Number
   },
   loadEventStart:{
-    type: String
+    type: Number
   },
   loadEventEnd:{
-    type: String
+    type: Number
   },
   browser:{
     name: {type: String}, major: {type: String}, version: {type: String}

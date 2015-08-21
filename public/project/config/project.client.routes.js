@@ -25,6 +25,10 @@ angular.module('project').config(['$stateProvider', '$routeProvider',
             url: '/errors',
             templateUrl: 'project/views/project-detail-errors.client.view.html'
         })
+        .state('app.project-detail.navtiming', {
+            url: '/navtiming',
+            templateUrl: 'project/views/project-detail-navtiming.client.view.html'
+        })
         .state('app.project-detail.settings', {
             url: '/settings',
             templateUrl: 'project/views/project-detail-settings.client.view.html'
