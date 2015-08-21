@@ -7,6 +7,6 @@ module.exports = {
 	mongoDebug: 'default',
 	sessionSecret: 'developmentSessionSecret',
 
-	mainDashboardInterval: 1000, //interval for development(longer on production)
-	mainDashboardLazy: 3000
+	mainDashboardInterval: 5000, //interval for development(longer on production)
+	mainDashboardLazy: 1000
 };
