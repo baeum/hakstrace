@@ -16,7 +16,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
         }).$promise.then(function (navtimingSummary) {
             $scope.navtimingSummary = navtimingSummary;
             $scope.drawNavtimingSummary(navtimingSummary.list);
-            $scope.clearNavtimingDetail();
+
             if (navtimingSummary.list.length > 0) {
               $scope.getNavtimingDetail(navtimingSummary.list[0]);
             }
@@ -46,30 +46,8 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
           start: $scope.dateRange.start,
           end: $scope.dateRange.end
         }).$promise.then(function (navtimingHitory) {
-            var navtimingHistoryLabelEach = [];
-            var navtimingHistoryDataEachPre = [];
-            var navtimingHistoryDataEachReq = [];
-            var navtimingHistoryDataEachWait = [];
-            var navtimingHistoryDataEachRes = [];
-            var navtimingHistoryDataEachLoad = [];
-            navtimingHitory.forEach(function (e) {
-              navtimingHistoryLabelEach.push(e.label);
-              navtimingHistoryDataEachPre.push(e.prepareAvg);
-              navtimingHistoryDataEachReq.push(e.prepareAvg + e.requestAvg);
-              navtimingHistoryDataEachWait.push(e.prepareAvg + e.requestAvg + e.waitAvg);
-              navtimingHistoryDataEachRes.push(e.prepareAvg + e.requestAvg + e.waitAvg + e.responseAvg);
-              navtimingHistoryDataEachLoad.push(e.prepareAvg + e.requestAvg + e.waitAvg + e.responseAvg + e.pageLoadAvg);
-            });
-            angular.copy(navtimingHistoryLabelEach, $scope.navtimingHistoryLabel);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachLoad);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachRes);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachWait);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachReq);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachPre);
-
-            $scope.navtimingHistorySeries = ['complete','response', 'wait', 'request', 'prepare'];
-            $scope.navtimingHistoryColor = [{fillColor:"#CECEF6"},{fillColor:"#2E9AFE"},{fillColor:"#0080FF"},{fillColor:"#0174DF"},{fillColor:"#08298A"}];
-          });
+            $scope.drawNavtimingHistory(navtimingHitory);
+        });
 
       };
 
@@ -77,7 +55,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
 
         var chartValuesPre = [], chartValuesReq =[], chartValuesWait=[], chartValuesRes=[], chartValuesLoad = [];
         for( inx = 0 ; inx < navtimingSummary.length ; inx++ ){
-          if(inx > 20) break;
+          if(inx > 9) break;
           chartValuesPre.push({
             "x": navtimingSummary[inx]._id,
             "y": navtimingSummary[inx].prepareAvg
@@ -117,8 +95,53 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
           "values": chartValuesLoad
         }];
 
-        $scope.navtimingHistoryChart.data = chartData;
+        $scope.navtimingSummaryChart.data = chartData;
 
+      };
+
+
+      $scope.drawNavtimingHistory = function(navtimingHistory){
+        var chartValuesPre = [], chartValuesReq =[], chartValuesWait=[], chartValuesRes=[], chartValuesLoad = [];
+        for( inx = 0 ; inx < navtimingHistory.length ; inx++ ){
+          chartValuesPre.push([
+            navtimingHistory[inx].label,
+            navtimingHistory[inx].prepareAvg?navtimingHistory[inx].prepareAvg:0
+          ]);
+          chartValuesReq.push([
+            navtimingHistory[inx].label,
+            navtimingHistory[inx].requestAvg? navtimingHistory[inx].requestAvg:0
+          ]);
+          chartValuesWait.push([
+            navtimingHistory[inx].label,
+            navtimingHistory[inx].waitAvg?navtimingHistory[inx].waitAvg:0
+          ]);
+          chartValuesRes.push([
+            navtimingHistory[inx].label,
+            navtimingHistory[inx].responseAvg?navtimingHistory[inx].responseAvg:0
+          ]);
+          chartValuesLoad.push([
+            navtimingHistory[inx].label,
+            navtimingHistory[inx].pageLoadAvg? navtimingHistory[inx].pageLoadAvg:0
+          ]);
+        }
+
+        var chartData = [{
+          "key": "prepare",
+          "values": chartValuesPre
+        },{
+          "key": "request",
+          "values": chartValuesReq
+        },{
+          "key": "wait",
+          "values": chartValuesWait
+        },{
+          "key": "response",
+          "values": chartValuesRes
+        },{
+          "key": "loadDom",
+          "values": chartValuesLoad
+        }];
+        $scope.navtimingHistoryChart.data =chartData;
       };
 
       $scope.getNavtimingDetail = function (navtiming) {
@@ -137,7 +160,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
         return $scope.navtiming._id == uri;
       };
 
-      $scope.navtimingHistoryChart = {
+      $scope.navtimingSummaryChart = {
             options:{
                 chart: {
                   type: 'multiBarHorizontalChart',
@@ -164,14 +187,37 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
           data : []
       };
 
-
-
-
-
-
-      $scope.clearNavtimingDetail = function () {
-        $scope.navtimingHistoryLabel = [];
-        $scope.navtimingHistoryData = [];
+      $scope.navtimingHistoryChart = {
+        options:{
+          chart: {
+                type: 'stackedAreaChart',
+                height: 450,
+                margin : {
+                    top: 20,
+                    right: 20,
+                    bottom: 60,
+                    left: 40
+                },
+                x: function(d){return d[0];},
+                y: function(d){return d[1];},
+                useVoronoi: false,
+                clipEdge: true,
+                transitionDuration: 500,
+                useInteractiveGuideline: true,
+                xAxis: {
+                    showMaxMin: false,
+                    tickFormat: function(d) {
+                        return d3.time.format('%b %d %H:%M %p')(new Date(d))
+                    }
+                }
+            }
+        },
+        data:[]
       };
+
+
+
+
+
 
     }]);

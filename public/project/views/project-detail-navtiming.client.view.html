@@ -5,11 +5,19 @@
  <div class="row">
    <div class="panel b-a">
      <h5>
-       &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info">- {{navtiming._id}}</span>&nbsp;&nbsp;
+       &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info">- Top 10 calls</span>&nbsp;&nbsp;
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(30)">30 mins</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*12)">12 hours</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24)">24 hours</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24*14)">2 weeks</button>
+        <button type="button" class="btn btn-default btn-sm">More</button>
+      </div>
+
      </h5>
      <div class="padder-v hbox text-center b-t b-light" style="padding:10px 10px 10px 10px;">
        <div class="m-t-sm">
-         <nvd3 options="navtimingHistoryChart.options" data="navtimingHistoryChart.data"></nvd3>
+         <nvd3 options="navtimingSummaryChart.options" data="navtimingSummaryChart.data"></nvd3>
        </div>
    </div>
 
@@ -22,23 +30,8 @@
 <div class="row">
   <div class="col lt" style="width:400px;">
     <div class="vbox">
-
-
         <ul class="list-group">
-          <li class="list-group-item">
 
-            <div class="m-b-sm">
-              <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(30)">30 mins</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*12)">12 hours</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24)">24 hours</button>
-                <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24*14)">2 weeks</button>
-                <button type="button" class="btn btn-default btn-sm">More</button>
-              </div>
-            </div>
-
-
-          </li>
           <li class="list-group-item">
             <div class="progress" ng-repeat="navtiming in navtimingSummary.list"
               ng-click="getNavtimingDetail(navtiming)"
@@ -80,14 +73,7 @@
             <em>to </em><span class="text-muted">{{dateRange.end| date:"MM/dd HH:mm"}}</span></strong>
           </div>
           <div class="m-t-sm">
-            <canvas class="chart chart-line"
-              height="70"
-              colours="navtimingHistoryColor"
-              data="navtimingHistoryData"
-              labels="navtimingHistoryLabel"
-              series="navtimingHistorySeries"
-              options="{animation : false, bezierCurve : false, pointDot : false, datasetFill : true}">
-            </canvas>
+            <nvd3 options="navtimingHistoryChart.options" data="navtimingHistoryChart.data"></nvd3>
           </div>
       </div>
 

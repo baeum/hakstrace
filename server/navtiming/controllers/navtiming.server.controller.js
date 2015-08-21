@@ -176,30 +176,29 @@ exports.listNavtimingsHistory = function (req, res, next) {
       return next(err);
     }
 
-    console.log("result: %j", result);
 
 
     var resultWithEmptyDates = [];
     var curDate = new Date(req.query.start);
     var historyData = result.length > 0 ? result.shift() : {};
     for (var inx = 0; inx < historyRange + 1; inx++) {
-      var prepareAvg,requestAvg,waitAvg,responseAvg,pageLoadAvg = 0;
+      var prepareAvg=0,requestAvg=0,waitAvg=0,responseAvg=0,pageLoadAvg = 0;
       if (historyMatch(historyData, curDate)) {
-        prepareAvg = historyData.prepareAvg;
-        requestAvg = historyData.requestAvg;
-        waitAvg = historyData.waitAvg;
-        responseAvg = historyData.responseAvg;
-        pageLoadAvg = historyData.pageLoadAvg;
+        prepareAvg = historyData.prepareAvg?historyData.prepareAvg:0;
+        requestAvg = historyData.requestAvg?historyData.requestAvg:0;
+        waitAvg = historyData.waitAvg?historyData.waitAvg:0;
+        responseAvg = historyData.responseAvg?historyData.responseAvg:0;
+        pageLoadAvg = historyData.pageLoadAvg?historyData.pageLoadAvg:0;
 
         historyData = result.length > 0 ? result.shift() : {};
       }
       resultWithEmptyDates.push({
-        label: resultLabel(curDate),
-        prepareAvg: Math.ceil(prepareAvg),
-        requestAvg: Math.ceil(requestAvg),
-        waitAvg: Math.ceil(waitAvg),
-        responseAvg: Math.ceil(responseAvg),
-        pageLoadAvg: Math.ceil(pageLoadAvg)
+        label: new Date(curDate).getTime(),
+        prepareAvg: prepareAvg,
+        requestAvg: requestAvg,
+        waitAvg: waitAvg,
+        responseAvg: responseAvg,
+        pageLoadAvg:pageLoadAvg
       });
       historyAdd(curDate);
     }
