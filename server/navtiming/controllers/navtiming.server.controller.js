@@ -10,7 +10,7 @@ exports.createTiming = function (req, res, next) {
   navTiming.uri = req.query.uri;
   navTiming.url = req.query.url;
 
-  navTiming.host = req.headers.host;
+  navTiming.host = req.query.host;
   navTiming.referer = req.headers.referer;
   navTiming.clientIp = req.ip;
 
