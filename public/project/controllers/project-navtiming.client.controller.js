@@ -164,7 +164,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
             options:{
                 chart: {
                   type: 'multiBarHorizontalChart',
-                  height: 450,
+                  height: 400,
                   margin : {
                       top: 20,
                       right: 20,
@@ -178,6 +178,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
                   xAxis: {
                       showMaxMin: false
                   },
+                  tooltips:true,
                   yAxis: {
                       axisLabel: 'Time (ms)',
                       axisLabelDistance: 40
