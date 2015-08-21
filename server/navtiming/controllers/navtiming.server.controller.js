@@ -146,7 +146,7 @@ exports.listNavtimingsHistory = function (req, res, next) {
     {
       $match: {
         projectKey: req.params.projectKey,
-        uri: req.params.uri,
+        uri: req.query.uri,
         created: {
           $gt: new Date(req.query.start),
           $lt: new Date(req.query.end)
@@ -156,7 +156,11 @@ exports.listNavtimingsHistory = function (req, res, next) {
     {
       $group: {
         _id: historyGroup,
-        prepareAvg: {$avg: "$connectStart"}
+        prepareAvg: {$avg: { $subtract : ["$domainLookupStart","$navigationStart"]} },
+        requestAvg: {$avg: { $subtract : ["$requestStart","$domainLookupStart"]} },
+        waitAvg: {$avg: { $subtract : ["$responseStart","$requestStart"]} },
+        responseAvg: {$avg: { $subtract : ["$responseEnd","$responseStart"]} },
+        pageLoadAvg: {$avg: { $subtract : ["$loadEventEnd","$responseEnd"]} }
       }
     },
     {
@@ -166,18 +170,31 @@ exports.listNavtimingsHistory = function (req, res, next) {
     if (err) {
       return next(err);
     }
+
+    console.log("result: %j", result);
+
+
     var resultWithEmptyDates = [];
     var curDate = new Date(req.query.start);
     var historyData = result.length > 0 ? result.shift() : {};
     for (var inx = 0; inx < historyRange + 1; inx++) {
-      var prepareAvg = 0;
+      var prepareAvg,requestAvg,waitAvg,responseAvg,pageLoadAvg = 0;
       if (historyMatch(historyData, curDate)) {
         prepareAvg = historyData.prepareAvg;
+        requestAvg = historyData.requestAvg;
+        waitAvg = historyData.waitAvg;
+        responseAvg = historyData.responseAvg;
+        pageLoadAvg = historyData.pageLoadAvg;
+
         historyData = result.length > 0 ? result.shift() : {};
       }
       resultWithEmptyDates.push({
         label: resultLabel(curDate),
-        prepareAvg: prepareAvg
+        prepareAvg: Math.ceil(prepareAvg),
+        requestAvg: Math.ceil(requestAvg),
+        waitAvg: Math.ceil(waitAvg),
+        responseAvg: Math.ceil(responseAvg),
+        pageLoadAvg: Math.ceil(pageLoadAvg)
       });
       historyAdd(curDate);
     }
