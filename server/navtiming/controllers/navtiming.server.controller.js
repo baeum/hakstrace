@@ -1,37 +1,40 @@
 var mongoose = require('mongoose');
 var UAParser = require('ua-parser-js');
+var Navtiming = mongoose.model('Navtiming');
 
 exports.createTiming = function (req, res, next) {
 
-  // @TO-DO
-  // projectKey 랑 apiKey 로 유효성 검즈하는 로직 필요
-  var navTiming = {};
+  var navTiming = new Navtiming();
   navTiming.projectKey = req.params.projectKey;
   navTiming.userAgent = req.query.userAgent;
+  navTiming.uri = req.query.uri;
+  navTiming.url = req.query.url;
+
   navTiming.host = req.headers.host;
   navTiming.referer = req.headers.referer;
   navTiming.clientIp = req.ip;
 
-  console.log('##### navTiming.userAgetn=' + navTiming.userAgent);
-  //host: location.protocol + "//" + location.host,
-  //  uri: location.pathname,
-  //  url: window.location.href,
-  //  userAgent: navigator.userAgent,
-  //  navigationStart: t.navigationStart,
-  //  domainLookupStart: t.domainLookupStart,
-  //  connectStart: t.connectStart,
-  //  requestStart: t.requestStart,
-  //  responseStart: t.responseStart,
-  //  responseEnd: t.responseEnd,
-  //  domLoading: t.domLoading,
-  //  loadEventStart: t.loadEventStart,
-  //  loadEventEnd: t.loadEventEnd
+  var uaparser = new UAParser();
+  var uaResult = uaparser.setUA(navTiming.userAgent).getResult();
+  navTiming.browser = uaResult.browser;
+  navTiming.device = uaResult.device;
+  navTiming.os = uaResult.os;
 
-  //https://github.com/faisalman/ua-parser-js
-  //var uaparser = new UAParser();
-  //var uaResult = uaparser.setUA(herror.userAgent).getResult();
-  //herror.browser = uaResult.browser;
-  //herror.device = uaResult.device;
-  //herror.os = uaResult.os;
+  navTiming.navigationStart = req.query.navigationStart;
+  navTiming.connectStart = req.query.connectStart;
+  navTiming.requestStart = req.query.requestStart;
+  navTiming.responseStart = req.query.responseStart;
+  navTiming.responseEnd = req.query.responseEnd;
+  navTiming.domLoading = req.query.domLoading;
+  navTiming.loadEventStart = req.query.loadEventStart;
+  navTiming.loadEventEnd = req.query.loadEventEnd;
 
+  navTiming.save(function(err) {
+    if (err) {
+      console.error(err);
+      return next(err);
+    }
+  });
+
+  console.log('save success');
 };

@@ -13,10 +13,37 @@ var NavtimingSchema = new Schema({
   host:{
     type: String
   },
-  referer:{
+  uri:{
     type: String
   },
-  clientIp:{
+  url:{
+    type: String
+  },
+  navigationStart:{
+    type: String
+  },
+  domainLookupStart:{
+    type: String
+  },
+  connectStart:{
+    type: String
+  },
+  requestStart:{
+    type: String
+  },
+  responseStart:{
+    type: String
+  },
+  responseEnd:{
+    type: String
+  },
+  domLoading:{
+    type: String
+  },
+  loadEventStart:{
+    type: String
+  },
+  loadEventEnd:{
     type: String
   },
   browser:{
@@ -32,15 +59,13 @@ var NavtimingSchema = new Schema({
     type: Date,
     default: Date.now,
     get: function(date) {
-        //return moment(date).format('YYYY-MM-DD hh:mm:ss');
         return new Date(date).toTimeString();
     }
   }
-}, { collection: 'errors' });
+}, { collection: 'navtimings' });
 
-HErrorSchema.set('autoIndex', false);
-HErrorSchema.index({created: -1, projectKey: 1});
-HErrorSchema.index({projectKey: 1, created: -1});
+NavtimingSchema.set('autoIndex', false);
+NavtimingSchema.index({created: -1, projectKey: 1});
+NavtimingSchema.index({projectKey: 1, created: -1});
 
-
-mongoose.model('HError', HErrorSchema);
+mongoose.model('Navtiming', NavtimingSchema);
