@@ -3,14 +3,10 @@
  */
 (function() {
   //'use strict';
-  console.log('on script!!');
-  console.log('1=' + window.onload);
-
   if ( document.addEventListener ) {
     // Use the handy event callback
     document.addEventListener( "DOMContentLoaded", function(){
       document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
-      console.log('myload1');
       navtiming();
     }, false );
 
@@ -21,7 +17,6 @@
     document.attachEvent("onreadystatechange", function () {
       if (document.readyState === "complete") {
         document.detachEvent("onreadystatechange", arguments.callee);
-        console.log('myload2');
         navtiming();
       }
     });
