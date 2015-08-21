@@ -1,119 +1,89 @@
 /**
  * Created by noongs on 2015-08-19.
  */
-(function(window) {
+(function() {
   'use strict';
 
-  /**
-   * Navigation Timing API helpers
-   * timing.getTimes();
-   **/
-  window.timing = window.timing || {
-      /**
-       * Outputs extended measurements using Navigation Timing API
-       * @param  Object opts Options (simple (bool) - opts out of full data view)
-       * @return Object      measurements
-       */
-      getTimes: function(opts) {
-        var performance = window.performance || window.webkitPerformance || window.msPerformance || window.mozPerformance;
+  var DEFAULT_NOTIFIER_ENDPOINT = "http://localhost:3000/api/navtimings/YosiJoA/post";
 
-        if (performance === undefined) {
-          console.log('Unfortunately, your browser does not support the Navigation Timing API');
-          return;
-        }
-
-        var timing = performance.timing;
-        var api = {};
-        opts = opts || {};
-
-        if (timing) {
-          if(opts && !opts.simple) {
-            for (var k in timing) {
-              if (timing.hasOwnProperty(k)) {
-                api[k] = timing[k];
-              }
-            }
-          }
-
-
-          // Time to first paint
-          if (api.firstPaint === undefined) {
-            // All times are relative times to the start time within the
-            // same objects
-            var firstPaint = 0;
-
-            // Chrome
-            if (window.chrome && window.chrome.loadTimes) {
-              // Convert to ms
-              firstPaint = window.chrome.loadTimes().firstPaintTime * 1000;
-              api.firstPaintTime = firstPaint - (window.chrome.loadTimes().startLoadTime*1000);
-            }
-            // IE
-            else if (typeof window.performance.timing.msFirstPaint === 'number') {
-              firstPaint = window.performance.timing.msFirstPaint;
-              api.firstPaintTime = firstPaint - window.performance.timing.navigationStart;
-            }
-            // Firefox
-            // This will use the first times after MozAfterPaint fires
-            //else if (window.performance.timing.navigationStart && typeof InstallTrigger !== 'undefined') {
-            //    api.firstPaint = window.performance.timing.navigationStart;
-            //    api.firstPaintTime = mozFirstPaintTime - window.performance.timing.navigationStart;
-            //}
-            if (opts && !opts.simple) {
-              api.firstPaint = firstPaint;
-            }
-          }
-
-          // Total time from start to load
-          api.loadTime = timing.loadEventEnd - timing.fetchStart;
-          // Time spent constructing the DOM tree
-          api.domReadyTime = timing.domComplete - timing.domInteractive;
-          // Time consumed preparing the new page
-          api.readyStart = timing.fetchStart - timing.navigationStart;
-          // Time spent during redirection
-          api.redirectTime = timing.redirectEnd - timing.redirectStart;
-          // AppCache
-          api.appcacheTime = timing.domainLookupStart - timing.fetchStart;
-          // Time spent unloading documents
-          api.unloadEventTime = timing.unloadEventEnd - timing.unloadEventStart;
-          // DNS query time
-          api.lookupDomainTime = timing.domainLookupEnd - timing.domainLookupStart;
-          // TCP connection time
-          api.connectTime = timing.connectEnd - timing.connectStart;
-          // Time spent during the request
-          api.requestTime = timing.responseEnd - timing.requestStart;
-          // Request to completion of the DOM loading
-          api.initDomTreeTime = timing.domInteractive - timing.responseEnd;
-          // Load event time
-          api.loadEventTime = timing.loadEventEnd - timing.loadEventStart;
-        }
-
-        return api;
-      },
-      /**
-       * Uses console.table() to print a complete table of timing information
-       * @param  Object opts Options (simple (bool) - opts out of full data view)
-       */
-      printTable: function(opts) {
-        var table = {};
-        var data  = this.getTimes(opts) || {};
-        Object.keys(data).sort().forEach(function(k) {
-          table[k] = {
-            ms: data[k],
-            s: +((data[k] / 1000).toFixed(2))
-          };
-        });
-        console.table(table);
-      },
-      /**
-       * Uses console.table() to print a summary table of timing information
-       */
-      printSimpleTable: function() {
-        this.printTable({simple: true});
+  window.onload = function(){
+    setTimeout(function(){
+      var performance = window.performance || window.webkitPerformance || window.msPerformance || window.mozPerformance;
+      if(performance === undefined) {
+        console.log('Unfortunately, your browser does not support the Navigation Timing API');
+        return;
       }
+      var t = performance.timing;
+      var navtiming = {
+        navigationStart: t.navigationStart,
+        domainLookupStart: t.domainLookupStart,
+        connectStart: t.connectStart,
+        requestStart: t.requestStart,
+        responseStart: t.responseStart,
+        responseEnd: t.responseEnd,
+        domLoading: t.domLoading,
+        loadEventStart: t.loadEventStart,
+        loadEventEnd: t.loadEventEnd
+      };
+
+      console.log(navtiming);
+      console.log('1st client:%d', navtiming.domainLookupStart - navtiming.navigationStart);
+      console.log('1st n/w:%d', navtiming.requestStart - navtiming.domainLookupStart);
+      console.log('1st server:%d', navtiming.responseStart - navtiming.requestStart);
+      console.log('2nd n/w:%d', navtiming.responseEnd - navtiming.responseStart);
+      console.log('2nd client:%d', navtiming.loadEventEnd - navtiming.responseEnd);
+
+      sendToHakstrace(navtiming);
+
+    }, 0);
+  };
+
+  // Deeply serialize an object into a query string. We use the PHP-style
+  // nested object syntax, `nested[keys]=val`, to support heirachical
+  // objects. Similar to jQuery's `$.param` method.
+  function serialize(obj, prefix) {
+    var str = [];
+    for (var p in obj) {
+      if (obj.hasOwnProperty(p) && p != null && obj[p] != null) {
+        var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+        str.push(typeof v === "object" ? serialize(v, k) : encodeURIComponent(k) + "=" + encodeURIComponent(v));
+      }
+    }
+    return str.join("&");
+  }
+
+
+  // Send an error to Hakstrace.
+  function sendToHakstrace(t) {
+
+    var location = window.location;
+    var sendObj = {
+      host: location.protocol + "//" + location.host,
+      uri: location.pathname,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      navigationStart: t.navigationStart,
+      domainLookupStart: t.domainLookupStart,
+      connectStart: t.connectStart,
+      requestStart: t.requestStart,
+      responseStart: t.responseStart,
+      responseEnd: t.responseEnd,
+      domLoading: t.domLoading,
+      loadEventStart: t.loadEventStart,
+      loadEventEnd: t.loadEventEnd
     };
 
-  // By default, print the simple table
-  return window.timing.printSimpleTable();
+    console.log(sendObj);
 
-})(this);
+    request(DEFAULT_NOTIFIER_ENDPOINT, sendObj);
+  }
+
+  // Make a HTTP request with given `url` and `params` object.
+  // For maximum browser compatibility and cross-domain support, requests are
+  // made by creating a temporary JavaScript `Image` object.
+  function request(url, params) {
+    var img = new Image();
+    img.src = url + "?" + serialize(params) + "&ct=img&cb=" + new Date().getTime();
+  }
+
+})();
