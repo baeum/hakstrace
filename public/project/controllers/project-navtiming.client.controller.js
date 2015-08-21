@@ -46,13 +46,28 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
           end: $scope.dateRange.end
         }).$promise.then(function (navtimingHitory) {
             var navtimingHistoryLabelEach = [];
-            var navtimingHistoryDataEach = [];
+            var navtimingHistoryDataEachPre = [];
+            var navtimingHistoryDataEachReq = [];
+            var navtimingHistoryDataEachWait = [];
+            var navtimingHistoryDataEachRes = [];
+            var navtimingHistoryDataEachLoad = [];
             navtimingHitory.forEach(function (e) {
               navtimingHistoryLabelEach.push(e.label);
-              navtimingHistoryDataEach.push(e.prepareAvg);
+              navtimingHistoryDataEachPre.push(e.prepareAvg);
+              navtimingHistoryDataEachReq.push(e.prepareAvg + e.requestAvg);
+              navtimingHistoryDataEachWait.push(e.prepareAvg + e.requestAvg + e.waitAvg);
+              navtimingHistoryDataEachRes.push(e.prepareAvg + e.requestAvg + e.waitAvg + e.responseAvg);
+              navtimingHistoryDataEachLoad.push(e.prepareAvg + e.requestAvg + e.waitAvg + e.responseAvg + e.pageLoadAvg);
             });
-            angular.copy(navtimingHistoryLabelEach, $scope.navtimingHistoryLabelEach);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEach);
+            angular.copy(navtimingHistoryLabelEach, $scope.navtimingHistoryLabel);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachPre);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachReq);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachWait);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachRes);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachLoad);
+
+            $scope.navtimingHistorySeries = ['Series1','Series2', 'Series3', 'Series4', 'Series5'];
+            $scope.navtimingHistoryColor = [{fillColor:"#FF0000"},{fillColor:"#00FF00"},{fillColor:"#0000FF"},{fillColor:"#00FFFF"},{fillColor:"#FFFF00"}];
           });
 
       };
