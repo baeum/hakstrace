@@ -10,7 +10,7 @@ exports.createTiming = function (req, res, next) {
   navTiming.uri = req.query.uri;
   navTiming.url = req.query.url;
 
-  navTiming.host = req.query.host;
+  navTiming.host = req.headers.host;
   navTiming.referer = req.headers.referer;
   navTiming.clientIp = req.ip;
 
@@ -55,7 +55,12 @@ exports.listNavtimingsSummary = function (req, res, next) {
     {
       $group: {
         _id: "$uri",
-        occurances: {$sum: 1}
+        occurances: {$sum: 1},
+        prepareAvg: {$avg: { $subtract : ["$domainLookupStart","$navigationStart"]} },
+        requestAvg: {$avg: { $subtract : ["$requestStart","$domainLookupStart"]} },
+        waitAvg: {$avg: { $subtract : ["$responseStart","$requestStart"]} },
+        responseAvg: {$avg: { $subtract : ["$responseEnd","$responseStart"]} },
+        pageLoadAvg: {$avg: { $subtract : ["$loadEventEnd","$responseEnd"]} }
       }
     },
     {

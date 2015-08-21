@@ -15,6 +15,7 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
           end: end
         }).$promise.then(function (navtimingSummary) {
             $scope.navtimingSummary = navtimingSummary;
+            $scope.drawNavtimingSummary(navtimingSummary.list);
             $scope.clearNavtimingDetail();
             if (navtimingSummary.list.length > 0) {
               $scope.getNavtimingDetail(navtimingSummary.list[0]);
@@ -60,159 +61,65 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
               navtimingHistoryDataEachLoad.push(e.prepareAvg + e.requestAvg + e.waitAvg + e.responseAvg + e.pageLoadAvg);
             });
             angular.copy(navtimingHistoryLabelEach, $scope.navtimingHistoryLabel);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachPre);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachReq);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachWait);
-            $scope.navtimingHistoryData.push(navtimingHistoryDataEachRes);
             $scope.navtimingHistoryData.push(navtimingHistoryDataEachLoad);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachRes);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachWait);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachReq);
+            $scope.navtimingHistoryData.push(navtimingHistoryDataEachPre);
 
-            $scope.navtimingHistorySeries = ['Series1','Series2', 'Series3', 'Series4', 'Series5'];
-            $scope.navtimingHistoryColor = [{fillColor:"#FF0000"},{fillColor:"#00FF00"},{fillColor:"#0000FF"},{fillColor:"#00FFFF"},{fillColor:"#FFFF00"}];
+            $scope.navtimingHistorySeries = ['complete','response', 'wait', 'request', 'prepare'];
+            $scope.navtimingHistoryColor = [{fillColor:"#CECEF6"},{fillColor:"#2E9AFE"},{fillColor:"#0080FF"},{fillColor:"#0174DF"},{fillColor:"#08298A"}];
           });
 
       };
 
-/*
-      $scope.getErrorTypeBrowserShare = function () {
-        $scope.errorTypeBrowserShareLabel = [];
-        $scope.errorTypeBrowserShareData = [];
-        var noFilter = angular.isUndefined($scope.errorTypeShareFilter.browser.device._id) && angular.isUndefined($scope.errorTypeShareFilter.browser.os._id);
-        if (noFilter) $scope.errorTypeBrowserShareList = [];
+      $scope.drawNavtimingSummary = function(navtimingSummary){
 
-        ErrorsErrorTypesBrowserShare.query({
-          projectKey: $scope.project.projectKey,
-          errorType: $scope.errorType._id._id,
-          filter: !noFilter,
-          device: $scope.errorTypeShareFilter.browser.device,
-          os: $scope.errorTypeShareFilter.browser.os,
-          start: $scope.dateRange.start,
-          end: $scope.dateRange.end
-        }).$promise.then(function (errorTypeBrowserShare) {
-            var errorTypeBrowserShareLabelEach = [];
-            var errorTypeBrowserShareDataEach = [];
-            var total = 0;
-            errorTypeBrowserShare.forEach(function (e) {
-              errorTypeBrowserShareLabelEach.push(e._id.name + " " + e._id.major);
-              errorTypeBrowserShareDataEach.push(e.count);
-              total += e.count;
-            });
-            $scope.errorTypeBrowserShareHighest = {
-              name: errorTypeBrowserShareLabelEach.length > 0 ? errorTypeBrowserShareLabelEach[0] : 'N/A',
-              occupancy: errorTypeBrowserShareLabelEach.length > 0 ? (((errorTypeBrowserShareDataEach[0] * 100) / total)) : 0
-            };
-            angular.copy(errorTypeBrowserShareLabelEach, $scope.errorTypeBrowserShareLabel);
-            angular.copy(errorTypeBrowserShareDataEach, $scope.errorTypeBrowserShareData);
-            if (noFilter) angular.copy(errorTypeBrowserShare, $scope.errorTypeBrowserShareList);
+        var chartValuesPre = [], chartValuesReq =[], chartValuesWait=[], chartValuesRes=[], chartValuesLoad = [];
+        for( inx = 0 ; inx < navtimingSummary.length ; inx++ ){
+          if(inx > 20) break;
+          chartValuesPre.push({
+            "x": navtimingSummary[inx]._id,
+            "y": navtimingSummary[inx].prepareAvg
           });
-      };
-
-      $scope.getErrorTypeBrowserShareByDevice = function (device) {
-        $scope.errorTypeShareFilter.browser.device = device ? device : {};
-        $scope.getErrorTypeBrowserShare();
-      };
-
-      $scope.getErrorTypeBrowserShareByOS = function (os) {
-        $scope.errorTypeShareFilter.browser.os = os ? os : {};
-        $scope.getErrorTypeBrowserShare();
-      };
-
-      $scope.getErrorTypeDeviceShare = function () {
-        $scope.errorTypeDeviceShareLabel = [];
-        $scope.errorTypeDeviceShareData = [];
-        var noFilter = angular.isUndefined($scope.errorTypeShareFilter.device.browser._id) && angular.isUndefined($scope.errorTypeShareFilter.device.os._id);
-        if (noFilter) $scope.errorTypeDeviceShareList = [];
-
-        ErrorsErrorTypesDeviceShare.query({
-          projectKey: $scope.project.projectKey,
-          errorType: $scope.errorType._id._id,
-          filter: !noFilter,
-          browser: $scope.errorTypeShareFilter.device.browser,
-          os: $scope.errorTypeShareFilter.device.os,
-          start: $scope.dateRange.start,
-          end: $scope.dateRange.end
-        }).$promise.then(function (errorTypeDeviceShare) {
-            var errorTypeDeviceShareLabelEach = [];
-            var errorTypeDeviceShareDataEach = [];
-            var total = 0;
-            errorTypeDeviceShare.forEach(function (e) {
-              errorTypeDeviceShareLabelEach.push(e._id.vendor + " " + e._id.model);
-              errorTypeDeviceShareDataEach.push(e.count);
-              total += e.count;
-            });
-            $scope.errorTypeDeviceShareHighest = {
-              name: errorTypeDeviceShareLabelEach.length > 0 ? errorTypeDeviceShareLabelEach[0] : 'N/A',
-              occupancy: errorTypeDeviceShareLabelEach.length > 0 ? (((errorTypeDeviceShareDataEach[0] * 100) / total)) : 0
-            };
-            angular.copy(errorTypeDeviceShareLabelEach, $scope.errorTypeDeviceShareLabel);
-            angular.copy(errorTypeDeviceShareDataEach, $scope.errorTypeDeviceShareData);
-            if (noFilter) angular.copy(errorTypeDeviceShare, $scope.errorTypeDeviceShareList);
+          chartValuesReq.push({
+            "x": navtimingSummary[inx]._id,
+            "y": navtimingSummary[inx].requestAvg
           });
-      };
-
-      $scope.getErrorTypeDeviceShareByBrowser = function (browser) {
-        $scope.errorTypeShareFilter.device.browser = browser ? browser : {};
-        $scope.getErrorTypeDeviceShare();
-      };
-
-      $scope.getErrorTypeDeviceShareByOS = function (os) {
-        $scope.errorTypeShareFilter.device.os = os ? os : {};
-        $scope.getErrorTypeDeviceShare();
-      };
-
-      $scope.getErrorTypeOSShare = function () {
-        $scope.errorTypeOSShareLabel = [];
-        $scope.errorTypeOSShareData = [];
-        var noFilter = angular.isUndefined($scope.errorTypeShareFilter.os.browser._id) && angular.isUndefined($scope.errorTypeShareFilter.os.device._id);
-        if (noFilter) $scope.errorTypeOSShareList = [];
-
-        ErrorsErrorTypesOSShare.query({
-          projectKey: $scope.project.projectKey,
-          errorType: $scope.errorType._id._id,
-          filter: !noFilter,
-          browser: $scope.errorTypeShareFilter.os.browser,
-          device: $scope.errorTypeShareFilter.os.device,
-          start: $scope.dateRange.start,
-          end: $scope.dateRange.end
-        }).$promise.then(function (errorTypeOSShare) {
-            var errorTypeOSShareLabelEach = [];
-            var errorTypeOSShareDataEach = [];
-            var total = 0;
-            errorTypeOSShare.forEach(function (e) {
-              errorTypeOSShareLabelEach.push(e._id.name + " " + e._id.version);
-              errorTypeOSShareDataEach.push(e.count);
-              total += e.count;
-            });
-            $scope.errorTypeOSShareHighest = {
-              name: errorTypeOSShareLabelEach.length > 0 ? errorTypeOSShareLabelEach[0] : 'N/A',
-              occupancy: errorTypeOSShareLabelEach.length > 0 ? (((errorTypeOSShareDataEach[0] * 100) / total)) : 0
-            };
-            angular.copy(errorTypeOSShareLabelEach, $scope.errorTypeOSShareLabel);
-            angular.copy(errorTypeOSShareDataEach, $scope.errorTypeOSShareData);
-            if (noFilter) angular.copy(errorTypeOSShare, $scope.errorTypeOSShareList);
+          chartValuesWait.push({
+            "x": navtimingSummary[inx]._id,
+            "y": navtimingSummary[inx].waitAvg
           });
-      };
-
-      $scope.getErrorTypeOSShareByBrowser = function (browser) {
-        $scope.errorTypeShareFilter.os.browser = browser ? browser : {};
-        $scope.getErrorTypeOSShare();
-      };
-
-      $scope.getErrorTypeOSShareByDevice = function (device) {
-        $scope.errorTypeShareFilter.os.device = device ? device : {};
-        $scope.getErrorTypeOSShare();
-      };
-
-      $scope.getErrorTypeStream = function () {
-        ErrorsErrorTypesStream.query({
-          projectKey: $scope.project.projectKey,
-          errorType: $scope.errorType._id._id,
-          start: $scope.dateRange.start,
-          end: $scope.dateRange.end
-        }).$promise.then(function (errorTypeStream) {
-            $scope.errorTypeStream = errorTypeStream;
+          chartValuesRes.push({
+            "x": navtimingSummary[inx]._id,
+            "y": navtimingSummary[inx].responseAvg
           });
+          chartValuesLoad.push({
+            "x": navtimingSummary[inx]._id,
+            "y": navtimingSummary[inx].pageLoadAvg
+          });
+        }
+
+        var chartData = [{
+          "key": "prepare",
+          "values": chartValuesPre
+        },{
+          "key": "request",
+          "values": chartValuesReq
+        },{
+          "key": "wait",
+          "values": chartValuesWait
+        },{
+          "key": "response",
+          "values": chartValuesRes
+        },{
+          "key": "loadDom",
+          "values": chartValuesLoad
+        }];
+
+        $scope.navtimingHistoryChart.data = chartData;
+
       };
-*/
 
       $scope.getNavtimingDetail = function (navtiming) {
         //$scope.errorTypeShareFilter = {
@@ -230,32 +137,41 @@ angular.module('project').controller('ProjectDetailNavtimingCtrl',
         return $scope.navtiming._id == uri;
       };
 
+      $scope.navtimingHistoryChart = {
+            options:{
+                chart: {
+                  type: 'multiBarHorizontalChart',
+                  height: 450,
+                  margin : {
+                      top: 20,
+                      right: 20,
+                      bottom: 60,
+                      left: 245
+                  },
+                  clipEdge: true,
+                  staggerLabels: true,
+                  transitionDuration: 500,
+                  stacked: true,
+                  xAxis: {
+                      showMaxMin: false
+                  },
+                  yAxis: {
+                      axisLabel: 'Time (ms)',
+                      axisLabelDistance: 40
+                  }
+              }
+            },
+          data : []
+      };
+
+
+
+
+
+
       $scope.clearNavtimingDetail = function () {
         $scope.navtimingHistoryLabel = [];
         $scope.navtimingHistoryData = [];
-        /*
-        $scope.errorTypeBrowserShareLabel = [];
-        $scope.errorTypeBrowserShareData = [];
-        $scope.errorTypeBrowserShareList = [];
-        $scope.errorTypeBrowserShareHighest = {
-          name: 'N/A',
-          occupancy: 0
-        };
-        $scope.errorTypeDeviceShareLabel = [];
-        $scope.errorTypeDeviceShareData = [];
-        $scope.errorTypeDeviceShareList = [];
-        $scope.errorTypeDeviceShareHighest = {
-          name: 'N/A',
-          occupancy: 0
-        };
-        $scope.errorTypeOSShareLabel = [];
-        $scope.errorTypeOSShareData = [];
-        $scope.errorTypeOSShareList = [];
-        $scope.errorTypeOSShareHighest = {
-          name: 'N/A',
-          occupancy: 0
-        };
-        */
       };
 
     }]);
