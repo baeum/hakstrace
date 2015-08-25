@@ -61,6 +61,7 @@ module.exports = (function (db) {
   require('../server/admin/routes/admin-script.server.routes.js')(app);
   require('../server/project/routes/project.server.routes.js')(app);
   require('../server/error/routes/error.server.routes.js')(app);
+  require('../server/navtiming/routes/navtiming.server.routes.js')(app);
 
   // error handling 은 app.use 제일 마지막에 해야됨
   app.use(logErrors);

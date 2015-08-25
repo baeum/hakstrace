@@ -34,6 +34,7 @@ module.exports = function() {
 	require('../server/models/error-type.server.model');
 	require('../server/models/error-type-group.server.model');
 	require('../server/models/error.server.model');
+	require('../server/models/navtiming.server.model');
 
 	return db;
 

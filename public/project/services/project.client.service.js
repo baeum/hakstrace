@@ -46,5 +46,12 @@ angular.module('project').factory('ErrorsErrorTypesOSShare', ['$resource',
     return $resource('api/errors/:projectKey/errors/errortypes/:errorType/osShare',{},{cache:false});
 }]);
 
+angular.module('project').factory('NavtimingsSummary', ['$resource',
+  function($resource) {
+    return $resource('api/navtimings/:projectKey/navtimings/summary',{},{cache:false});
+}]);
 
-
+angular.module('project').factory('NavtimingsHistory', ['$resource',
+  function($resource) {
+    return $resource('api/navtimings/:projectKey/navtimings/history',{},{cache:false});
+}]);

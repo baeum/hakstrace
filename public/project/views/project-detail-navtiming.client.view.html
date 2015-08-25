@@ -1,0 +1,98 @@
+<section ng-controller="ProjectDetailNavtimingCtrl">
+
+  <div class="wrapper ff-serif" style="display:table;width:100%;">
+
+ <div class="row">
+   <div class="panel b-a">
+     <h5>
+       &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info">- Top 10 calls</span>&nbsp;&nbsp;
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(30)">30 mins</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*12)">12 hours</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24)">24 hours</button>
+        <button type="button" class="btn btn-default btn-sm" ng-click="getNavtimingSummaryMinutesAgo(60*24*14)">2 weeks</button>
+        <button type="button" class="btn btn-default btn-sm">More</button>
+      </div>
+
+     </h5>
+     <div class="padder-v hbox text-center b-t b-light" style="padding:10px 10px 10px 10px;">
+       <div class="m-t-sm">
+         <nvd3 options="navtimingSummaryChart.options" data="navtimingSummaryChart.data"></nvd3>
+       </div>
+   </div>
+
+   <div class="hbox text-center b-t b-light">
+   </div>
+ </div>
+ </div>
+
+
+<div class="row">
+  <div class="col lt" style="width:400px;">
+    <div class="vbox">
+        <ul class="list-group">
+
+          <li class="list-group-item">
+            <div class="progress" ng-repeat="navtiming in navtimingSummary.list"
+              ng-click="getNavtimingDetail(navtiming)"
+              ng-class="{active: isActiveNavtiming(navtiming._id)}"
+              title="{{navtiming._id}}">
+                <div class="progress-bar progress-bar-danger" style="width: {{(100*navtiming.occurances/navtimingSummary.totalOccurances)| number:0}}%;">
+                    <span class="sr-only">{{navtiming.occurances}}</span>
+                </div>
+                <span class="progress-type"><a href>{{ navtiming._id | limitTo: 45 }}{{navtiming._id > 20 ? '...' : ''}}</a></span>
+                <span class="progress-completed">{{navtiming.occurances}}</span>
+            </div>
+
+          </li>
+          <li class="list-group-item">
+              <p><a href class="text-info">@Josh Long</a>most frequently called uris (top 50)</p>
+              <small class="block text-muted"><i class="fa fa-fw fa-clock-o"></i><span am-time-ago="Date.now()"></span></small>
+          </li>
+        </ul>
+
+
+
+    </div>
+  </div>
+  <!-- /column -->
+
+  <!-- column -->
+  <div class="col" style="padding-left:10px;">
+
+    <div class="vbox">
+
+
+      <div class="panel b-a">
+        <h5>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info">- {{navtiming._id}}</span>&nbsp;&nbsp;
+        </h5>
+        <div class="padder-v hbox text-center b-t b-light" style="padding:10px 10px 10px 10px;">
+          <div>
+            <em>from </em><span class="text-muted">{{dateRange.start| date:"MM/dd HH:mm"}}</span> ~
+            <em>to </em><span class="text-muted">{{dateRange.end| date:"MM/dd HH:mm"}}</span></strong>
+          </div>
+          <div class="m-t-sm">
+            <nvd3 options="navtimingHistoryChart.options" data="navtimingHistoryChart.data"></nvd3>
+          </div>
+      </div>
+
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+  </div>
+
+</div>
+
+
+</div>
+
+</section>

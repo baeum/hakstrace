@@ -1,5 +1,5 @@
 // from https://github.com/bugsnag/bugsnag-js/blob/23d65d3d384fdb4ec9f522fa6e2dee2417a234c1/src/bugsnag.js#L542
-// thank you for bugnag
+// thank you for bugsnag
 // The `Hakstrace` object is the only globally exported variable
 (function(definition) {
   var old = window.Hakstrace;

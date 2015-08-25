@@ -8,5 +8,5 @@ module.exports = {
 	sessionSecret: 'developmentSessionSecret',
 
 	mainDashboardInterval: 5000, //interval for development(longer on production)
-	mainDashboardLazy: 10000
+	mainDashboardLazy: 3000
 };
