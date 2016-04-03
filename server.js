@@ -1,6 +1,8 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-var httpPort = process.env.HAKSTRACE_WEB_PORT || 3000;
+require('./scouter-nodejs').profile();
+
+var httpPort = process.env.HAKSTRACE_WEB_PORT || 3001;
 
 var db = require('./config/mongoose')();
 
